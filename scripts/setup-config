@@ -29,8 +29,6 @@ scriptsdir = os.path.dirname(os.path.realpath(__file__))
 with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
     ourconfig = json.load(f)
 
-distro = "poky"
-
 #
 # Check if config contains all the listed params
 #
@@ -44,6 +42,14 @@ def contains(params, config):
 def configtrue(name, config):
     if name in config and config[name] == "True":
         return True
+    return False
+
+# Get a configuration variable, check overrides, first, the defaults
+def getconfigvar(name, config, target):
+    if target in config['overrides'] and name in config['overrides'][target]: 
+        return config['overrides'][target][name]
+    if name in config['defaults']: 
+        return config['defaults'][name]
     return False
 
 #
@@ -70,12 +76,20 @@ sdkextraconf = os.path.join(builddir, "conf", "sdk-extra.conf")
 if os.path.exists(sdkextraconf):
     os.remove(sdkextraconf)
 
+distro = getconfigvar("DISTRO", ourconfig, target)
+if distro and distro != "None":
+    variables.append('DISTRO = "%s"' % distro)
+
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
+    # What we need to do here is check if poky, if so proceed, if not (e.g. poky-contrib) don't.
+    # If its a main branch, checkout the previous revision and then move forward on it
+    # If its -next check out the main branch, then move forward on it.
     if target in ourconfig["build-history-targets"]:
         bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, "nightly-" + target)
         remoterepo = ourconfig["BUILD_HISTORY_REPO"]
         remotebranch = distro + "/" + branchname + "/nightly-" + target
-        # if need reset:
+        #if branchname.endswith("-next"):
+        #    We reset and base on the last code:
         #    runcmd([os.path.join(scriptsdir, "buildhistory-reset"), bh_path, remoterepo, remotebranch])
         runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch])
         variables.append('INHERIT += "buildhistory"')
