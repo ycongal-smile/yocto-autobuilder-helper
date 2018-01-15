@@ -98,13 +98,16 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
         variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
         variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
 
-if configtrue("QEMU_USE_KVM", ourconfig):
+if configtrue("USE_QEMU_KVM", ourconfig):
     variables.append('QEMU_USE_KVM = "True"')
+
+if configtrue("USE_ERROR_REPORT", ourconfig):
+    variables.append('INHERIT += "report-error"')
 
 print("Writing %s" % autoconf)
 with open(autoconf, "w") as f:
     for v in variables:
-        print(v + "\n")
+        print(v)
         f.write(v + "\n")
 
 print(str(ourconfig))
