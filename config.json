@@ -26,6 +26,15 @@
         },
         "x86-lsb" : {
             "DISTRO" : "poky-lsb"
+        },
+        "world-lsb" : {
+            "DISTRO" : "poky-lsb"
+        },
+        "tiny" : {
+            "DISTRO" : "poky-tiny"
+        },
+        "refkit" : {
+            "DISTRO" : "refkit"
         }
     }
 }
