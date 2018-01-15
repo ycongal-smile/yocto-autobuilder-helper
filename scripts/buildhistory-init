@@ -1,0 +1,27 @@
+#!/bin/sh
+
+exit 0
+
+# Example code dumped from an existing nightly-arm buildhistory step for reference
+
+if [ ! -d /srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory/poky/master-next/nightly-arm ]; then
+    mkdir -p /srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory/poky/master-next/nightly-arm
+    git init /srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory/poky/master-next/nightly-arm
+fi
+
+rm -rf /srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory/poky/master-next/nightly-arm
+mkdir -p /srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory/poky/master-next/nightly-arm
+git init /srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory/poky/master-next/nightly-arm
+
+if git ls-remote --exit-code ssh://git@push.yoctoproject.org/poky-buildhistory refs/heads/poky/master-next/nightly-arm> /dev/null; then
+    git push -q ssh://git@push.yoctoproject.org/poky-buildhistory :poky/master-next/nightly-arm
+fi
+
+if ! git ls-remote --exit-code ssh://git@push.yoctoproject.org/poky-buildhistory refs/heads/poky/master-next/nightly-arm > /dev/null; then
+    cd /srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory/poky/master-next/nightly-arm
+    echo 'Initializing Repo' >> README
+    git checkout -b poky/master-next/nightly-arm
+    git add README
+    git commit -s -m 'Initializing Repo'
+    git push -q ssh://git@push.yoctoproject.org/poky-buildhistory poky/master-next/nightly-arm:poky/master-next/nightly-arm
+fi

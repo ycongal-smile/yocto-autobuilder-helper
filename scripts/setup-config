@@ -1,0 +1,3 @@
+#!/bin/sh
+buildhistory-init
+echo "setup-config called with $@"
