@@ -5,6 +5,7 @@
 
     "defaults" : {
         "DISTRO" : "poky",
+        "PACKAGE_CLASSES" : "package_rpm package_deb package_ipk",
         "extravars" : [
             "QEMU_USE_KVM = 'True'",
             "INHERIT += 'report-error'",
@@ -42,14 +43,37 @@
         "nightly-x32" : {
             "extravars" : [
                 "DEFAULTTUNE = 'x86-64-x32'",
-                "baselib = \"${@d.getVar('BASE_LIB_tune-' + (d.getVar('DEFAULTTUNE', True) or 'INVALID'), True) or 'lib'}\""
+                "baselib = \"${@d.getVar('BASE_LIB_tune-' + (d.getVar('DEFAULTTUNE', True) or 'INVALID'), True) or 'lib'}\"",
+                "TEST_SUITES_append = ' x32lib'"
             ]
         },
         "poky-tiny" : {
             "DISTRO" : "poky-tiny"
         },
+        "nightly-multilib" : {
+            "PACKAGE_CLASSES" : "package_ipk"
+        },
         "nightly-refkit" : {
-            "DISTRO" : "refkit"
+            "DISTRO" : "refkit",
+            "PACKAGE_CLASSES" : "package_ipk"
+        },
+        "nightly-rpm-non-rpm" : {
+            "PACKAGE_CLASSES" : "package_rpm"
+        },
+        "nightly-deb-non-deb" : {
+            "PACKAGE_CLASSES" : "package_deb"
+        },
+        "oe-selftest" : {
+            "PACKAGE_CLASSES" : "package_rpm"
+        },
+        "nightly-packagemanagers" : {
+            "step1" : {
+                "PACKAGE_CLASSES" : "package_ipk"
+            },
+            "step2" : {
+                "PACKAGE_CLASSES" : "package_deb"
+            }
+
         }
     }
 }
