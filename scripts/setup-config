@@ -47,7 +47,7 @@ def configtrue(name, config):
 
 # Get a configuration variable, check overrides, first, the defaults
 def getconfigvar(name, config, target, stepnum):
-    step = "step" + stepnum
+    step = "step" + str(stepnum)
     if target in config['overrides']:
         if step in config['overrides'][target] and name in config['overrides'][target][step]:
             return config['overrides'][target][step][name]
@@ -59,7 +59,7 @@ def getconfigvar(name, config, target, stepnum):
 
 def getconfiglist(name, config, target, stepnum):
     ret = []
-    step = "step" + stepnum
+    step = "step" + str(stepnum)
     if target in config['overrides']:
         if step in config['overrides'][target] and name in config['overrides'][target][step]:
             ret.extend(config['overrides'][target][step][name])
@@ -93,11 +93,11 @@ sdkextraconf = os.path.join(builddir, "conf", "sdk-extra.conf")
 if os.path.exists(sdkextraconf):
     os.remove(sdkextraconf)
 
-distro = getconfigvar("DISTRO", ourconfig, target)
+distro = getconfigvar("DISTRO", ourconfig, target, stepnum)
 if distro and distro != "None":
     variables.append('DISTRO = "%s"' % distro)
 
-extravars = getconfiglist("extravars", ourconfig, target)
+extravars = getconfiglist("extravars", ourconfig, target, stepnum)
 if extravars:
     variables.extend(extravars)
 
@@ -117,13 +117,10 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
         variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
         variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
 
-print("Writing %s" % autoconf)
+print("Writing %s with contents:" % autoconf)
 with open(autoconf, "w") as f:
     for v in variables:
         print(v)
         f.write(v + "\n")
 
-print(str(ourconfig))
-
-print("setup-config called with %s" % " ".join(sys.argv))
 
