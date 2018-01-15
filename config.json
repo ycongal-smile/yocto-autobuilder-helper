@@ -2,8 +2,8 @@
     "build-history-targets" : ["nightly-arm64", "nightly-arm", "nightly-arm-lsb", "nightly-mips64", "nightly-mips", "nightly-mips-lsb", "nightly-ppc", "nightly-ppc-lsb", "nightly-x86-64", "nightly-x86-64-lsb", "nightly-x86", "nightly-x86-lsb"],
     "BUILD_HISTORY_DIR" : "/srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory",
     "BUILD_HISTORY_REPO" : "ssh://git@push.yoctoproject.org/poky-buildhistory",
-    "USE_QEMU_KVM" : "True",
-    "USE_ERROR_REPORT" : "True",
+    "USE_QEMU_KVM" : true,
+    "USE_ERROR_REPORT" : true,
 
     "defaults" : {
         "DISTRO" : "poky"
@@ -11,7 +11,11 @@
 
     "overrides" : {
         "nightly-oe-core" : {
-            "DISTRO" : "None"
+            "DISTRO" : "None",
+            "extravars" : [ 
+                "INHERIT += 'uninative'", 
+                "require conf/distro/include/yocto-uninative.inc"
+            ]
         },
         "nightly-arm-lsb" : {
             "DISTRO" : "poky-lsb"

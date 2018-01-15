@@ -41,7 +41,7 @@ def contains(params, config):
 
 # Check if a config boolean is set
 def configtrue(name, config):
-    if name in config and config[name] == "True":
+    if name in config and config[name]:
         return True
     return False
 
@@ -80,6 +80,10 @@ if os.path.exists(sdkextraconf):
 distro = getconfigvar("DISTRO", ourconfig, target)
 if distro and distro != "None":
     variables.append('DISTRO = "%s"' % distro)
+
+extravars = getconfigvar("extravars", ourconfig, target)
+if extravars:
+    variables.extend(extravars)
 
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
     # What we need to do here is check if poky, if so proceed, if not (e.g. poky-contrib) don't.
