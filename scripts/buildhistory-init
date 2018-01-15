@@ -14,8 +14,6 @@ echo BH $@
 
 exit 0
 
-# Example code dumped from an existing nightly-arm buildhistory step for reference
-
 if [ ! -d $BUILDHISTDIR ]; then
     mkdir -p $BUILDHISTDIR
     git init $BUILDHISTDIR

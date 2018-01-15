@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+#
+# Generate an auto.conf and associated other config files for a given autobuilder configuration
+#
+# Called with $1 - The 'nightly' target the autobuilder is running
+#             $2 - The autobuilder step number (a given target can run multiple steps with different configurations)
+#             $3 - The target build directory to configure
+#
 
 import json
 import os
@@ -9,6 +16,8 @@ scriptsdir = os.path.dirname(os.path.realpath(__file__))
 
 with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
     ourconfig = json.load(f)
+
+
 
 target = "nightly-arm"
 branchname = "master"
@@ -26,8 +35,19 @@ def contains(params, config):
             return False
     return True
 
-variables = []
+# Check if a config boolean is set
+def configtrue(name, config):
+    if name in config and config[name] = "True":
+        return True
+    return False
 
+#
+# Run a command, trigger a traceback with command output if it fails
+#
+def runcmd(cmd):
+    return subprocess.check_output(cmd, stderr=subprocess.STDOUT)
+
+variables = []
 
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
     if target in ourconfig["build-history-targets"]:
@@ -35,11 +55,15 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
         remoterepo = ourconfig["BUILD_HISTORY_REPO"]
         remotebranch = distro + "/" + branchname + "/nightly-" + target
         # if need reset:
-        #    subprocess.check_output([os.path.join(scriptsdir, "buildhistory-reset"), bh_path, remoterepo, remotebranch], stderr=subprocess.STDOUT)
-        subprocess.check_output([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch], stderr=subprocess.STDOUT)
+        #    runcmd([os.path.join(scriptsdir, "buildhistory-reset"), bh_path, remoterepo, remotebranch])
+        runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch])
         variables.append('INHERIT += "buildhistory"')
         variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
         variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
+
+if configtrue("QEMU_USE_KVM", config):
+    variables.append('QEMU_USE_KVM = "True"')
+
 
 print(str(ourconfig))
 
