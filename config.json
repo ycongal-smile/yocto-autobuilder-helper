@@ -5,40 +5,268 @@
 
     "defaults" : {
         "DISTRO" : "poky",
+        "SDKMACHINE" : "i686",
         "PACKAGE_CLASSES" : "package_rpm package_deb package_ipk",
         "extravars" : [
             "QEMU_USE_KVM = 'True'",
             "INHERIT += 'report-error'",
             "PREMIRRORS = ''",
-            "BB_GENERATE_MIRROR_TARBALLS = '1'"
+            "BB_GENERATE_MIRROR_TARBALLS = '1'",
+            "BB_NUMBER_THREADS = '16'",
+            "PARALLEL_MAKE = '-j 16'",
+            "BB_TASK_NICE_LEVEL = '5'",
+            "BB_TASK_NICE_LEVEL_task-testimage = '0'",
+            "BB_TASK_IONICE_LEVEL = '2.7'",
+            "BB_TASK_IONICE_LEVEL_task-testimage = '2.1'"
         ]
     },
 
     "overrides" : {
-        "nightly-oe-core" : {
+        "nightly-oecore" : {
+            "MACHINE" : "qemuarm",
             "DISTRO" : "None",
             "extravars" : [
                 "INHERIT += 'uninative'",
                 "require conf/distro/include/yocto-uninative.inc"
-            ]
+            ],
+            "step1" : {
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage"
+            },
+            "step2" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            },
+            "step3" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            }
+        },
+        "nightly-arm" : {
+            "MACHINE" : "qemuarm",
+            "step1" : {
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+            },
+            "step2" : {
+                "MACHINE" : "beaglebone-yocto",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest core-image-sato:do_populate_sdk"
+            },
+            "step3" : {
+                "MACHINE" : "beaglebone-yocto",
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk"
+            },
+            "step4" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            },
+            "step5" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
+                "SANITYTARGETS" : "core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
+            }
         },
         "nightly-arm-lsb" : {
-            "DISTRO" : "poky-lsb"
+            "MACHINE" : "qemuarm",
+            "DISTRO" : "poky-lsb",
+            "step1" : {
+                "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
+                "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
+            },
+            "step2" : {
+                "MACHINE" : "beaglebone-yocto",
+                "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
+            }
+        },
+        "nightly-arm64" : {
+            "MACHINE" : "qemuarm64",
+            "step1" : {
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+            },
+            "step2" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            },
+            "step3" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext",
+                "SANITYTARGETS" : "core-image-minimal:do_testsdkext"
+            }
+        },
+        "nightly-mips" : {
+            "MACHINE" : "qemumips",
+            "step1" : {
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+            },
+            "step2" : {
+                "MACHINE" : "routerstationpro",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest"
+            },
+            "step3" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            },
+            "step4" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
+                "SANITYTARGETS" : "core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
+            }
         },
         "nightly-mips-lsb" : {
-            "DISTRO" : "poky-lsb"
+            "MACHINE" : "qemumips",
+            "DISTRO" : "poky-lsb",
+            "step1" : {
+                "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
+                "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
+            },
+            "step2" : {
+                "MACHINE" : "routerstationpro",
+                "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
+            }
+        },
+        "nightly-mips64" : {
+            "MACHINE" : "qemumips64",
+            "step1" : {
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+            },
+            "step2" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            },
+            "step3" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            }
+        },
+        "nightly-ppc" : {
+            "MACHINE" : "qemuppc",
+            "step1" : {
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+            },
+            "step2" : {
+                "MACHINE" : "mpc8315e-rdb",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest"
+            },
+            "step3" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            },
+            "step4" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
+                "SANITYTARGETS" : "core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
+            }
         },
         "nightly-ppc-lsb" : {
-            "DISTRO" : "poky-lsb"
+            "MACHINE" : "qemuppc",
+            "DISTRO" : "poky-lsb",
+            "step1" : {
+                "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
+                "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
+            },
+            "step2" : {
+                "MACHINE" : "mpc8315e-rdb",
+                "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
+            }
         },
-        "nightly-x86-64-lsb" : {
-            "DISTRO" : "poky-lsb"
+        "nightly-x86" : {
+            "MACHINE" : "qemux86",
+            "step1" : {
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage",
+                "extravars" : [
+                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
+                ]
+            },
+            "step2" : {
+                "MACHINE" : "genericx86",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest"
+            },
+            "step3" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            },
+            "step4" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
+            }
         },
         "nightly-x86-lsb" : {
-            "DISTRO" : "poky-lsb"
+            "MACHINE" : "qemux86",
+            "DISTRO" : "poky-lsb",
+            "step1" : {
+                "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
+                "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
+            },
+            "step2" : {
+                "MACHINE" : "genericx86",
+                "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
+            }
+        },
+        "nightly-x86-64" : {
+            "MACHINE" : "qemux86-64",
+            "step1" : {
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage",
+                "extravars" : [
+                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
+                ]
+            },
+            "step2" : {
+                "MACHINE" : "genericx86-64",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest"
+            },
+            "step3" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            },
+            "step4" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
+            }
+        },
+        "nightly-x86-64-lsb" : {
+            "MACHINE" : "qemux86-64",
+            "DISTRO" : "poky-lsb",
+            "step1" : {
+                "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
+                "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
+            },
+            "step2" : {
+                "MACHINE" : "genericx86-64",
+                "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
+            }
+        },
+        "nightly-world" : {
+            "MACHINE" : "qemux86",
+            "SDKMACHINE" : "x86_64",
+            "BBTARGETS" : "world",
+            "extravars" : [
+                "require conf/multilib.conf",
+                "MULTILIBS = 'multilib:lib32'",
+                "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'"
+            ]
         },
         "nightly-world-lsb" : {
-            "DISTRO" : "poky-lsb"
+            "MACHINE" : "qemux86",
+            "SDKMACHINE" : "x86_64",
+            "DISTRO" : "poky-lsb",
+            "BBTARGETS" : "world",
+            "extravars" : [
+                "require conf/multilib.conf",
+                "MULTILIBS = 'multilib:lib32'",
+                "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'",
+                "QTDEMOS_remove = 'qmmp'"
+            ]
         },
         "nightly-x32" : {
             "extravars" : [
@@ -58,10 +286,16 @@
             "PACKAGE_CLASSES" : "package_ipk"
         },
         "nightly-rpm-non-rpm" : {
-            "PACKAGE_CLASSES" : "package_rpm"
+            "MACHINE" : "qemux86",
+            "PACKAGE_CLASSES" : "package_rpm",
+            "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+            "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
         },
         "nightly-deb-non-deb" : {
-            "PACKAGE_CLASSES" : "package_deb"
+            "MACHINE" : "qemux86",
+            "PACKAGE_CLASSES" : "package_deb",
+            "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+            "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
         },
         "oe-selftest" : {
             "PACKAGE_CLASSES" : "package_rpm"
