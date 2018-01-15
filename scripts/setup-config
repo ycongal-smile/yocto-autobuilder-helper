@@ -17,6 +17,9 @@ scriptsdir = os.path.dirname(os.path.realpath(__file__))
 with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
     ourconfig = json.load(f)
 
+if len(sys.argv) != 4:
+    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir>")
+    sys.exit(1)
 
 
 target = "nightly-arm"
@@ -37,7 +40,7 @@ def contains(params, config):
 
 # Check if a config boolean is set
 def configtrue(name, config):
-    if name in config and config[name] = "True":
+    if name in config and config[name] == "True":
         return True
     return False
 
@@ -61,7 +64,7 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
         variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
         variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
 
-if configtrue("QEMU_USE_KVM", config):
+if configtrue("QEMU_USE_KVM", ourconfig):
     variables.append('QEMU_USE_KVM = "True"')
 
 
