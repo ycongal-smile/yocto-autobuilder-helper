@@ -68,7 +68,7 @@ except OSError as e:
 
 sdkextraconf = os.path.join(builddir, "conf", "sdk-extra.conf")
 if os.path.exists(sdkextraconf):
-    os.path.remove(sdkextraconf)
+    os.remove(sdkextraconf)
 
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
     if target in ourconfig["build-history-targets"]:
