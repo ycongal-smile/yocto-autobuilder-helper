@@ -5,17 +5,19 @@
 
     "defaults" : {
         "DISTRO" : "poky",
-        "extravars" : [ 
+        "extravars" : [
             "QEMU_USE_KVM = 'True'",
-            "INHERIT += 'report-error'"
+            "INHERIT += 'report-error'",
+            "PREMIRRORS = ''",
+            "BB_GENERATE_MIRROR_TARBALLS = '1'"
         ]
     },
 
     "overrides" : {
         "nightly-oe-core" : {
             "DISTRO" : "None",
-            "extravars" : [ 
-                "INHERIT += 'uninative'", 
+            "extravars" : [
+                "INHERIT += 'uninative'",
                 "require conf/distro/include/yocto-uninative.inc"
             ]
         },
@@ -37,10 +39,16 @@
         "nightly-world-lsb" : {
             "DISTRO" : "poky-lsb"
         },
+        "nightly-x32" : {
+            "extravars" : [
+                "DEFAULTTUNE = 'x86-64-x32'",
+                "baselib = \"${@d.getVar('BASE_LIB_tune-' + (d.getVar('DEFAULTTUNE', True) or 'INVALID'), True) or 'lib'}\""
+            ]
+        },
         "poky-tiny" : {
             "DISTRO" : "poky-tiny"
         },
-        "refkit" : {
+        "nightly-refkit" : {
             "DISTRO" : "refkit"
         }
     }
