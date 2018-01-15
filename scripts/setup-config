@@ -77,7 +77,7 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
 if configtrue("QEMU_USE_KVM", ourconfig):
     variables.append('QEMU_USE_KVM = "True"')
 
-print("Writing %s" % autoconf:)
+print("Writing %s" % autoconf)
 with open(autoconf, "w") as f:
     for v in variables:
         print(v + "\n")
