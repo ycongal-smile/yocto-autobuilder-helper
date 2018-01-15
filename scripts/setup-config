@@ -12,6 +12,7 @@ import json
 import os
 import sys
 import subprocess
+import errno
 
 if len(sys.argv) != 5:
     print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir>")
