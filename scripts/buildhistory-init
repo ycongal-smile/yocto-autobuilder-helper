@@ -1,14 +1,14 @@
 #!/bin/sh
 #
-# Called with $1 - The target name
-#             $2 - The buildhistory directory
-#             $3 - The remote repository url
-#             $4 - The remote branch name
+# Initialize Buildhistory for this branch
 #
-TARGETNAME=$1
-BUILDHISTDIR=$2
-REMOTEREPO=$3
-REMOTEBRANCH=$4
+# Called with $1 - The buildhistory directory
+#             $2 - The remote repository url
+#             $3 - The remote branch name
+#
+BUILDHISTDIR=$1
+REMOTEREPO=$2
+REMOTEBRANCH=$3
 
 echo BH $@
 
@@ -19,14 +19,6 @@ exit 0
 if [ ! -d $BUILDHISTDIR ]; then
     mkdir -p $BUILDHISTDIR
     git init $BUILDHISTDIR
-fi
-
-rm -rf $BUILDHISTDIR
-mkdir -p $BUILDHISTDIR
-git init $BUILDHISTDIR
-
-if git ls-remote --exit-code $REMOTEREPO refs/heads/$REMOTEBRANCH> /dev/null; then
-    git push -q $REMOTEREPO :$REMOTEBRANCH
 fi
 
 if ! git ls-remote --exit-code $REMOTEREPO refs/heads/$REMOTEBRANCH > /dev/null; then

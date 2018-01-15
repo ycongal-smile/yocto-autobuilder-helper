@@ -34,7 +34,9 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
         bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, "nightly-" + target)
         remoterepo = ourconfig["BUILD_HISTORY_REPO"]
         remotebranch = distro + "/" + branchname + "/nightly-" + target
-        subprocess.check_output([os.path.join(scriptsdir, "buildhistory-init"), target, bh_path, remoterepo, remotebranch], stderr=subprocess.STDOUT)
+        # if need reset:
+        #    subprocess.check_output([os.path.join(scriptsdir, "buildhistory-reset"), bh_path, remoterepo, remotebranch], stderr=subprocess.STDOUT)
+        subprocess.check_output([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch], stderr=subprocess.STDOUT)
         variables.append('INHERIT += "buildhistory"')
         variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
         variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))

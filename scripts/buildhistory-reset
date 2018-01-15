@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# Reset Buildhistory for this branch
+#
+# Called with $1 - The buildhistory directory
+#             $2 - The remote repository url
+#             $3 - The remote branch name
+#
+BUILDHISTDIR=$1
+REMOTEREPO=$2
+REMOTEBRANCH=$3
+
+echo BH $@
+
+exit 0
+
+# Delete Local repo and reset
+rm -rf $BUILDHISTDIR
+
+# Delete any remote branch too
+if git ls-remote --exit-code $REMOTEREPO refs/heads/$REMOTEBRANCH> /dev/null; then
+    git push -q $REMOTEREPO :$REMOTEBRANCH
+fi
+
+
