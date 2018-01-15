@@ -54,12 +54,12 @@ def runcmd(cmd):
 variables = []
 
 autoconf = os.path.join(builddir, "conf", "auto.conf")
-if os.path.exists(autoconf)
+if os.path.exists(autoconf):
     os.path.remove(autoconf)
 os.makedirs(os.path.dirname(autoconf))
 
 sdkextraconf = os.path.join(builddir, "conf", "sdk-extra.conf")
-if os.path.exists(sdkextraconf)
+if os.path.exists(sdkextraconf):
     os.path.remove(sdkextraconf)
 
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
