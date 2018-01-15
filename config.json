@@ -2,11 +2,13 @@
     "build-history-targets" : ["nightly-arm64", "nightly-arm", "nightly-arm-lsb", "nightly-mips64", "nightly-mips", "nightly-mips-lsb", "nightly-ppc", "nightly-ppc-lsb", "nightly-x86-64", "nightly-x86-64-lsb", "nightly-x86", "nightly-x86-lsb"],
     "BUILD_HISTORY_DIR" : "/srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory",
     "BUILD_HISTORY_REPO" : "ssh://git@push.yoctoproject.org/poky-buildhistory",
-    "USE_QEMU_KVM" : true,
-    "USE_ERROR_REPORT" : true,
 
     "defaults" : {
-        "DISTRO" : "poky"
+        "DISTRO" : "poky",
+        "extravars" : [ 
+            "QEMU_USE_KVM = 'True'",
+            "INHERIT += 'report-error'"
+        ]
     },
 
     "overrides" : {

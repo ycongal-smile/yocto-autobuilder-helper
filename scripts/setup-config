@@ -53,6 +53,14 @@ def getconfigvar(name, config, target):
         return config['defaults'][name]
     return False
 
+def getconfiglist(name, config, target):
+    ret = []
+    if target in config['overrides'] and name in config['overrides'][target]: 
+        ret.extend(config['overrides'][target][name])
+    if name in config['defaults']: 
+        ret.extend(config['defaults'][name])
+    return ret
+
 #
 # Run a command, trigger a traceback with command output if it fails
 #
@@ -81,7 +89,7 @@ distro = getconfigvar("DISTRO", ourconfig, target)
 if distro and distro != "None":
     variables.append('DISTRO = "%s"' % distro)
 
-extravars = getconfigvar("extravars", ourconfig, target)
+extravars = getconfiglist("extravars", ourconfig, target)
 if extravars:
     variables.extend(extravars)
 
@@ -100,12 +108,6 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
         variables.append('INHERIT += "buildhistory"')
         variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
         variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
-
-if configtrue("USE_QEMU_KVM", ourconfig):
-    variables.append('QEMU_USE_KVM = "True"')
-
-if configtrue("USE_ERROR_REPORT", ourconfig):
-    variables.append('INHERIT += "report-error"')
 
 print("Writing %s" % autoconf)
 with open(autoconf, "w") as f:
