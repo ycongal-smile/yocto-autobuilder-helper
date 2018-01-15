@@ -1,3 +1,5 @@
 {
-    "buildhistory" : "True"
+    "build-history-targets" : ["arm64", "arm", "arm-lsb", "mips64", "mips", "mips-lsb", "ppc", "ppc-lsb", "x86-64", "x86-64-lsb", "x86", "x86-lsb"],
+    "BUILD_HISTORY_DIR" : "/srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory",
+    "BUILD_HISTORY_REPO" : "ssh://git@push.yoctoproject.org/poky-buildhistory"
 }

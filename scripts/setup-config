@@ -3,13 +3,37 @@
 import json
 import os
 import sys
+import subprocess
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 
 with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
     ourconfig = json.load(f)
 
-os.system(os.path.join(scriptsdir, "buildhistory-init"))
+target = "nightly-arm"
+branchname = "master"
+distro = "poky"
+
+# Strip off "nightly-"
+target = target[8:]
+
+#
+# Check if config contains all the listed params
+#
+def contains(params, config):
+    for p in params:
+        if p not in config:
+            return False
+    return True
+
+if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
+    if target in ourconfig["build-history-targets"]:
+        bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, "nightly-" + target)
+        remoterepo = ourconfig["BUILD_HISTORY_REPO"]
+        remotebranch = distro + "/" + branchname + "/nightly-" + target
+        subprocess.check_output([os.path.join(scriptsdir, "buildhistory-init"), target, bh_path, remoterepo, remotebranch], stderr=subprocess.STDOUT)
+
+print(str(ourconfig))
 
 print("setup-config called with %s" % " ".join(sys.argv))
 
