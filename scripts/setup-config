@@ -6,6 +6,7 @@
 #             $2 - The autobuilder step number (a given target can run multiple steps with different configurations)
 #             $3 - The target build directory to configure
 #             $4 - The poky branch name the build is running on
+#             $5 - The name of the repository the build is running on
 #
 
 import json
@@ -14,8 +15,8 @@ import sys
 import subprocess
 import errno
 
-if len(sys.argv) != 5:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir>")
+if len(sys.argv) != 6:
+    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name>")
     sys.exit(1)
 
 # Strip off "nightly-"
@@ -23,6 +24,7 @@ target = sys.argv[1][8:]
 stepnum = sys.argv[2]
 builddir = sys.argv[3]
 branchname = sys.argv[4]
+reponame = sys.argv[5]
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 
