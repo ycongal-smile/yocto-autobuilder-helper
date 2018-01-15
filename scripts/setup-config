@@ -26,14 +26,21 @@ def contains(params, config):
             return False
     return True
 
+variables = []
+
+
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
     if target in ourconfig["build-history-targets"]:
         bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, "nightly-" + target)
         remoterepo = ourconfig["BUILD_HISTORY_REPO"]
         remotebranch = distro + "/" + branchname + "/nightly-" + target
         subprocess.check_output([os.path.join(scriptsdir, "buildhistory-init"), target, bh_path, remoterepo, remotebranch], stderr=subprocess.STDOUT)
+        variables.append('INHERIT += "buildhistory"')
+        variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
+        variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
 
 print(str(ourconfig))
 
 print("setup-config called with %s" % " ".join(sys.argv))
 
+print(str(variables))
