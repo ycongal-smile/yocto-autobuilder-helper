@@ -5,6 +5,7 @@
 # Called with $1 - The 'nightly' target the autobuilder is running
 #             $2 - The autobuilder step number (a given target can run multiple steps with different configurations)
 #             $3 - The target build directory to configure
+#             $4 - The poky branch name the build is running on
 #
 
 import json
@@ -12,22 +13,22 @@ import os
 import sys
 import subprocess
 
+if len(sys.argv) != 5:
+    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir>")
+    sys.exit(1)
+
+# Strip off "nightly-"
+target = sys.argv[1][8:]
+stepnum = sys.argv[2]
+builddir = sys.argv[3]
+branchname = sys.argv[4]
+
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 
 with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
     ourconfig = json.load(f)
 
-if len(sys.argv) != 4:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir>")
-    sys.exit(1)
-
-
-target = "nightly-arm"
-branchname = "master"
 distro = "poky"
-
-# Strip off "nightly-"
-target = target[8:]
 
 #
 # Check if config contains all the listed params
@@ -52,6 +53,15 @@ def runcmd(cmd):
 
 variables = []
 
+autoconf = os.path.join(builddir, "conf", "auto.conf")
+if os.path.exists(autoconf)
+    os.path.remove(autoconf)
+os.makedirs(os.path.dirname(autoconf))
+
+sdkextraconf = os.path.join(builddir, "conf", "sdk-extra.conf")
+if os.path.exists(sdkextraconf)
+    os.path.remove(sdkextraconf)
+
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
     if target in ourconfig["build-history-targets"]:
         bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, "nightly-" + target)
@@ -67,9 +77,13 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
 if configtrue("QEMU_USE_KVM", ourconfig):
     variables.append('QEMU_USE_KVM = "True"')
 
+print("Writing %s" % autoconf:)
+with open(autoconf, "w") as f:
+    for v in variables:
+        print(v + "\n")
+        f.write(v + "\n")
 
 print(str(ourconfig))
 
 print("setup-config called with %s" % " ".join(sys.argv))
 
-print(str(variables))
