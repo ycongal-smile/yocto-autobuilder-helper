@@ -19,8 +19,7 @@ if len(sys.argv) != 6:
     print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name>")
     sys.exit(1)
 
-# Strip off "nightly-"
-target = sys.argv[1][8:]
+target = sys.argv[1]
 stepnum = sys.argv[2]
 builddir = sys.argv[3]
 branchname = sys.argv[4]
@@ -87,9 +86,9 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
     # If its a main branch, checkout the previous revision and then move forward on it
     # If its -next check out the main branch, then move forward on it.
     if target in ourconfig["build-history-targets"]:
-        bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, "nightly-" + target)
+        bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, target)
         remoterepo = ourconfig["BUILD_HISTORY_REPO"]
-        remotebranch = distro + "/" + branchname + "/nightly-" + target
+        remotebranch = distro + "/" + branchname + "/" + target
         #if branchname.endswith("-next"):
         #    We reset and base on the last code:
         #    runcmd([os.path.join(scriptsdir, "buildhistory-reset"), bh_path, remoterepo, remotebranch])

@@ -1,5 +1,5 @@
 {
-    "build-history-targets" : ["arm64", "arm", "arm-lsb", "mips64", "mips", "mips-lsb", "ppc", "ppc-lsb", "x86-64", "x86-64-lsb", "x86", "x86-lsb"],
+    "build-history-targets" : ["nightly-arm64", "nightly-arm", "nightly-arm-lsb", "nightly-mips64", "nightly-mips", "nightly-mips-lsb", "nightly-ppc", "nightly-ppc-lsb", "nightly-x86-64", "nightly-x86-64-lsb", "nightly-x86", "nightly-x86-lsb"],
     "BUILD_HISTORY_DIR" : "/srv/www/vhosts/autobuilder.yoctoproject.org/buildhistory",
     "BUILD_HISTORY_REPO" : "ssh://git@push.yoctoproject.org/poky-buildhistory",
     "USE_QEMU_KVM" : "True",
@@ -10,28 +10,28 @@
     },
 
     "overrides" : {
-        "oe-core" : {
+        "nightly-oe-core" : {
             "DISTRO" : "None"
         },
-        "arm-lsb" : {
+        "nightly-arm-lsb" : {
             "DISTRO" : "poky-lsb"
         },
-        "mips-lsb" : {
+        "nightly-mips-lsb" : {
             "DISTRO" : "poky-lsb"
         },
-        "ppc-lsb" : {
+        "nightly-ppc-lsb" : {
             "DISTRO" : "poky-lsb"
         },
-        "x86-64-lsb" : {
+        "nightly-x86-64-lsb" : {
             "DISTRO" : "poky-lsb"
         },
-        "x86-lsb" : {
+        "nightly-x86-lsb" : {
             "DISTRO" : "poky-lsb"
         },
-        "world-lsb" : {
+        "nightly-world-lsb" : {
             "DISTRO" : "poky-lsb"
         },
-        "tiny" : {
+        "poky-tiny" : {
             "DISTRO" : "poky-tiny"
         },
         "refkit" : {
