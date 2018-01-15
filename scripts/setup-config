@@ -56,7 +56,7 @@ variables = []
 
 autoconf = os.path.join(builddir, "conf", "auto.conf")
 if os.path.exists(autoconf):
-    os.path.remove(autoconf)
+    os.remove(autoconf)
 
 # Ensure autoconf's directory exists
 try:
