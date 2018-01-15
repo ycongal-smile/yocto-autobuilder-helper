@@ -20,7 +20,7 @@ if len(sys.argv) != 6:
     sys.exit(1)
 
 target = sys.argv[1]
-stepnum = sys.argv[2]
+stepnum = int(sys.argv[2]) + 1 # Our step numbering is 1 2 3 etc., not 0 of buildbot
 builddir = sys.argv[3]
 branchname = sys.argv[4]
 reponame = sys.argv[5]
@@ -46,17 +46,25 @@ def configtrue(name, config):
     return False
 
 # Get a configuration variable, check overrides, first, the defaults
-def getconfigvar(name, config, target):
-    if target in config['overrides'] and name in config['overrides'][target]: 
-        return config['overrides'][target][name]
+def getconfigvar(name, config, target, stepnum):
+    step = "step" + stepnum
+    if target in config['overrides']:
+        if step in config['overrides'][target] and name in config['overrides'][target][step]:
+            return config['overrides'][target][step][name]
+        if name in config['overrides'][target]:
+            return config['overrides'][target][name]
     if name in config['defaults']: 
         return config['defaults'][name]
     return False
 
-def getconfiglist(name, config, target):
+def getconfiglist(name, config, target, stepnum):
     ret = []
-    if target in config['overrides'] and name in config['overrides'][target]: 
-        ret.extend(config['overrides'][target][name])
+    step = "step" + stepnum
+    if target in config['overrides']:
+        if step in config['overrides'][target] and name in config['overrides'][target][step]:
+            ret.extend(config['overrides'][target][step][name])
+        if name in config['overrides'][target]:
+            ret.extend(config['overrides'][target][name])
     if name in config['defaults']: 
         ret.extend(config['defaults'][name])
     return ret
