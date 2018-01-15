@@ -1,3 +1,15 @@
-#!/bin/sh
-buildhistory-init
-echo "setup-config called with $@"
+#!/usr/bin/env python3
+
+import json
+import os
+import sys
+
+scriptsdir = os.path.dirname(os.path.realpath(__file__))
+
+with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
+    ourconfig = json.load(f)
+
+os.system(os.path.join(scriptsdir, "buildhistory-init"))
+
+print("setup-config called with %s" % " ".join(sys.argv))
+
