@@ -534,21 +534,21 @@
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato",
                 "extravars" : [
-                    "TMPDIR = '${TOPDIR}/newtmp'",
+                    "TMPDIR = '${TOPDIR}/newtmp'"
                 ]
             },
             "step8" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato:do_populate_sdk_ext",
                 "extravars" : [
-                    "TMPDIR = '${TOPDIR}/sdktmp'",
+                    "TMPDIR = '${TOPDIR}/sdktmp'"
                 ]
             },
             "step9" : {
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "IMAGE_INSTALL_append = ' logrotate'"
+                    "IMAGE_INSTALL_append = ' logrotate'",
                     "TEST_SUITES_append = ' logrotate'"
                 ]
             },
@@ -573,9 +573,9 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "DISTRO_FEATURES_append = ' systemd'"
-                    "VIRTUAL-RUNTIME_init_manager = 'systemd'"
-                    "TEST_SUITES_append = ' systemd'",
+                    "DISTRO_FEATURES_append = ' systemd'",
+                    "VIRTUAL-RUNTIME_init_manager = 'systemd'",
+                    "TEST_SUITES_append = ' systemd'"
                 ]
             },
             "step13" : {
@@ -599,6 +599,65 @@
             }
         },
         "nightly" : {
+            "SDKMACHINE" : "x86_64",
+            "step1" : {
+                "MACHINE" : "qemux86",
+                "extravars" : [
+                    "SOURCE_MIRROR_FETCH = '1'"
+                ]
+            },
+            "step2" : {
+                "MACHINE" : "genericx86",
+                "BBTARGETS" : "package-index"
+            },
+            "step3" : {
+                "MACHINE" : "qemuarm",
+                "BBTARGETS" : "package-index"
+            },
+            "step4" : {
+                "MACHINE" : "qemuarm64",
+                "BBTARGETS" : "package-index"
+            },
+            "step5" : {
+                "MACHINE" : "beaglebone-yocto",
+                "BBTARGETS" : "package-index"
+            },
+            "step6" : {
+                "MACHINE" : "qemumips",
+                "BBTARGETS" : "package-index"
+            },
+            "step7" : {
+                "MACHINE" : "qemumips64",
+                "BBTARGETS" : "package-index"
+            },
+            "step8" : {
+                "MACHINE" : "routerstationpro",
+                "BBTARGETS" : "package-index"
+            },
+            "step9" : {
+                "MACHINE" : "qemuppc",
+                "BBTARGETS" : "package-index"
+            },
+            "step10" : {
+                "MACHINE" : "mpc8315e-rdb",
+                "BBTARGETS" : "package-index"
+            },
+            "step11" : {
+                "MACHINE" : "qemux86-64",
+                "BBTARGETS" : "package-index"
+            },
+            "step12" : {
+                "MACHINE" : "qemux86",
+                "BBTARGETS" : "package-index"
+            },
+            "step13" : {
+                "MACHINE" : "qemux86-64",
+                "BBTARGETS" : "adt-installer"
+            },
+            "step14" : {
+                "MACHINE" : "qemux86-64",
+                "BBTARGETS" : "adt-installer"
+            }
         }
 
     }
