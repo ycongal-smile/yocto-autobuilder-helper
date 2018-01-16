@@ -17,7 +17,9 @@
             "BB_TASK_NICE_LEVEL = '5'",
             "BB_TASK_NICE_LEVEL_task-testimage = '0'",
             "BB_TASK_IONICE_LEVEL = '2.7'",
-            "BB_TASK_IONICE_LEVEL_task-testimage = '2.1'"
+            "BB_TASK_IONICE_LEVEL_task-testimage = '2.1'",
+            "INHERIT += 'testimage'",
+            "TEST_QEMUBOOT_TIMEOUT = '1500'"
         ]
     },
 
@@ -269,21 +271,94 @@
             ]
         },
         "nightly-x32" : {
+            "MACHINE" : "qemux86-64",
+            "SDKMACHINE" : "x86_64",
             "extravars" : [
                 "DEFAULTTUNE = 'x86-64-x32'",
-                "baselib = \"${@d.getVar('BASE_LIB_tune-' + (d.getVar('DEFAULTTUNE', True) or 'INVALID'), True) or 'lib'}\"",
-                "TEST_SUITES_append = ' x32lib'"
-            ]
-        },
-        "poky-tiny" : {
-            "DISTRO" : "poky-tiny"
+                "baselib = \"${@d.getVar('BASE_LIB_tune-' + (d.getVar('DEFAULTTUNE', True) or 'INVALID'), True) or 'lib'}\""
+            ],
+            "step1" : {
+                "BBTARGETS" : "core-image-minimal core-image-sato",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage"
+            },
+            "step2" : {
+                "SANITYTARGETS" : "core-image-sato",
+                "extravars" : [
+                    "TEST_SUITES_append = ' x32lib'"
+                ]
+            }
         },
         "nightly-multilib" : {
-            "PACKAGE_CLASSES" : "package_ipk"
-        },
-        "nightly-refkit" : {
-            "DISTRO" : "refkit",
-            "PACKAGE_CLASSES" : "package_ipk"
+            "MACHINE" : "qemux86-64",
+            "SDKMACHINE" : "x86_64",
+            "step1" : {
+                "BBTARGETS" : "lib32-core-image-minimal",
+                "SANITYTARGETS" : "lib32-core-image-minimal:do_testimage",
+                "extravars" : [
+                    "TEST_SUITES = 'ping'",
+                    "require conf/multilib.conf",
+                    "MULTILIBS = 'multilib:lib32'",
+                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'"
+                ]
+            },
+            "step2" : {
+                "PACKAGE_CLASSES" : "package_ipk",
+                "BBTARGETS" : "lib32-core-image-minimal",
+                "SANITYTARGETS" : "lib32-core-image-minimal:do_testimage",
+                "extravars" : [
+                    "TEST_SUITES = 'ping'",
+                    "require conf/multilib.conf",
+                    "MULTILIBS = 'multilib:lib32'",
+                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'"
+                ]
+            },
+            "step3" : {
+                "BBTARGETS" : "core-image-minimal",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage",
+                "extravars" : [
+                    "TEST_SUITES_append = ' multilib'",
+                    "require conf/multilib.conf",
+                    "MULTILIBS = 'multilib:lib32'",
+                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'",
+                    "RPM_PREFER_ELF_ARCH = '1'",
+                    "IMAGE_INSTALL_append = ' lib32-connman-gnome gdk-pixbuf-loader-jpeg lib32-gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png  lib32-gdk-pixbuf-loader-png pango-module-basic-fc lib32-pango-module-basic-fc'"
+                ]
+            },
+            "step4" : {
+                "PACKAGE_CLASSES" : "package_ipk",
+                "BBTARGETS" : "core-image-minimal",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage",
+                "extravars" : [
+                    "TEST_SUITES_append = ' multilib'",
+                    "require conf/multilib.conf",
+                    "MULTILIBS = 'multilib:lib32'",
+                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'",
+                    "RPM_PREFER_ELF_ARCH = '1'",
+                    "IMAGE_INSTALL_append = ' lib32-connman-gnome gdk-pixbuf-loader-jpeg lib32-gdk-pixbuf-loader-jpeg gdk-pixbuf-loader-png  lib32-gdk-pixbuf-loader-png pango-module-basic-fc lib32-pango-module-basic-fc'"
+                ]
+            },
+            "step5" : {
+                "MACHINE" : "qemux86",
+                "SDKMACHINE" : "i686",
+                "BBTARGETS" : "lib64-core-image-sato lib64-core-image-sato-sdk",
+                "extravars" : [
+                    "require conf/multilib.conf",
+                    "MULTILIBS = 'multilib:lib64'",
+                    "DEFAULTTUNE_virtclass-multilib-lib64 = 'x86-64'"
+                ]
+            },
+            "step6" : {
+                "MACHINE" : "qemumips64",
+                "BBTARGETS" : "core-image-minimal core-image-minimal:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-minimal:do_testsdk",
+                "extravars" : [
+                    "require conf/multilib.conf",
+                    "MULTILIBS = 'multilib:lib64 multilib:lib32'",
+                    "DEFAULTTUNE = 'mips64-n32'",
+                    "DEFAULTTUNE_virtclass-multilib-lib64 = 'mips64'",
+                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'mips32r2'"
+                ]
+            }
         },
         "nightly-rpm-non-rpm" : {
             "MACHINE" : "qemux86",
@@ -297,17 +372,182 @@
             "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
         },
-        "oe-selftest" : {
-            "PACKAGE_CLASSES" : "package_rpm"
-        },
         "nightly-packagemanagers" : {
+            "MACHINE" : "qemux86",
             "step1" : {
-                "PACKAGE_CLASSES" : "package_ipk"
+                "PACKAGE_CLASSES" : "package_ipk",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
             },
             "step2" : {
-                "PACKAGE_CLASSES" : "package_deb"
+                "PACKAGE_CLASSES" : "package_deb",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+            }
+        },
+        "poky-tiny" : {
+            "MACHINE" : "qemux86",
+            "DISTRO" : "poky-tiny",
+            "BBTARGETS" : "core-image-minimal"
+        },
+        "nightly-wic" : {
+            "extravars" : [
+                "IMAGE_FSTYPES += ' hddimg'",
+                "MACHINE_FEATURES_append = ' efi'"
+            ],
+            "step1" : {
+                "MACHINE" : "qemux86",
+                "BBTARGETS" : "wic-tools core-image-sato"
+            },
+            "step2" : {
+                "MACHINE" : "genericx86",
+                "BBTARGETS" : "wic-tools core-image-sato"
+            },
+            "step3" : {
+                "MACHINE" : "qemux86-64",
+                "BBTARGETS" : "wic-tools core-image-sato"
+            },
+            "step4" : {
+                "MACHINE" : "genericx86-64",
+                "BBTARGETS" : "wic-tools core-image-sato"
+            }
+        },
+        "buildtools" : {
+            "MACHINE" : "qemux86-64",
+            "step1" : {
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "buildtools-tarball uninative-tarball"
+            },
+            "step2" : {
+                "SDKMACHINE" : "i686",
+                "BBTARGETS" : "uninative-tarball"
+            }
+        },
+        "build-appliance" : {
+            "MACHINE" : "qemux86-64",
+            "extravars" : [
+                "SOURCE_MIRROR_FETCH = '1'"
+            ]
+        },
+        "nightly-non-gpl3" : {
+            "MACHINE" : "qemux86",
+            "BBTARGETS" : "core-image-minimal core-image-basic",
+            "extravars" : [
+                "INCOMPATIBLE_LICENSE = '*GPLv3'"
+            ]
+        },
+        "nightly-no-x11" : {
+            "MACHINE" : "qemux86-64",
+            "BBTARGETS" : "core-image-full-cmdline core-image-weston world",
+            "SANITYTARGETS" : "core-image-full-cmdline:do_testimage core-image-weston:do_testimage",
+            "extravars" : [
+                "DISTRO_FEATURES_remove = 'x11'"
+            ]
+
+        },
+        "nightly-musl" : {
+            "MACHINE" : "qemux86",
+            "SDKMACHINE" : "x86_64",
+            "BBTARGETS" : "core-image-minimal core-image-full-cmdline core-image-sato-sdk world",
+            "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-full-cmdline:do_testimage core-image-sato-sdk:do_testimage",
+            "extravars" : [
+                "TCLIBC = 'musl'"
+            ]
+        },
+        "nightly-musl-x86-64" : {
+            "MACHINE" : "qemux86-64",
+            "SDKMACHINE" : "x86_64",
+            "BBTARGETS" : "core-image-minimal core-image-full-cmdline core-image-sato-sdk world",
+            "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-full-cmdline:do_testimage core-image-sato-sdk:do_testimage",
+            "extravars" : [
+                "TCLIBC = 'musl'"
+            ]
+        },
+        "nightly-checkuri" : {
+            "MACHINE" : "qemux86",
+            "SDKMACHINE" : "x86_64",
+            "BBTARGETS" : "universe:do_checkuri",
+            "extravars" : [
+                "SOURCE_MIRROR_FETCH = '1'",
+                "BB_NUMBER_THREADS = '1'",
+                "do_checkuri_pn-lsof = ''"
+            ]
+        },
+        "oe-selftest" : {
+            "MACHINE" : "qemux86-64",
+            "SDKMACHINE" : "x86_64",
+            "PACKAGE_CLASSES" : "package_rpm",
+            "extravars" : [
+                "RPM_GPG_SIGN_CHUNK = '1'"
+            ]
+        },
+        "nightly-refkit" : {
+            "MACHINE" : "intel-corei7-64",
+            "SDKMACHINE" : "x86_64",
+            "DISTRO" : "refkit",
+            "PACKAGE_CLASSES" : "package_ipk",
+            "extravars" : [
+                "require conf/distro/include/refkit-ci.inc",
+                "SUPPORTED_RECIPES_CHECK_append = ' warn'",
+                "SUPPORTED_RECIPES_CHECK_remove = 'fatal'"
+            ]
+        },
+        "nightly-qa-extras" : {
+            "MACHINE" : "qemux86-64",
+            "step1" : {
+                "BBTARGETS" : "core-image-minimal",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage",
+                "extravars" : [
+                    "IMAGE_FEATURES_append = ' read-only-rootfs'"
+                ]
+            },
+            "step2" : {
+                "BBTARGETS" : "core-image-minimal",
+                "SANITYTARGETS" : "core-image-minimal:do_testimage",
+                "extravars" : [
+                    "ROOT_HOME = '/root'"
+                ]
+            },
+            "step3" : {
+                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "extravars" : [
+                    "DISTRO_FEATURES_append = ' api-documentation'"
+                ]
+            },
+            "step4" : {
+                "MACHINE" : "qemux86",
+                "SDKMACHINE" : "i686-mingw32",
+                "BBTARGETS" : "core-image-minimal:do_populate_sdk"
+            },
+            "step5" : {
+                "SDKMACHINE" : "x86_64"
+            },
+            "step6" : {
+                "SDKMACHINE" : "x86_64"
+            },
+            "step7" : {
+                "SDKMACHINE" : "x86_64"
+            },
+            "step8" : {
+                "SDKMACHINE" : "x86_64"
+            },
+            "step9" : {
+            },
+            "step10" : {
+            },
+            "step11" : {
+            },
+            "step12" : {
+            },
+            "step13" : {
+            },
+            "step14" : {
             }
 
+
+        },
+        "nightly" : {
         }
+
     }
 }
