@@ -105,7 +105,7 @@
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
             },
             "step2" : {
-                "MACHINE" : "routerstationpro",
+                "MACHINE" : "edgerouter",
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest"
             },
             "step3" : {
@@ -126,7 +126,7 @@
                 "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
             },
             "step2" : {
-                "MACHINE" : "routerstationpro",
+                "MACHINE" : "edgerouter",
                 "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
             }
         },
@@ -631,7 +631,7 @@
                 "BBTARGETS" : "package-index"
             },
             "step8" : {
-                "MACHINE" : "routerstationpro",
+                "MACHINE" : "edgerouter",
                 "BBTARGETS" : "package-index"
             },
             "step9" : {
