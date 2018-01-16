@@ -520,31 +520,83 @@
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk"
             },
             "step5" : {
-                "SDKMACHINE" : "x86_64"
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext",
+                "extravars" : [
+                    "SDK_EXT_TYPE = 'full'"
+                ]
             },
             "step6" : {
-                "SDKMACHINE" : "x86_64"
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato core-image-sato:do_populate_sdk_ext"
             },
             "step7" : {
-                "SDKMACHINE" : "x86_64"
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato",
+                "extravars" : [
+                    "TMPDIR = '${TOPDIR}/newtmp'",
+                ]
             },
             "step8" : {
-                "SDKMACHINE" : "x86_64"
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-sato:do_populate_sdk_ext",
+                "extravars" : [
+                    "TMPDIR = '${TOPDIR}/sdktmp'",
+                ]
             },
             "step9" : {
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
+                "extravars" : [
+                    "IMAGE_INSTALL_append = ' logrotate'"
+                    "TEST_SUITES_append = ' logrotate'"
+                ]
             },
             "step10" : {
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
+                "extravars" : [
+                    "DISTRO_FEATURES_append = ' pam'",
+                    "TEST_SUITES_append = ' pam'"
+                ]
             },
             "step11" : {
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
+                "extravars" : [
+                    "IMAGE_INSTALL_append = ' service hello-mod'",
+                    "TEST_SUITES_append = ' skeletoninit'"
+                ]
+
             },
             "step12" : {
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
+                "extravars" : [
+                    "DISTRO_FEATURES_append = ' systemd'"
+                    "VIRTUAL-RUNTIME_init_manager = 'systemd'"
+                    "TEST_SUITES_append = ' systemd'",
+                ]
             },
             "step13" : {
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
+                "extravars" : [
+                    "DISTRO_FEATURES_append = ' systemd'",
+                    "VIRTUAL-RUNTIME_init_manager = 'sysvinit'"
+                ]
             },
             "step14" : {
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
+                "extravars" : [
+                    "TEST_SUITES_append = ' systemd'",
+                    "DISTRO_FEATURES_append = ' systemd'",
+                    "VIRTUAL-RUNTIME_init_manager = 'systemd'",
+                    "DISTRO_FEATURES_BACKFILL_CONSIDERED = 'sysvinit'"
+                ]
+
             }
-
-
         },
         "nightly" : {
         }
