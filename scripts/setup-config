@@ -110,21 +110,24 @@ if extravars:
     variables.extend(extravars)
 
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
-    # What we need to do here is check if poky, if so proceed, if not (e.g. poky-contrib) don't.
-    # If its a main branch, checkout the previous revision and then move forward on it
-    # If its -next check out the main branch, then move forward on it.
     if target in ourconfig["build-history-targets"]:
-        bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, target)
-        remoterepo = ourconfig["BUILD_HISTORY_REPO"]
-        remotebranch = distro + "/" + branchname + "/" + target
-        #if branchname.endswith("-next"):
-        #    We reset and base on the last code:
-        #    runcmd([os.path.join(scriptsdir, "buildhistory-reset"), bh_path, remoterepo, remotebranch])
-        runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch])
-        variables.append('INHERIT += "buildhistory"')
-        variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
-        variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
-        variables.append('ERROR_QA_remove = "version-going-backwards"')
+        base = None
+        if reponame + ":" branchname in ourconfig["BUILD_HISTORY_DIRECTPUSH"]:
+            base = reponame + ":" branchname
+        if reponame + ":" branchname in ourconfig["BUILD_HISTORY_CLEANHIST"]
+            base = ourconfig["BUILD_HISTORY_CLEANHIST"][reponame + ":" branchname]
+        if base:
+            baserepo, basebranch = base.split(":")
+            bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, target)
+            remoterepo = ourconfig["BUILD_HISTORY_REPO"]
+            remotebranch = repo + "/" + branchname + "/" + target
+            baseremotebranch = baserepo + "/" + basebranch + "/" + target
+            runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
+            variables.append('INHERIT += "buildhistory"')
+            variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
+            variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
+            variables.append("BUILDHISTORY_COMMIT = '1'")
+            variables.append('ERROR_QA_remove = "version-going-backwards"')
 
 print("Writing %s with contents:" % autoconf)
 with open(autoconf, "w") as f:

@@ -5,25 +5,29 @@
 # Called with $1 - The buildhistory directory
 #             $2 - The remote repository url
 #             $3 - The remote branch name
+#             $4 - The remote branch name to base from
 #
 BUILDHISTDIR=$1
 REMOTEREPO=$2
 REMOTEBRANCH=$3
-
-echo BH $@
-
-exit 0
+BASEBRANCH=$4
 
 if [ ! -d $BUILDHISTDIR ]; then
     mkdir -p $BUILDHISTDIR
     git init $BUILDHISTDIR
 fi
 
-if ! git ls-remote --exit-code $REMOTEREPO refs/heads/$REMOTEBRANCH > /dev/null; then
-    cd $BUILDHISTDIR
+cd $BUILDHISTDIR
+git checkout -b $REMOTEBRANCH
+
+if git ls-remote --exit-code $REMOTEREPO refs/heads/$BASEBRANCH > /dev/null; then
+    git fetch $REMOTEREPO refs/heads/$BASEBRANCH:refs/remotes/$BASEBRANCH
+    git reset refs/remotes/$BASEBRANCH --hard
+else
     echo 'Initializing Repo' >> README
-    git checkout -b $REMOTEBRANCH
     git add README
     git commit -s -m 'Initializing Repo'
-    git push -q $REMOTEREPO $REMOTEBRANCH:$REMOTEBRANCH
 fi
+
+#git push -q -f $REMOTEREPO $REMOTEBRANCH:$REMOTEBRANCH
+
