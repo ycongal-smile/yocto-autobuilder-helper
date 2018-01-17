@@ -8,6 +8,9 @@
         "SDKMACHINE" : "i686",
         "PACKAGE_CLASSES" : "package_rpm package_deb package_ipk",
         "PRSERV" : "PRSERV_HOST = 'localhost:0'",
+        "DLDIR" : "DL_DIR = '/srv/www/vhosts/autobuilder.yoctoproject.org/current_sources'",
+        "SSTATEDIR" : "SSTATE_DIR ?= '/srv/www/vhosts/autobuilder.yoctoproject.org/pub/sstate'",
+        "SDKEXTRAS" : ["SSTATE_MIRRORS += '\\", "file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH'"],
         "extravars" : [
             "QEMU_USE_KVM = 'True'",
             "INHERIT += 'report-error'",
@@ -20,7 +23,10 @@
             "BB_TASK_IONICE_LEVEL = '2.7'",
             "BB_TASK_IONICE_LEVEL_task-testimage = '2.1'",
             "INHERIT += 'testimage'",
-            "TEST_QEMUBOOT_TIMEOUT = '1500'"
+            "TEST_QEMUBOOT_TIMEOUT = '1500'",
+            "SANITY_TESTED_DISTROS = ''",
+            "SDK_EXT_TYPE = 'minimal'",
+            "SDK_INCLUDE_TOOLCHAIN = '1'"
         ]
     },
 
@@ -426,8 +432,11 @@
         },
         "build-appliance" : {
             "MACHINE" : "qemux86-64",
+            "DLDIR" : "DL_DIR ?= '${TOPDIR}/downloads'",
             "extravars" : [
-                "SOURCE_MIRROR_FETCH = '1'"
+                "SOURCE_MIRROR_FETCH = '1'",
+                "INHERIT += 'own-mirrors'",
+                "SOURCE_MIRROR_URL = 'file:///srv/www/vhosts/autobuilder.yoctoproject.org/current_sources'"
             ]
         },
         "nightly-non-gpl3" : {
@@ -489,6 +498,7 @@
             "SDKMACHINE" : "x86_64",
             "DISTRO" : "refkit",
             "PACKAGE_CLASSES" : "package_ipk",
+            "SSTATEDIR" : false,
             "PRSERV" : false,
             "extravars" : [
                 "require conf/distro/include/refkit-ci.inc",
@@ -538,7 +548,8 @@
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato",
                 "extravars" : [
-                    "TMPDIR = '${TOPDIR}/newtmp'"
+                    "TMPDIR = '${TOPDIR}/newtmp'",
+                    "require ../locked-sigs.inc"
                 ]
             },
             "step8" : {
