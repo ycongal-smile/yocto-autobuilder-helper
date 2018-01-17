@@ -156,8 +156,10 @@ with open(autoconf, "w") as f:
 print("Writing %s with contents:" % sdkextraconf)
 with open(sdkextraconf, "w") as f:
     for v in getconfiglist("SDKEXTRAS", ourconfig, target, stepnum):
+        replace = ""
         if sstate_release != "None":
-            v = v.replace("@RELEASENUM@", sstate_release + "/")
+            replace = sstate_release + "/"
+        v = v.replace("@RELEASENUM@", replace)
         print(v)
         f.write(v + "\n")
 
