@@ -105,6 +105,10 @@ for v in ["DLDIR", "PRSERV", "SSTATEDIR"]:
     if value:
         variables.append(value)
 
+if getconfigvar("BUILDINFO", ourconfig, target, stepnum):
+    infovars = getconfiglist("BUILDINFOVARS", ourconfig, target, stepnum)
+    variables.extend(infovars)
+
 extravars = getconfiglist("extravars", ourconfig, target, stepnum)
 if extravars:
     variables.extend(extravars)
@@ -112,10 +116,10 @@ if extravars:
 if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
     if target in ourconfig["build-history-targets"]:
         base = None
-        if reponame + ":" branchname in ourconfig["BUILD_HISTORY_DIRECTPUSH"]:
-            base = reponame + ":" branchname
-        if reponame + ":" branchname in ourconfig["BUILD_HISTORY_CLEANHIST"]
-            base = ourconfig["BUILD_HISTORY_CLEANHIST"][reponame + ":" branchname]
+        if (reponame + ":" + branchname) in ourconfig["BUILD_HISTORY_DIRECTPUSH"]:
+            base = reponame + ":" + branchname
+        if (reponame + ":" + branchname) in ourconfig["BUILD_HISTORY_FORKPUSH"]:
+            base = ourconfig["BUILD_HISTORY_FORKPUSH"][reponame + ":" + branchname]
         if base:
             baserepo, basebranch = base.split(":")
             bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, target)

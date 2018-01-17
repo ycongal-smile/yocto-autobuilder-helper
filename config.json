@@ -13,6 +13,8 @@
         "DLDIR" : "DL_DIR = '/srv/www/vhosts/autobuilder.yoctoproject.org/current_sources'",
         "SSTATEDIR" : "SSTATE_DIR ?= '/srv/www/vhosts/autobuilder.yoctoproject.org/pub/sstate'",
         "SDKEXTRAS" : ["SSTATE_MIRRORS += '\\", "file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH'"],
+        "BUILDINFO" : false,
+        "BUILDINFOVARS" : ["INHERIT += 'image-buildinfo'", "IMAGE_BUILDINFO_VARS_append = ' IMAGE_BASENAME IMAGE_NAME'"],
         "extravars" : [
             "QEMU_USE_KVM = 'True'",
             "INHERIT += 'report-error'",
@@ -56,6 +58,7 @@
         },
         "nightly-arm" : {
             "MACHINE" : "qemuarm",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
@@ -82,6 +85,7 @@
         "nightly-arm-lsb" : {
             "MACHINE" : "qemuarm",
             "DISTRO" : "poky-lsb",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
                 "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
@@ -93,6 +97,7 @@
         },
         "nightly-arm64" : {
             "MACHINE" : "qemuarm64",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
@@ -109,6 +114,7 @@
         },
         "nightly-mips" : {
             "MACHINE" : "qemumips",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
@@ -130,6 +136,7 @@
         "nightly-mips-lsb" : {
             "MACHINE" : "qemumips",
             "DISTRO" : "poky-lsb",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
                 "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
@@ -141,6 +148,7 @@
         },
         "nightly-mips64" : {
             "MACHINE" : "qemumips64",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
@@ -157,6 +165,7 @@
         },
         "nightly-ppc" : {
             "MACHINE" : "qemuppc",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
@@ -178,6 +187,7 @@
         "nightly-ppc-lsb" : {
             "MACHINE" : "qemuppc",
             "DISTRO" : "poky-lsb",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
                 "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
@@ -189,6 +199,7 @@
         },
         "nightly-x86" : {
             "MACHINE" : "qemux86",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage",
@@ -213,6 +224,7 @@
         "nightly-x86-lsb" : {
             "MACHINE" : "qemux86",
             "DISTRO" : "poky-lsb",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
                 "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
@@ -224,6 +236,7 @@
         },
         "nightly-x86-64" : {
             "MACHINE" : "qemux86-64",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage",
@@ -248,6 +261,7 @@
         "nightly-x86-64-lsb" : {
             "MACHINE" : "qemux86-64",
             "DISTRO" : "poky-lsb",
+            "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
                 "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
@@ -282,6 +296,7 @@
         "nightly-x32" : {
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
+            "BUILDINFO" : true,
             "extravars" : [
                 "DEFAULTTUNE = 'x86-64-x32'",
                 "baselib = \"${@d.getVar('BASE_LIB_tune-' + (d.getVar('DEFAULTTUNE', True) or 'INVALID'), True) or 'lib'}\""
@@ -400,6 +415,7 @@
             "BBTARGETS" : "core-image-minimal"
         },
         "nightly-wic" : {
+            "BUILDINFO" : true,
             "extravars" : [
                 "IMAGE_FSTYPES += ' hddimg'",
                 "MACHINE_FEATURES_append = ' efi'"
@@ -469,6 +485,7 @@
         "nightly-musl-x86-64" : {
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
+            "BUILDINFO" : true,
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline core-image-sato-sdk world",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-full-cmdline:do_testimage core-image-sato-sdk:do_testimage",
             "extravars" : [
