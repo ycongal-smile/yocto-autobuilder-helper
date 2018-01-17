@@ -473,7 +473,7 @@
                 "do_checkuri_pn-lsof = ''"
             ]
         },
-        "oe-selftest" : {
+        "nightly-oe-selftest" : {
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "PACKAGE_CLASSES" : "package_rpm",
