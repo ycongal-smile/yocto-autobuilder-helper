@@ -138,9 +138,10 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
             baserepo, basebranch = base.split(":")
             bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, target)
             remoterepo = ourconfig["BUILD_HISTORY_REPO"]
-            remotebranch = repo + "/" + branchname + "/" + target
+            remotebranch = reponame + "/" + branchname + "/" + target
             baseremotebranch = baserepo + "/" + basebranch + "/" + target
-            runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
+            if stepnum == 1:
+                runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
             variables.append('INHERIT += "buildhistory"')
             variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
             variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
