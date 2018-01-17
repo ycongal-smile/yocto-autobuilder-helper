@@ -150,7 +150,7 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
 print("Writing %s with contents:" % autoconf)
 with open(autoconf, "w") as f:
     for v in variables:
-        print(v)
+        print("  " + v)
         f.write(v + "\n")
 
 print("Writing %s with contents:" % sdkextraconf)
@@ -160,6 +160,6 @@ with open(sdkextraconf, "w") as f:
         if sstate_release != "None":
             replace = sstate_release + "/"
         v = v.replace("@RELEASENUM@", replace)
-        print(v)
+        print("  " + v)
         f.write(v + "\n")
 
