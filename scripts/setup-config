@@ -100,6 +100,10 @@ for v in ["MACHINE", "DISTRO", "SDKMACHINE"]:
 
 distro = getconfigvar("DISTRO", ourconfig, target, stepnum)
 
+prserv = getconfigvar("PRSERV", ourconfig, target, stepnum)
+if prserv:
+    variables.append(prserv)
+
 extravars = getconfiglist("extravars", ourconfig, target, stepnum)
 if extravars:
     variables.extend(extravars)

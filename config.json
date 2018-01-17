@@ -7,6 +7,7 @@
         "DISTRO" : "poky",
         "SDKMACHINE" : "i686",
         "PACKAGE_CLASSES" : "package_rpm package_deb package_ipk",
+        "PRSERV" : "PRSERV_HOST = 'localhost:0'",
         "extravars" : [
             "QEMU_USE_KVM = 'True'",
             "INHERIT += 'report-error'",
@@ -467,6 +468,7 @@
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "universe:do_checkuri",
+            "PRSERV" : false,
             "extravars" : [
                 "SOURCE_MIRROR_FETCH = '1'",
                 "BB_NUMBER_THREADS = '1'",
@@ -477,6 +479,7 @@
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "PACKAGE_CLASSES" : "package_rpm",
+            "PRSERV" : false,
             "extravars" : [
                 "RPM_GPG_SIGN_CHUNK = '1'"
             ]
@@ -486,6 +489,7 @@
             "SDKMACHINE" : "x86_64",
             "DISTRO" : "refkit",
             "PACKAGE_CLASSES" : "package_ipk",
+            "PRSERV" : false,
             "extravars" : [
                 "require conf/distro/include/refkit-ci.inc",
                 "SUPPORTED_RECIPES_CHECK_append = ' warn'",
