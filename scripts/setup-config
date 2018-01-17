@@ -119,6 +119,7 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
         variables.append('INHERIT += "buildhistory"')
         variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
         variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
+        variables.append('ERROR_QA_remove = "version-going-backwards"')
 
 print("Writing %s with contents:" % autoconf)
 with open(autoconf, "w") as f:
