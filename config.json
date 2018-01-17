@@ -11,8 +11,9 @@
         "PACKAGE_CLASSES" : "package_rpm package_deb package_ipk",
         "PRSERV" : "PRSERV_HOST = 'localhost:0'",
         "DLDIR" : "DL_DIR = '/srv/www/vhosts/autobuilder.yoctoproject.org/current_sources'",
-        "SSTATEDIR" : "SSTATE_DIR ?= '/srv/www/vhosts/autobuilder.yoctoproject.org/pub/sstate'",
-        "SDKEXTRAS" : ["SSTATE_MIRRORS += '\\", "file://.* http://sstate.yoctoproject.org/dev/PATH;downloadfilename=PATH'"],
+        "SSTATEDIR" : ["SSTATE_DIR ?= '/srv/www/vhosts/autobuilder.yoctoproject.org/pub/sstate'"],
+        "SSTATEDIR_RELEASE" : ["SSTATE_MIRRORS += 'file://.* file:///srv/www/vhosts/autobuilder.yoctoproject.org/pub/sstate/PATH'", "SSTATE_DIR ?= '/srv/www/vhosts/downloads.yoctoproject.org/sstate/@RELEASENUM@'"],
+        "SDKEXTRAS" : ["SSTATE_MIRRORS += '\\", "file://.* http://sstate.yoctoproject.org/dev/@RELEASENUM@PATH;downloadfilename=PATH'"],
         "BUILDINFO" : false,
         "BUILDINFOVARS" : ["INHERIT += 'image-buildinfo'", "IMAGE_BUILDINFO_VARS_append = ' IMAGE_BASENAME IMAGE_NAME'"],
         "extravars" : [

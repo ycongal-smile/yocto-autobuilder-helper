@@ -7,6 +7,7 @@
 #             $3 - The target build directory to configure
 #             $4 - The poky branch name the build is running on
 #             $5 - The name of the repository the build is running on
+#             $6 - The directory to publish sstate into
 #
 
 import json
@@ -15,7 +16,7 @@ import sys
 import subprocess
 import errno
 
-if len(sys.argv) != 6:
+if len(sys.argv) != 7:
     print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name>")
     sys.exit(1)
 
@@ -24,6 +25,7 @@ stepnum = int(sys.argv[2]) + 1 # Our step numbering is 1 2 3 etc., not 0 of buil
 builddir = sys.argv[3]
 branchname = sys.argv[4]
 reponame = sys.argv[5]
+sstate_release = sys.argv[6]
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 
@@ -100,10 +102,22 @@ for v in ["MACHINE", "DISTRO", "SDKMACHINE"]:
 
 distro = getconfigvar("DISTRO", ourconfig, target, stepnum)
 
-for v in ["DLDIR", "PRSERV", "SSTATEDIR"]:
+for v in ["DLDIR", "PRSERV"]:
     value = getconfigvar(v, ourconfig, target, stepnum)
     if value:
         variables.append(value)
+
+# Use a separate SSTATE_DIR with the primary
+# SSTATE_DIR configured as a mirror so that we
+# have a directory of symlinks to sstate objects
+# that can be published for the release
+key = "SSTATEDIR"
+if sstate_release != "None":
+    key = "SSTATEDIR_RELEASE"
+value = getconfigvar(key, ourconfig, target, stepnum)
+for v in value:
+    v = v.replace("@RELEASENUM@", sstate_release)
+    variables.append(v)
 
 if getconfigvar("BUILDINFO", ourconfig, target, stepnum):
     infovars = getconfiglist("BUILDINFOVARS", ourconfig, target, stepnum)
@@ -142,6 +156,8 @@ with open(autoconf, "w") as f:
 print("Writing %s with contents:" % sdkextraconf)
 with open(sdkextraconf, "w") as f:
     for v in getconfiglist("SDKEXTRAS", ourconfig, target, stepnum):
+        if sstate_release != "None":
+            v = v.replace("@RELEASENUM@", sstate_release + "/")
         print(v)
         f.write(v + "\n")
 
