@@ -16,6 +16,8 @@ import sys
 import subprocess
 import errno
 
+import utils
+
 if len(sys.argv) != 7:
     print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name>")
     sys.exit(1)
@@ -31,51 +33,6 @@ scriptsdir = os.path.dirname(os.path.realpath(__file__))
 
 with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
     ourconfig = json.load(f)
-
-#
-# Check if config contains all the listed params
-#
-def contains(params, config):
-    for p in params:
-        if p not in config:
-            return False
-    return True
-
-# Check if a config boolean is set
-def configtrue(name, config):
-    if name in config and config[name]:
-        return True
-    return False
-
-# Get a configuration variable, check overrides, first, the defaults
-def getconfigvar(name, config, target, stepnum):
-    step = "step" + str(stepnum)
-    if target in config['overrides']:
-        if step in config['overrides'][target] and name in config['overrides'][target][step]:
-            return config['overrides'][target][step][name]
-        if name in config['overrides'][target]:
-            return config['overrides'][target][name]
-    if name in config['defaults']: 
-        return config['defaults'][name]
-    return False
-
-def getconfiglist(name, config, target, stepnum):
-    ret = []
-    step = "step" + str(stepnum)
-    if target in config['overrides']:
-        if step in config['overrides'][target] and name in config['overrides'][target][step]:
-            ret.extend(config['overrides'][target][step][name])
-        if name in config['overrides'][target]:
-            ret.extend(config['overrides'][target][name])
-    if name in config['defaults']: 
-        ret.extend(config['defaults'][name])
-    return ret
-
-#
-# Run a command, trigger a traceback with command output if it fails
-#
-def runcmd(cmd):
-    return subprocess.check_output(cmd, stderr=subprocess.STDOUT)
 
 variables = []
 
@@ -96,14 +53,14 @@ if os.path.exists(sdkextraconf):
     os.remove(sdkextraconf)
 
 for v in ["MACHINE", "DISTRO", "SDKMACHINE"]:
-    value = getconfigvar(v, ourconfig, target, stepnum)
+    value = utils.getconfigvar(v, ourconfig, target, stepnum)
     if value and value != "None":
         variables.append(v + ' = "%s"' % value)
 
-distro = getconfigvar("DISTRO", ourconfig, target, stepnum)
+distro = utils.getconfigvar("DISTRO", ourconfig, target, stepnum)
 
 for v in ["DLDIR", "PRSERV"]:
-    value = getconfigvar(v, ourconfig, target, stepnum)
+    value = utils.getconfigvar(v, ourconfig, target, stepnum)
     if value:
         variables.append(value)
 
@@ -114,20 +71,20 @@ for v in ["DLDIR", "PRSERV"]:
 key = "SSTATEDIR"
 if sstate_release != "None":
     key = "SSTATEDIR_RELEASE"
-value = getconfigvar(key, ourconfig, target, stepnum)
+value = utils.getconfigvar(key, ourconfig, target, stepnum)
 for v in value:
     v = v.replace("@RELEASENUM@", sstate_release)
     variables.append(v)
 
-if getconfigvar("BUILDINFO", ourconfig, target, stepnum):
-    infovars = getconfiglist("BUILDINFOVARS", ourconfig, target, stepnum)
+if utils.getconfigvar("BUILDINFO", ourconfig, target, stepnum):
+    infovars = utils.getconfiglist("BUILDINFOVARS", ourconfig, target, stepnum)
     variables.extend(infovars)
 
-extravars = getconfiglist("extravars", ourconfig, target, stepnum)
+extravars = utils.getconfiglist("extravars", ourconfig, target, stepnum)
 if extravars:
     variables.extend(extravars)
 
-if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
+if utils.contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
     if target in ourconfig["build-history-targets"]:
         base = None
         if (reponame + ":" + branchname) in ourconfig["BUILD_HISTORY_DIRECTPUSH"]:
@@ -141,7 +98,7 @@ if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"]
             remotebranch = reponame + "/" + branchname + "/" + target
             baseremotebranch = baserepo + "/" + basebranch + "/" + target
             if stepnum == 1:
-                runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
+                utils.runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
             variables.append('INHERIT += "buildhistory"')
             variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
             variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
@@ -156,7 +113,7 @@ with open(autoconf, "w") as f:
 
 print("Writing %s with contents:" % sdkextraconf)
 with open(sdkextraconf, "w") as f:
-    for v in getconfiglist("SDKEXTRAS", ourconfig, target, stepnum):
+    for v in utils.getconfiglist("SDKEXTRAS", ourconfig, target, stepnum):
         replace = ""
         if sstate_release != "None":
             replace = sstate_release + "/"
