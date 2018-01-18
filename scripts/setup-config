@@ -8,6 +8,7 @@
 #             $4 - The poky branch name the build is running on
 #             $5 - The name of the repository the build is running on
 #             $6 - The directory to publish sstate into
+#             $7 - A build-appliance SRCREV to use
 #
 
 import json
@@ -18,7 +19,7 @@ import errno
 
 import utils
 
-if len(sys.argv) != 7:
+if len(sys.argv) != 8:
     print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name>")
     sys.exit(1)
 
@@ -28,6 +29,7 @@ builddir = sys.argv[3]
 branchname = sys.argv[4]
 reponame = sys.argv[5]
 sstate_release = sys.argv[6]
+buildappsrcrev = sys.argv[7]
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 
@@ -71,10 +73,18 @@ for v in ["DLDIR", "PRSERV"]:
 key = "SSTATEDIR"
 if sstate_release != "None":
     key = "SSTATEDIR_RELEASE"
-value = utils.getconfigvar(key, ourconfig, target, stepnum)
+value = utils.getconfiglist(key, ourconfig, target, stepnum)
 for v in value:
     v = v.replace("@RELEASENUM@", sstate_release)
     variables.append(v)
+
+if buildappsrcrev != "None" and buildappsrcrev != "DEFAULT":
+    if buildappsrcrev == "AUTOREV":
+        buildappsrcrev = "${AUTOREV}"
+    value = utils.getconfiglist("BUILDAPP_SRCREV", ourconfig, target, stepnum)
+    for v in value:
+        v = v.replace("@SRCREV@", buildappsrcrev)
+        variables.append(v)
 
 if utils.getconfigvar("BUILDINFO", ourconfig, target, stepnum):
     infovars = utils.getconfiglist("BUILDINFOVARS", ourconfig, target, stepnum)

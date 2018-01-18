@@ -452,6 +452,7 @@
         "build-appliance" : {
             "MACHINE" : "qemux86-64",
             "DLDIR" : "DL_DIR ?= '${TOPDIR}/downloads'",
+            "BUILDAPP_SRCREV" : ["SRCREV_pn-build-appliance-image = '@SRCREV@'", "PV_append_pn-build-appliance-image = '+git${SRCPV}'"],
             "extravars" : [
                 "SOURCE_MIRROR_FETCH = '1'",
                 "INHERIT += 'own-mirrors'",
