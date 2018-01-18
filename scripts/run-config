@@ -53,7 +53,7 @@ for stepnum in range(maxsteps):
     targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum)
     if targets:
         utils.printheader("Running bitbake %s" % targets)
-        ret = subprocess.call(". ./oe-init-build-env; bitbake %s -n" % targets, shell=True, cwd=builddir + "/..")
+        ret = subprocess.call(". ./oe-init-build-env; bitbake %s" % targets, shell=True, cwd=builddir + "/..")
         if ret:
             finalret = 1
 
@@ -61,7 +61,7 @@ for stepnum in range(maxsteps):
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, target, stepnum)
     if sanitytargets:
         utils.printheader("Running bitbake %s" % sanitytargets)
-        ret = subprocess.call(". ./oe-init-build-env; bitbake %s -n" % sanitytargets, shell=True, cwd=builddir + "/..")
+        ret = subprocess.call(". ./oe-init-build-env; checkvnc; DISPLAY=1 bitbake %s" % sanitytargets, shell=True, cwd=builddir + "/..")
         if ret:
             finalret = 1
 
