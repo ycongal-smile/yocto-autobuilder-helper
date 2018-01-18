@@ -57,7 +57,7 @@ for stepnum in range(maxsteps):
         utils.printheader("Running bitbake %s" % targets)
         ret = subprocess.call(". ./oe-init-build-env; bitbake %s" % targets, shell=True, cwd=builddir + "/..")
         if ret:
-            utils.printheader("ERROR: Bitbake command filed with exit code %d, see errors above." % ret)
+            utils.printheader("ERROR: Bitbake command failed with exit code %d, see errors above." % ret)
             finalret = 1
 
     # Execute the sanity targets for this configuration
@@ -66,7 +66,7 @@ for stepnum in range(maxsteps):
         utils.printheader("Running bitbake %s" % sanitytargets)
         ret = subprocess.call(". ./oe-init-build-env; checkvnc; DISPLAY=1 bitbake %s" % sanitytargets, shell=True, cwd=builddir + "/..")
         if ret:
-            utils.printheader("ERROR: Bitbake command filed with exit code %d, see errors above." % ret)
+            utils.printheader("ERROR: Bitbake command failed with exit code %d, see errors above." % ret)
             finalret = 1
 
 sys.exit(finalret)
