@@ -42,20 +42,28 @@ if target in ourconfig['overrides']:
                 continue
             maxsteps = n
 
-print("Target task %s has %d steps" % (target, maxsteps))
+utils.printheader("Target task %s has %d steps" % (target, maxsteps))
+
+finalret = 0
 
 for stepnum in range(maxsteps):
-    utils.runcmd([scriptsdir + "/setup-config", target, stepnum, builddir, branchname, reponame, sstate_release])
+    utils.runcmd([scriptsdir + "/setup-config", target, str(stepnum), builddir, branchname, reponame, sstate_release])
 
     # Execute the targets for this configuration
-    targets = getconfigvar("BBTARGETS", ourconfig, target, stepnum)
+    targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum)
     if targets:
-        # run bitbake targets
+        utils.printheader("Running bitbake %s" % targets)
+        ret = subprocess.call(". ./oe-init-build-env; bitbake %s -n" % targets, shell=True, cwd=builddir + "/..")
+        if ret:
+            finalret = 1
 
     # Execute the sanity targets for this configuration
-    sanitytargets = getconfigvar("SANITYTARGETS", ourconfig, target, stepnum)
+    sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, target, stepnum)
     if sanitytargets:
-        # run bitbake sanitytargets
+        utils.printheader("Running bitbake %s" % sanitytargets)
+        ret = subprocess.call(". ./oe-init-build-env; bitbake %s -n" % sanitytargets, shell=True, cwd=builddir + "/..")
+        if ret:
+            finalret = 1
 
-sys.exit(0)
+sys.exit(finalret)
 
