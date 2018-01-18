@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+#
+# Iterate over a set of configurations from json.conf, calling setup-config for each one, then running the build.
+#
+# Called with $1 - The 'nightly' target the autobuilder is running
+#             $2 - The target build directory to configure
+#             $3 - The poky branch name the build is running on
+#             $4 - The name of the repository the build is running on
+#             $5 - The directory to publish sstate into
+#
+
+import json
+import os
+import sys
+import subprocess
+import errno
+
+import utils
+
+if len(sys.argv) != 6:
+    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name>")
+    sys.exit(1)
+
+target = sys.argv[1]
+builddir = sys.argv[2]
+branchname = sys.argv[3]
+reponame = sys.argv[4]
+sstate_release = sys.argv[5]
+
+scriptsdir = os.path.dirname(os.path.realpath(__file__))
+
+with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
+    ourconfig = json.load(f)
+
+# Find out the number of steps this target has
+maxsteps = 1
+if target in ourconfig['overrides']:
+    for v in ourconfig['overrides'][target]:
+        if v.startswith("step"):
+            n = int(v[4:])
+            if n <= maxsteps:
+                continue
+            maxsteps = n
+
+print("Target task %s has %d steps" % (target, maxsteps))
+
+for stepnum in range(maxsteps):
+    utils.runcmd([scriptsdir + "/setup-config", target, stepnum, builddir, branchname, reponame, sstate_release])
+
+    # Execute the targets for this configuration
+    targets = getconfigvar("BBTARGETS", ourconfig, target, stepnum)
+    if targets:
+        # run bitbake targets
+
+    # Execute the sanity targets for this configuration
+    sanitytargets = getconfigvar("SANITYTARGETS", ourconfig, target, stepnum)
+    if sanitytargets:
+        # run bitbake sanitytargets
+
+sys.exit(0)
+
