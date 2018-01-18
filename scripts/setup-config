@@ -105,13 +105,13 @@ if utils.contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_
             variables.append("BUILDHISTORY_COMMIT = '1'")
             variables.append('ERROR_QA_remove = "version-going-backwards"')
 
-print("Writing %s with contents:" % autoconf)
+utils.printheader("Writing %s with contents:" % autoconf)
 with open(autoconf, "w") as f:
     for v in variables:
         print("  " + v)
         f.write(v + "\n")
 
-print("Writing %s with contents:" % sdkextraconf)
+utils.printheader("Writing %s with contents:" % sdkextraconf)
 with open(sdkextraconf, "w") as f:
     for v in utils.getconfiglist("SDKEXTRAS", ourconfig, target, stepnum):
         replace = ""

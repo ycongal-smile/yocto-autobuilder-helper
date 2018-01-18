@@ -46,8 +46,8 @@ def runcmd(cmd):
     return subprocess.check_output(cmd, stderr=subprocess.STDOUT)
 
 def printheader(msg):
-    print("\n\n")
+    print("")
     print("====================================================================================================")
     print(msg)
     print("====================================================================================================")
-
+    print("")
