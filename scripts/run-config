@@ -47,7 +47,7 @@ utils.printheader("Target task %s has %d steps" % (target, maxsteps))
 finalret = 0
 
 for stepnum in range(maxsteps):
-    utils.runcmd([scriptsdir + "/setup-config", target, str(stepnum), builddir, branchname, reponame, sstate_release])
+    subprocess.check_call([scriptsdir + "/setup-config", target, str(stepnum), builddir, branchname, reponame, sstate_release])
 
     # Execute the targets for this configuration
     targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum)
