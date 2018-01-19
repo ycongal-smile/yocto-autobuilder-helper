@@ -48,13 +48,19 @@ utils.printheader("Target task %s has %d steps" % (target, maxsteps))
 
 finalret = 0
 
+def flush():
+    sys.stdout.flush()
+    sys.stderr.flush()
+
 for stepnum in range(maxsteps):
+    flush()
     subprocess.check_call([scriptsdir + "/setup-config", target, str(stepnum), builddir, branchname, reponame, sstate_release, buildappsrcrev])
 
     # Execute the targets for this configuration
     targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum + 1)
     if targets:
         utils.printheader("Running bitbake %s" % targets)
+        flush()
         ret = subprocess.call(". ./oe-init-build-env; bitbake %s" % targets, shell=True, cwd=builddir + "/..")
         if ret:
             utils.printheader("ERROR: Bitbake command failed with exit code %d, see errors above." % ret)
@@ -64,7 +70,8 @@ for stepnum in range(maxsteps):
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, target, stepnum + 1)
     if sanitytargets:
         utils.printheader("Running bitbake %s" % sanitytargets)
-        ret = subprocess.call(". ./oe-init-build-env; checkvnc; DISPLAY=1 bitbake %s" % sanitytargets, shell=True, cwd=builddir + "/..")
+        flush()
+        ret = subprocess.call(". ./oe-init-build-env; checkvnc; DISPLAY=:1 bitbake %s" % sanitytargets, shell=True, cwd=builddir + "/..")
         if ret:
             utils.printheader("ERROR: Bitbake command failed with exit code %d, see errors above." % ret)
             finalret = 1
