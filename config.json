@@ -461,7 +461,7 @@
         },
         "nightly-non-gpl3" : {
             "MACHINE" : "qemux86",
-            "BBTARGETS" : "core-image-minimal core-image-basic",
+            "BBTARGETS" : "core-image-minimal core-image-full-cmdline",
             "extravars" : [
                 "INCOMPATIBLE_LICENSE = '*GPLv3'"
             ]
