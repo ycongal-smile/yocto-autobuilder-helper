@@ -582,7 +582,7 @@
                     "IMAGE_INSTALL_append = ' service hello-mod'",
                     "TEST_SUITES_append = ' skeletoninit'"
                 ],
-                "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
+                "ADDLAYER" : ["${BUILDDIR}/../meta-skeleton"]
             },
             "step13" : {
                 "BBTARGETS" : "core-image-sato",
