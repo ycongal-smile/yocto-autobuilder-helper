@@ -53,6 +53,7 @@ def flush():
     sys.stderr.flush()
 
 def bitbakecmd(builddir, cmd):
+    global finalret
     flush()
     ret = subprocess.call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=builddir + "/..")
     if ret:
