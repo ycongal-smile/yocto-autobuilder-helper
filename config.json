@@ -692,14 +692,6 @@
                 "MACHINE" : "qemux86",
                 "BBTARGETS" : "package-index"
             },
-            "step13" : {
-                "MACHINE" : "qemux86-64",
-                "BBTARGETS" : "adt-installer"
-            },
-            "step14" : {
-                "MACHINE" : "qemux86-64",
-                "BBTARGETS" : "adt-installer"
-            }
         }
 
     }
