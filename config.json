@@ -338,8 +338,8 @@
                 ]
             },
             "step3" : {
-                "BBTARGETS" : "core-image-minimal",
-                "SANITYTARGETS" : "core-image-minimal:do_testimage",
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
                     "TEST_SUITES_append = ' multilib'",
                     "require conf/multilib.conf",
@@ -351,8 +351,8 @@
             },
             "step4" : {
                 "PACKAGE_CLASSES" : "package_ipk",
-                "BBTARGETS" : "core-image-minimal",
-                "SANITYTARGETS" : "core-image-minimal:do_testimage",
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
                     "TEST_SUITES_append = ' multilib'",
                     "require conf/multilib.conf",
