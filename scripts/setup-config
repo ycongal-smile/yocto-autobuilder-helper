@@ -38,26 +38,8 @@ with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
 
 variables = []
 
-#
-# Expand 'templates' with the configuration
-#
-# This allows values to be imported from a template if they're not already set
-#
-orig = copy.deepcopy(ourconfig)
-for t in orig['overrides']:
-    if "TEMPLATE" in orig['overrides'][t]:
-        template = orig['overrides'][t]["TEMPLATE"]
-        if template not in orig['templates']:
-            print("Error, template %s not defined" % template)
-            sys.exit(1)
-        for v in orig['templates'][template]:
-            val = orig['templates'][template][v]
-            if v not in ourconfig['overrides'][t]:
-                ourconfig['overrides'][t][v] = copy.deepcopy(orig['templates'][template][v])
-            elif not isinstance(val, str) and not isinstance(val, bool) and not isinstance(val, int):
-                for w in val:
-                    if w not in ourconfig['overrides'][t][v]:
-                        ourconfig['overrides'][t][v][w] = copy.deepcopy(orig['templates'][template][v][w])
+# Expand templates in the configuration
+ourconfig = utils.expandtemplates(ourconfig)
 
 autoconf = os.path.join(builddir, "conf", "auto.conf")
 if os.path.exists(autoconf):

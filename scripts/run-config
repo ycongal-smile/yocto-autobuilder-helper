@@ -34,6 +34,9 @@ scriptsdir = os.path.dirname(os.path.realpath(__file__))
 with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
     ourconfig = json.load(f)
 
+# Expand templates in the configuration
+ourconfig = utils.expandtemplates(ourconfig)
+
 # Find out the number of steps this target has
 maxsteps = 1
 if target in ourconfig['overrides']:
