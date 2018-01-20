@@ -423,19 +423,39 @@
             ],
             "step1" : {
                 "MACHINE" : "qemux86",
-                "BBTARGETS" : "wic-tools core-image-sato"
+                "BBTARGETS" : "wic-tools core-image-sato",
+                "EXTRACMDS" : [
+                    "wic create directdisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/qemux86/directdisk/core-image-sato/",
+                    "wic create directdisk-gpt -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/qemux86/directdisk/core-image-sato/",
+                    "wic create mkefidisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/qemux86/directdisk/core-image-sato/"
+                ]
             },
             "step2" : {
                 "MACHINE" : "genericx86",
-                "BBTARGETS" : "wic-tools core-image-sato"
+                "BBTARGETS" : "wic-tools core-image-sato",
+                "EXTRACMDS" : [
+                    "wic create directdisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/genericx86/directdisk/core-image-sato/",
+                    "wic create directdisk-gpt -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/genericx86/directdisk/core-image-sato/",
+                    "wic create mkefidisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/genericx86/directdisk/core-image-sato/"
+                ]
             },
             "step3" : {
                 "MACHINE" : "qemux86-64",
-                "BBTARGETS" : "wic-tools core-image-sato"
+                "BBTARGETS" : "wic-tools core-image-sato",
+                "EXTRACMDS" : [
+                    "wic create directdisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/qemux86-64/directdisk/core-image-sato/",
+                    "wic create directdisk-gpt -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/qemux86-64/directdisk/core-image-sato/",
+                    "wic create mkefidisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/qemux86-64/directdisk/core-image-sato/"
+                ]
             },
             "step4" : {
                 "MACHINE" : "genericx86-64",
-                "BBTARGETS" : "wic-tools core-image-sato"
+                "BBTARGETS" : "wic-tools core-image-sato",
+                "EXTRACMDS" : [
+                    "wic create directdisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/genericx86-64/directdisk/core-image-sato/",
+                    "wic create directdisk-gpt -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/genericx86-64/directdisk/core-image-sato/",
+                    "wic create mkefidisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/genericx86-64/directdisk/core-image-sato/"
+                ]
             }
         },
         "buildtools" : {
