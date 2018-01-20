@@ -52,7 +52,20 @@ def flush():
     sys.stdout.flush()
     sys.stderr.flush()
 
+def bitbakecmd(builddir, cmd):
+    flush()
+    ret = subprocess.call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=builddir + "/..")
+    if ret:
+        utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
+        finalret = 1
+
 for stepnum in range(maxsteps):
+    # Add any layers specified
+    layers = utils.getconfiglist("ADDLAYER", ourconfig, target, stepnum + 1)
+    for layer in layers:
+        bitbakecmd(builddir, "bitbake-layers add-layer %s" % layer)
+
+    # Generate the configuration files needed for this step
     flush()
     subprocess.check_call([scriptsdir + "/setup-config", target, str(stepnum), builddir, branchname, reponame, sstate_release, buildappsrcrev])
 
@@ -60,21 +73,22 @@ for stepnum in range(maxsteps):
     targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum + 1)
     if targets:
         utils.printheader("Running bitbake %s" % targets)
-        flush()
-        ret = subprocess.call(". ./oe-init-build-env; bitbake %s" % targets, shell=True, cwd=builddir + "/..")
-        if ret:
-            utils.printheader("ERROR: Bitbake command failed with exit code %d, see errors above." % ret)
-            finalret = 1
+        bitbakecmd(builddir, "bitbake %s" % targets)
 
     # Execute the sanity targets for this configuration
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, target, stepnum + 1)
     if sanitytargets:
         utils.printheader("Running bitbake %s" % sanitytargets)
-        flush()
-        ret = subprocess.call(". ./oe-init-build-env; checkvnc; DISPLAY=:1 bitbake %s" % sanitytargets, shell=True, cwd=builddir + "/..")
-        if ret:
-            utils.printheader("ERROR: Bitbake command failed with exit code %d, see errors above." % ret)
-            finalret = 1
+        bitbakecmd(builddir, "checkvnc; DISPLAY=:1 bitbake %s" % sanitytargets)
+
+    # Remove any layers we added
+    for layer in layers:
+        bitbakecmd(builddir, "bitbake-layers remove-layer %s" % layer)
+
+    # Run any extra commands specified
+    cmds = utils.getconfiglist("EXTRACMDS", ourconfig, target, stepnum + 1)
+    for cmd in cmds:
+        bitbakecmd(builddir, cmd)
 
 sys.exit(finalret)
 
