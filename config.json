@@ -473,11 +473,18 @@
             "MACHINE" : "qemux86-64",
             "DLDIR" : "DL_DIR ?= '${TOPDIR}/downloads'",
             "BUILDAPP_SRCREV" : ["SRCREV_pn-build-appliance-image = '@SRCREV@'", "PV_append_pn-build-appliance-image = '+git${SRCPV}'"],
+            "BBTARGETS" : "core-image-minimal core-image-full-cmdline",
             "extravars" : [
                 "SOURCE_MIRROR_FETCH = '1'",
                 "INHERIT += 'own-mirrors'",
                 "SOURCE_MIRROR_URL = 'file:///srv/www/vhosts/autobuilder.yoctoproject.org/current_sources'"
-            ]
+            ],
+            "step1" : {
+                "BBTARGETS" : "universe:do_fetch"
+            },
+            "step2" : {
+                "BBTARGETS" : "build-appliance-image"
+            }
         },
         "nightly-non-gpl3" : {
             "MACHINE" : "qemux86",
@@ -532,7 +539,8 @@
             "PRSERV" : false,
             "extravars" : [
                 "RPM_GPG_SIGN_CHUNK = '1'"
-            ]
+            ],
+            "EXTRACMDS" : ["checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg"]
         },
         "nightly-refkit" : {
             "MACHINE" : "intel-corei7-64",
