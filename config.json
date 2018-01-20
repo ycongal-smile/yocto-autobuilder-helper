@@ -425,7 +425,7 @@
                 "SOURCE_MIRROR_URL = 'file:///srv/www/vhosts/autobuilder.yoctoproject.org/current_sources'"
             ],
             "step1" : {
-                "BBTARGETS" : "universe -c fetch"
+                "BBTARGETS" : "universe -k -c fetch"
             },
             "step2" : {
                 "BBTARGETS" : "build-appliance-image"
