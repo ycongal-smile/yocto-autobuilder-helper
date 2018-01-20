@@ -425,7 +425,7 @@
                 "SOURCE_MIRROR_URL = 'file:///srv/www/vhosts/autobuilder.yoctoproject.org/current_sources'"
             ],
             "step1" : {
-                "BBTARGETS" : "universe:do_fetch"
+                "BBTARGETS" : "universe -c fetch"
             },
             "step2" : {
                 "BBTARGETS" : "build-appliance-image"
@@ -581,8 +581,8 @@
                 "extravars" : [
                     "IMAGE_INSTALL_append = ' service hello-mod'",
                     "TEST_SUITES_append = ' skeletoninit'"
-                ]
-
+                ],
+                "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             },
             "step13" : {
                 "BBTARGETS" : "core-image-sato",
