@@ -26,6 +26,8 @@ targetdir = sys.argv[3]
 
 ourconfig = utils.loadconfig(__file__)
 
+stashdir = ourconfig["REPO_STASH_DIR"]
+
 with open(repojson) as f:
     repos = json.load(f)
 
