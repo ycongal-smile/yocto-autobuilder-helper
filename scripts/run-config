@@ -29,13 +29,7 @@ reponame = sys.argv[4]
 sstate_release = sys.argv[5]
 buildappsrcrev = sys.argv[6]
 
-scriptsdir = os.path.dirname(os.path.realpath(__file__))
-
-with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
-    ourconfig = json.load(f)
-
-# Expand templates in the configuration
-ourconfig = utils.expandtemplates(ourconfig)
+ourconfig = utils.loadconfig(__file__)
 
 # Find out the number of steps this target has
 maxsteps = 1

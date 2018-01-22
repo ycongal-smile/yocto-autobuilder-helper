@@ -31,15 +31,9 @@ reponame = sys.argv[5]
 sstate_release = sys.argv[6]
 buildappsrcrev = sys.argv[7]
 
-scriptsdir = os.path.dirname(os.path.realpath(__file__))
-
-with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
-    ourconfig = json.load(f)
+ourconfig = utils.loadconfig(__file__)
 
 variables = []
-
-# Expand templates in the configuration
-ourconfig = utils.expandtemplates(ourconfig)
 
 autoconf = os.path.join(builddir, "conf", "auto.conf")
 if os.path.exists(autoconf):

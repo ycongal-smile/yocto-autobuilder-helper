@@ -1,5 +1,7 @@
 import subprocess
 import copy
+import os
+import json
 
 #
 # Check if config contains all the listed params
@@ -61,6 +63,20 @@ def expandtemplates(ourconfig):
                     for w in val:
                         if w not in ourconfig['overrides'][t][v]:
                             ourconfig['overrides'][t][v][w] = copy.deepcopy(orig['templates'][template][v][w])
+    return ourconfig
+
+#
+# Helper to load the config.json file for scripts in the scripts directory (pass in __file__)
+#
+def loadconfig(f):
+    scriptsdir = os.path.dirname(os.path.realpath(f))
+
+    with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
+        ourconfig = json.load(f)
+
+    # Expand templates in the configuration
+    ourconfig = expandtemplates(ourconfig)
+
     return ourconfig
 
 #
