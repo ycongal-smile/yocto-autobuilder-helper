@@ -90,7 +90,7 @@ def fetchgitrepo(clonedir, repo, params, stashdir):
     sharedrepo = "%s/%s" % (clonedir, repo)
     branch = params["branch"]
     revision = params["revision"]
-    if os.path.exists(stash + "/" + repo):
+    if os.path.exists(stashdir + "/" + repo):
         subprocess.check_call(["git", "clone", "file://%s/%s" % (stashdir, repo), "%s/%s" % (clonedir, repo)])
         subprocess.check_call(["git", "remote", "rm", "origin"], cwd=sharedrepo)
         subprocess.check_call(["git", "remote", "add", "origin", params["url"]], cwd=sharedrepo)
