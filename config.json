@@ -5,6 +5,8 @@
     "BUILD_HISTORY_DIRECTPUSH" : ["poky:morty", "poky:pyro", "poky:rocko", "poky:master"],
     "BUILD_HISTORY_FORKPUSH" : {"poky-contrib:ross/mut" : "poky:master", "poky:master-next" : "poky:master"},
 
+    "REPO_STASH_DIR" : "/home/pokybuild/git/mirror",
+
     "defaults" : {
         "NEEDREPOS" : ["poky"],
         "DISTRO" : "poky",
