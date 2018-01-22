@@ -6,6 +6,7 @@
     "BUILD_HISTORY_FORKPUSH" : {"poky-contrib:ross/mut" : "poky:master", "poky:master-next" : "poky:master"},
 
     "defaults" : {
+        "NEEDREPOS" : ["poky"],
         "DISTRO" : "poky",
         "SDKMACHINE" : "i686",
         "PACKAGE_CLASSES" : "package_rpm package_deb package_ipk",
@@ -71,6 +72,7 @@
 
     "overrides" : {
         "nightly-oecore" : {
+            "NEEDREPOS" : ["oecore", "bitbake"],
             "MACHINE" : "qemuarm",
             "DISTRO" : "None",
             "extravars" : [
@@ -501,6 +503,7 @@
             ]
         },
         "nightly-qa-extras" : {
+            "NEEDREPOS" : ["poky", "meta-mingw"],
             "MACHINE" : "qemux86-64",
             "step1" : {
                 "BBTARGETS" : "core-image-minimal",

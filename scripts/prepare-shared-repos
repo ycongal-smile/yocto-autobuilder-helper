@@ -29,4 +29,5 @@ with open(repojson) as f:
 stashdir = ourconfig["REPO_STASH_DIR"]
 
 for repo in sorted(repos.keys()):
+    utils.printheader("Intially fetching repo %s" % repo)
     utils.fetchgitrepo(shared, repo, repos[repo], stashdir)

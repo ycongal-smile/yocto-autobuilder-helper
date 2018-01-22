@@ -16,24 +16,30 @@ import errno
 
 import utils
 
-if len(sys.argv) != 4:
+if len(sys.argv) != 5:
     print("Incorrect number of parameters, please call as %s repo.json")
     sys.exit(1)
 
 repojson = sys.argv[1]
 shared = sys.argv[2]
 targetdir = sys.argv[3]
+target = sys.argv[4]
 
 ourconfig = utils.loadconfig(__file__)
 
 stashdir = ourconfig["REPO_STASH_DIR"]
 
+needrepos = utils.getconfigvar("NEEDREPOS", ourconfig, target, None)
+
 with open(repojson) as f:
     repos = json.load(f)
 
-# FIXME: Need to filter repo list to the list of repos we need from ourconfig
 for repo in sorted(repos.keys()):
+    if repo not in needrepos:
+        continue
     if shared:
+        utils.printheader("Copying in repo %s" % repo)
         subprocess.check_call(["rsync", "-a", "%s/%s" % (shared, repo), "%s/%s" % (targetdir, repo)])
     else:
+        utils.printheader("Fetching repo %s" % repo)
         utils.fetchgitrepo(targetdir, repo, repos[repo], stashdir)
