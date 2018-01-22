@@ -85,6 +85,22 @@ def loadconfig(f):
 def runcmd(cmd):
     return subprocess.check_output(cmd, stderr=subprocess.STDOUT)
 
+
+def fetchgitrepo(clonedir, repo, params, stashdir):
+    sharedrepo = "%s/%s" % (clonedir, repo)
+    branch = params["branch"]
+    revision = params["revision"]
+    if os.path.exists(stash + "/" + repo):
+        subprocess.check_call(["git", "clone", "file://%s/%s" % (stashdir, repo), "%s/%s" % (clonedir, repo)])
+        subprocess.check_call(["git", "remote", "rm", "origin"], cwd=sharedrepo)
+        subprocess.check_call(["git", "remote", "add", "origin", params["url"]], cwd=sharedrepo)
+        subprocess.check_call(["git", "fetch", "origin", "-t"], cwd=sharedrepo)
+    else:
+        subprocess.check_call(["git", "clone", params["url"], sharedrepo])
+
+    subprocess.check_call(["git", "checkout", branch], cwd=sharedrepo)
+    subprocess.check_call(["git", "reset", revision, "--hard"], cwd=sharedrepo)
+
 def printheader(msg):
     print("")
     print("====================================================================================================")

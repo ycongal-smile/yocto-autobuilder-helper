@@ -26,20 +26,7 @@ ourconfig = utils.loadconfig(__file__)
 with open(repojson) as f:
     repos = json.load(f)
 
-stash = ourconfig["REPO_STASH_DIR"]
+stashdir = ourconfig["REPO_STASH_DIR"]
 
 for repo in sorted(repos.keys()):
-    sharedrepo = "%s/%s" % (shared, repo)
-    branch = repos[repo][1]
-    revision = repos[repo][2]
-    if os.path.exists(stash + "/" + repo):
-        subprocess.check_call(["git", "clone", "file://%s/%s" % (stash, repo), "%s/%s" % (shared, repo)])
-        subprocess.check_call(["git", "remote", "rm", "origin"], cwd=sharedrepo)
-        subprocess.check_call(["git", "remote", "add", "origin", repos[repo][0]], cwd=sharedrepo)
-        subprocess.check_call(["git", "fetch", "origin", "-t"], cwd=sharedrepo)
-    else:
-        subprocess.check_call(["git", "clone", repos[repo][0], sharedrepo])
-
-    subprocess.check_call(["git", "checkout", branch], cwd=sharedrepo)
-    subprocess.check_call(["git", "reset", revision, "--hard"], cwd=sharedrepo)
-
+    utils.fetchgitrepo(shared, repo, repos[repo], stashdir)

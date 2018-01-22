@@ -5,6 +5,7 @@
 # Called with $1 - The json file containing the repositories to use
 #             $2 - The shared directory where the repos are to be transferred from (can be 'None')
 #             $3 - The autobuilder working directory
+#             $4 - The target to filter the repos to
 #
 
 import json
@@ -28,8 +29,9 @@ ourconfig = utils.loadconfig(__file__)
 with open(repojson) as f:
     repos = json.load(f)
 
-if shared:
-   "cp shared targetdir"
-else:
-   "prepare-shared-repos repojson targetdir" 
-
+# FIXME: Need to filter repo list to the list of repos we need from ourconfig
+for repo in sorted(repos.keys()):
+    if shared:
+        subprocess.check_call(["rsync", "-a", "%s/%s" % (shared, repo), "%s/%s" % (targetdir, repo)])
+    else:
+        utils.fetchgitrepo(targetdir, repo, repos[repo], stashdir)
