@@ -20,7 +20,7 @@ import copy
 import utils
 
 if len(sys.argv) != 8:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name>")
+    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name> <sstate-publish-dir> <build-app-srcrev>" % sys.argv[0])
     sys.exit(1)
 
 target = sys.argv[1]

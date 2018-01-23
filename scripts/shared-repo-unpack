@@ -17,7 +17,7 @@ import errno
 import utils
 
 if len(sys.argv) != 5:
-    print("Incorrect number of parameters, please call as %s repo.json")
+    print("Incorrect number of parameters, please call as %s repo.json <shared-sources-dir> <autobuilder-workdir> <target>" % sys.argv[0])
     sys.exit(1)
 
 repojson = sys.argv[1]
