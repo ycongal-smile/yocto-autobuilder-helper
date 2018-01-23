@@ -41,7 +41,7 @@ for repo in sorted(repos.keys()):
     if shared:
         utils.printheader("Copying in repo %s" % repo)
         utils.mkdir(targetrepodir)
-        subprocess.check_call(["rsync", "-a", "%s/%s" % (shared, repo), targetrepodir])
+        subprocess.check_call(["rsync", "-a", "%s/%s" % (shared, repo), targetdir])
     else:
         utils.printheader("Fetching repo %s" % repo)
         utils.fetchgitrepo(targetdir, repo, repos[repo], stashdir)
