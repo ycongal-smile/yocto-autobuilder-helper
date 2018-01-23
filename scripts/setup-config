@@ -86,26 +86,13 @@ extravars = utils.getconfiglist("extravars", ourconfig, target, stepnum)
 if extravars:
     variables.extend(extravars)
 
-if utils.contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
-    if target in ourconfig["build-history-targets"]:
-        base = None
-        if (reponame + ":" + branchname) in ourconfig["BUILD_HISTORY_DIRECTPUSH"]:
-            base = reponame + ":" + branchname
-        if (reponame + ":" + branchname) in ourconfig["BUILD_HISTORY_FORKPUSH"]:
-            base = ourconfig["BUILD_HISTORY_FORKPUSH"][reponame + ":" + branchname]
-        if base:
-            baserepo, basebranch = base.split(":")
-            bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], distro, branchname, target)
-            remoterepo = ourconfig["BUILD_HISTORY_REPO"]
-            remotebranch = reponame + "/" + branchname + "/" + target
-            baseremotebranch = baserepo + "/" + basebranch + "/" + target
-            if stepnum == 1:
-                utils.runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
-            variables.append('INHERIT += "buildhistory"')
-            variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
-            variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
-            variables.append("BUILDHISTORY_COMMIT = '1'")
-            variables.append('ERROR_QA_remove = "version-going-backwards"')
+bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, target, reponame, branchname)
+if bh_path:
+    variables.append('INHERIT += "buildhistory"')
+    variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
+    variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
+    variables.append("BUILDHISTORY_COMMIT = '1'")
+    variables.append('ERROR_QA_remove = "version-going-backwards"')
 
 utils.printheader("Writing %s with contents:" % autoconf)
 with open(autoconf, "w") as f:

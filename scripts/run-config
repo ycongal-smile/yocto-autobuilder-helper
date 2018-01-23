@@ -19,7 +19,7 @@ import errno
 import utils
 
 if len(sys.argv) != 7:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name> <build-app-srcrev"  % sys.argv[0]))
+    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name> <build-app-srcrev"  % sys.argv[0])
     sys.exit(1)
 
 target = sys.argv[1]
@@ -29,6 +29,7 @@ reponame = sys.argv[4]
 sstate_release = sys.argv[5]
 buildappsrcrev = sys.argv[6]
 
+scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig(__file__)
 
 # Find out the number of steps this target has
@@ -56,6 +57,10 @@ def bitbakecmd(builddir, cmd):
     if ret:
         utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
         finalret = 1
+
+bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, target, reponame, branchname)
+if bh_path:
+    utils.runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
 
 for stepnum in range(maxsteps):
     # Add any layers specified
