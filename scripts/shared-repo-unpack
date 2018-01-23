@@ -25,6 +25,7 @@ shared = sys.argv[2]
 targetdir = sys.argv[3]
 target = sys.argv[4]
 
+scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig(__file__)
 
 stashdir = ourconfig["REPO_STASH_DIR"]
@@ -45,3 +46,5 @@ for repo in sorted(repos.keys()):
     else:
         utils.printheader("Fetching repo %s" % repo)
         utils.fetchgitrepo(targetdir, repo, repos[repo], stashdir)
+
+subprocess.check_call([scriptsdir + "/layer-config", targetdir, target])
