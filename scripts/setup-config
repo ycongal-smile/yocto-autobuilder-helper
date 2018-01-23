@@ -40,12 +40,7 @@ if os.path.exists(autoconf):
     os.remove(autoconf)
 
 # Ensure autoconf's directory exists
-try:
-    os.makedirs(os.path.dirname(autoconf))
-except OSError as e:
-    if e.errno != errno.EEXIST:
-        # Do not complain if the directory exists
-        raise e
+utils.mkdir(os.path.dirname(autoconf))
 
 sdkextraconf = os.path.join(builddir, "conf", "sdk-extra.conf")
 if os.path.exists(sdkextraconf):

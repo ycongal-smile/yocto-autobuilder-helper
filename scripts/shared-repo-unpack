@@ -37,9 +37,11 @@ with open(repojson) as f:
 for repo in sorted(repos.keys()):
     if repo not in needrepos:
         continue
+    targetrepodir = "%s/%s" % (targetdir, repo)
     if shared:
         utils.printheader("Copying in repo %s" % repo)
-        subprocess.check_call(["rsync", "-a", "%s/%s" % (shared, repo), "%s/%s" % (targetdir, repo)])
+        utils.mkdir(targetrepodir)
+        subprocess.check_call(["rsync", "-a", "%s/%s" % (shared, repo), targetrepodir])
     else:
         utils.printheader("Fetching repo %s" % repo)
         utils.fetchgitrepo(targetdir, repo, repos[repo], stashdir)

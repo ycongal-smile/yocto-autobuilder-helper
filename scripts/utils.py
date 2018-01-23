@@ -2,6 +2,7 @@ import subprocess
 import copy
 import os
 import json
+import errno
 
 #
 # Check if config contains all the listed params
@@ -100,6 +101,15 @@ def fetchgitrepo(clonedir, repo, params, stashdir):
 
     subprocess.check_call(["git", "checkout", branch], cwd=sharedrepo)
     subprocess.check_call(["git", "reset", revision, "--hard"], cwd=sharedrepo)
+
+
+def mkdir(path):
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            # Do not complain if the directory exists
+            raise e
 
 def printheader(msg):
     print("")
