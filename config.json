@@ -671,5 +671,60 @@
                 "BBTARGETS" : "package-index"
             }
         }
+    },
+    "repo-defaults" : {
+        "poky" : {
+            "url" : "git://git.yoctoproject.org/poky",
+            "branch" : "master",
+            "revision" : "HEAD",
+            "checkout-dirname" : ".",
+            "no-layer-add" : true
+        },
+        "meta-intel" : {
+            "url" : "git://git.yoctoproject.org/meta-intel",
+            "branch" : "master",
+            "revision" : "HEAD"
+        },
+        "oe-core" : {"url" : "git://git.openembedded.org/openembedded-core",
+            "branch" : "master",
+            "revision" : "HEAD",
+            "checkout-dirname" : ".",
+            "no-layer-add" : true
+        },
+        "bitbake" : {
+            "url" : "git://git.openembedded.org/bitbake",
+            "branch" : "master",
+            "revision" : "HEAD"
+        },
+        "eclipse-poky-neon" : {
+            "url" : "git://git.yoctoproject.org/eclipse-poky",
+            "branch" : "neon-master",
+            "revision" : "HEAD"
+        },
+        "eclipse-poky-oxygen" : {
+            "url" : "git://git.yoctoproject.org/eclipse-poky",
+            "branch" : "oxygen-master",
+            "revision" : "HEAD"
+        },
+        "meta-qt4" : {
+            "url" : "git://git.yoctoproject.org/meta-qt4",
+            "branch" : "master",
+            "revision" : "HEAD"
+        },
+        "meta-qt3" : {
+            "url" : "git://git.yoctoproject.org/meta-qt3",
+            "branch" : "master",
+            "revision" : "HEAD"
+        },
+        "meta-mingw" : {
+            "url" : "git://git.yoctoproject.org/meta-mingw",
+            "branch" : "master",
+            "revision" : "HEAD"
+        },
+        "meta-gplv2" : {
+            "url" : "git://git.yoctoproject.org/meta-gplv2",
+            "branch" : "master",
+            "revision" : "HEAD"
+        }
     }
 }
