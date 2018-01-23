@@ -694,17 +694,20 @@
         "bitbake" : {
             "url" : "git://git.openembedded.org/bitbake",
             "branch" : "master",
-            "revision" : "HEAD"
+            "revision" : "HEAD",
+            "no-layer-add" : true
         },
         "eclipse-poky-neon" : {
             "url" : "git://git.yoctoproject.org/eclipse-poky",
             "branch" : "neon-master",
-            "revision" : "HEAD"
+            "revision" : "HEAD",
+            "no-layer-add" : true
         },
         "eclipse-poky-oxygen" : {
             "url" : "git://git.yoctoproject.org/eclipse-poky",
             "branch" : "oxygen-master",
-            "revision" : "HEAD"
+            "revision" : "HEAD",
+            "no-layer-add" : true
         },
         "meta-qt4" : {
             "url" : "git://git.yoctoproject.org/meta-qt4",
