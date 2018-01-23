@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+#
+# Move the repositories into the correct layout and generate bblayers.conf
+#
+# Called with $1 - The autobuilder working directory
+#             $2 - The target to filter the repos to
+#
+
+import json
+import os
+import sys
+import subprocess
+import errno
+
+import utils
+
+if len(sys.argv) != 3:
+    print("Incorrect number of parameters, please call as %s <autobuilder-workdir> <target>" % sys.argv[0])
+    sys.exit(1)
+
+targetdir = sys.argv[1]
+target = sys.argv[2]
+
+ourconfig = utils.loadconfig(__file__)
+
+def bitbakecmd(targetdir, cmd):
+    ret = subprocess.call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=targetdir)
+    if ret:
+        utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
+
+needrepos = utils.getconfigvar("NEEDREPOS", ourconfig, target, None)
+
+for repo in needrepos:
+    if repo in ourconfig["repo-defaults"] and "checkout-dirname" in ourconfig["repo-defaults"][repo]:
+        checkdir = ourconfig["repo-defaults"][repo]["checkout-dirname"]
+        utils.mkdir(targetdir + "/" + checkdir)
+        for f in os.listdir(targetdir + "/" + repo):
+            if f == "." or f == "..":
+                continue
+            subprocess.check_call(['mv', targetdir + "/" + repo + "/" + f, targetdir + "/" + checkdir + "/"])
+
+subprocess.check_call(". ./oe-init-build-env", shell=True, cwd=targetdir)
+
+for repo in needrepos:
+    if repo in ourconfig["repo-defaults"] and "no-layer-add" in ourconfig["repo-defaults"][repo] and ourconfig["repo-defaults"][repo]["no-layer-add"]:
+        continue
+    bitbakecmd(targetdir, "bitbake-layers add-layer %s" % (targetdir + "/" + repo))
+
