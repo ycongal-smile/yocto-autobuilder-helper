@@ -42,9 +42,11 @@ with open(repojson) as f:
 if os.path.exists(targetdir) and len(os.listdir(targetdir)):
     trashdest = trashdir + "/" + target + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
     utils.mkdir(trashdest)
-    subprocess.check_call(['mv', targetdir + '/*', trashdest])
+    subprocess.check_call('mv ' + targetdir + '/* ' + trashdest,
+                          shell=True)
     if len(os.listdir(targetdir)):
-        subprocess.check_call(['mv', targetdir +'/.[!.]*', trashdest])
+        subprocess.check_call('mv ' + targetdir + '/.[!.]* ' + trashdest,
+                              shell=True)
 
 for repo in sorted(repos.keys()):
     if repo not in needrepos:
