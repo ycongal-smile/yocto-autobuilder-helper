@@ -6,6 +6,7 @@
     "BUILD_HISTORY_FORKPUSH" : {"poky-contrib:ross/mut" : "poky:master", "poky:master-next" : "poky:master"},
 
     "REPO_STASH_DIR" : "/home/pokybuild/git/mirror",
+    "TRASH_DIR" : "/home/pokybuild/git/trash",
 
     "defaults" : {
         "NEEDREPOS" : ["poky"],
