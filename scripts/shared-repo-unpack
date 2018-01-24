@@ -39,10 +39,12 @@ with open(repojson) as f:
     repos = json.load(f)
 
 # Move any existing directory to the trash collection directory (deferred ionice deletion)
-if os.path.exists(targetdir):
+if os.path.exists(targetdir) and len(os.listdir(targetdir)):
     trashdest = trashdir + "/" + target + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
     utils.mkdir(trashdest)
     subprocess.check_call(['mv', targetdir + '/*', trashdest])
+    if len(os.listdir(targetdir)):
+        subprocess.check_call(['mv', targetdir +'/.[!.]*', trashdest])
 
 for repo in sorted(repos.keys()):
     if repo not in needrepos:
