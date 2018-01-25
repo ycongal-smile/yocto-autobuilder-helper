@@ -38,26 +38,25 @@ needrepos = utils.getconfigvar("NEEDREPOS", ourconfig, target, None)
 with open(repojson) as f:
     repos = json.load(f)
 
-# Move any existing directory to the trash collection directory (deferred ionice deletion)
-if os.path.exists(targetdir) and len(os.listdir(targetdir)):
-    trashdest = trashdir + "/" + target + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
-    utils.mkdir(trashdest)
-    subprocess.check_call('mv ' + targetdir + '/* ' + trashdest,
-                          shell=True)
-    if len(os.listdir(targetdir)):
-        subprocess.check_call('mv ' + targetdir + '/.[!.]* ' + trashdest,
-                              shell=True)
+targetsubdir = targetdir + "/repos"
+targetbuilddir = targetdir + "/topdir"
+# Move any existing repo checkouts or build directory to the trash collection directory (deferred ionice deletion)
+for x in [targetsubdir, targetbuilddir]:
+    if os.path.exists(x):
+        trashdest = trashdir + "/" + target + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
+        utils.mkdir(trashdest)
+        subprocess.check_call(['mv', x, trashdest])
 
 for repo in sorted(repos.keys()):
     if repo not in needrepos:
         continue
-    targetrepodir = "%s/%s" % (targetdir, repo)
+    targetrepodir = "%s/%s" % (targetsubdir, repo)
     if shared:
         utils.printheader("Copying in repo %s" % repo)
         utils.mkdir(targetrepodir)
-        subprocess.check_call(["rsync", "-a", "%s/%s" % (shared, repo), targetdir])
+        subprocess.check_call(["rsync", "-a", "%s/%s" % (shared, repo), targetsubdir])
     else:
         utils.printheader("Fetching repo %s" % repo)
-        utils.fetchgitrepo(targetdir, repo, repos[repo], stashdir)
+        utils.fetchgitrepo(targetsubdir, repo, repos[repo], stashdir)
 
 subprocess.check_call([scriptsdir + "/layer-config", targetdir, target])
