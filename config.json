@@ -437,6 +437,7 @@
             }
         },
         "nightly-non-gpl3" : {
+            "NEEDREPOS" : ["poky", "meta-gplv2"],
             "MACHINE" : "qemux86",
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline",
             "extravars" : [
@@ -686,7 +687,7 @@
             "branch" : "master",
             "revision" : "HEAD"
         },
-        "oe-core" : {"url" : "git://git.openembedded.org/openembedded-core",
+        "oecore" : {"url" : "git://git.openembedded.org/openembedded-core",
             "branch" : "master",
             "revision" : "HEAD",
             "checkout-dirname" : ".",
