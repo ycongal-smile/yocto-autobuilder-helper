@@ -620,10 +620,10 @@
 
             }
         },
-        "eclipse-poky-neon" : {
+        "eclipse-plugin-neon" : {
             "NEEDREPOS" : ["eclipse-poky-neon"]
         },
-        "eclipse-poky-oxygen" : {
+        "eclipse-plugin-oxygen" : {
             "NEEDREPOS" : ["eclipse-poky-oxygen"]
         },
         "nightly" : {
