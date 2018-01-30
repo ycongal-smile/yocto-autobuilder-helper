@@ -20,7 +20,7 @@ if len(sys.argv) != 3:
 
 targetdir = sys.argv[1]
 target = sys.argv[2]
-targetbuilddir = targetdir + "/topdir"
+targetbuilddir = targetdir
 
 ourconfig = utils.loadconfig(__file__)
 
