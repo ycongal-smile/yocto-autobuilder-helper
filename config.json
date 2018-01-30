@@ -686,7 +686,8 @@
             "branch" : "master",
             "revision" : "HEAD",
             "checkout-dirname" : ".",
-            "no-layer-add" : true
+            "no-layer-add" : true,
+            "call-init" : true
         },
         "meta-intel" : {
             "url" : "git://git.yoctoproject.org/meta-intel",
@@ -697,7 +698,8 @@
             "branch" : "master",
             "revision" : "HEAD",
             "checkout-dirname" : ".",
-            "no-layer-add" : true
+            "no-layer-add" : true,
+            "call-init" : true
         },
         "bitbake" : {
             "url" : "git://git.openembedded.org/bitbake",

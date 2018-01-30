@@ -31,15 +31,21 @@ def bitbakecmd(targetbuilddir, cmd):
 
 needrepos = utils.getconfigvar("NEEDREPOS", ourconfig, target, None)
 
+callinit = False
+
 for repo in needrepos:
     checkdir = repo
-    if repo in ourconfig["repo-defaults"] and "checkout-dirname" in ourconfig["repo-defaults"][repo]:
-        checkdir = ourconfig["repo-defaults"][repo]["checkout-dirname"]
+    if repo in ourconfig["repo-defaults"]:
+        if "call-init" in ourconfig["repo-defaults"][repo] and ourconfig["repo-defaults"][repo]["call-init"]:
+            callinit = True
+        if "checkout-dirname" in ourconfig["repo-defaults"][repo]:
+            checkdir = ourconfig["repo-defaults"][repo]["checkout-dirname"]
     utils.mkdir(targetbuilddir + "/" + checkdir)
     for f in os.listdir(targetdir + "/repos/" + repo):
         subprocess.check_call(['mv', targetdir + "/repos/" + repo + "/" + f, targetbuilddir + "/" + checkdir + "/"])
 
-subprocess.check_call(". ./oe-init-build-env", shell=True, cwd=targetbuilddir)
+if callinit:
+    subprocess.check_call(". ./oe-init-build-env", shell=True, cwd=targetbuilddir)
 
 for repo in needrepos:
     if repo in ourconfig["repo-defaults"] and "no-layer-add" in ourconfig["repo-defaults"][repo] and ourconfig["repo-defaults"][repo]["no-layer-add"]:
