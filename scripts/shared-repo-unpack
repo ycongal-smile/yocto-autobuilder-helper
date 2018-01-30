@@ -31,7 +31,6 @@ scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig(__file__)
 
 stashdir = ourconfig["REPO_STASH_DIR"]
-trashdir = ourconfig["TRASH_DIR"]
 
 needrepos = utils.getconfigvar("NEEDREPOS", ourconfig, target, None)
 
@@ -39,13 +38,6 @@ with open(repojson) as f:
     repos = json.load(f)
 
 targetsubdir = targetdir + "/repos"
-targetbuilddir = targetdir + "/topdir"
-# Move any existing repo checkouts or build directory to the trash collection directory (deferred ionice deletion)
-for x in [targetsubdir, targetbuilddir]:
-    if os.path.exists(x):
-        trashdest = trashdir + "/" + target + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
-        utils.mkdir(trashdest)
-        subprocess.check_call(['mv', x, trashdest])
 
 for repo in sorted(repos.keys()):
     if repo not in needrepos:
