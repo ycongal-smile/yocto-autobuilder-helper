@@ -628,56 +628,11 @@
         },
         "nightly" : {
             "SDKMACHINE" : "x86_64",
-            "step1" : {
-                "MACHINE" : "qemux86",
-                "extravars" : [
-                    "SOURCE_MIRROR_FETCH = '1'"
-                ]
-            },
-            "step2" : {
-                "MACHINE" : "genericx86",
-                "BBTARGETS" : "package-index"
-            },
-            "step3" : {
-                "MACHINE" : "qemuarm",
-                "BBTARGETS" : "package-index"
-            },
-            "step4" : {
-                "MACHINE" : "qemuarm64",
-                "BBTARGETS" : "package-index"
-            },
-            "step5" : {
-                "MACHINE" : "beaglebone-yocto",
-                "BBTARGETS" : "package-index"
-            },
-            "step6" : {
-                "MACHINE" : "qemumips",
-                "BBTARGETS" : "package-index"
-            },
-            "step7" : {
-                "MACHINE" : "qemumips64",
-                "BBTARGETS" : "package-index"
-            },
-            "step8" : {
-                "MACHINE" : "edgerouter",
-                "BBTARGETS" : "package-index"
-            },
-            "step9" : {
-                "MACHINE" : "qemuppc",
-                "BBTARGETS" : "package-index"
-            },
-            "step10" : {
-                "MACHINE" : "mpc8315e-rdb",
-                "BBTARGETS" : "package-index"
-            },
-            "step11" : {
-                "MACHINE" : "qemux86-64",
-                "BBTARGETS" : "package-index"
-            },
-            "step12" : {
-                "MACHINE" : "qemux86",
-                "BBTARGETS" : "package-index"
-            }
+            "MACHINE" : "qemux86",
+            "BBTARGETS" : "universe -c fetch",
+            "extravars" : [
+                "SOURCE_MIRROR_FETCH = '1'"
+            ]
         }
     },
     "repo-defaults" : {
