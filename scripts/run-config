@@ -8,6 +8,7 @@
 #             $4 - The name of the repository the build is running on
 #             $5 - The directory to publish sstate into
 #             $6 - A build-appliance SRCREV to use
+#             $7 - Where to publish artefacts to (or None)
 #
 
 import json
@@ -18,8 +19,8 @@ import errno
 
 import utils
 
-if len(sys.argv) != 7:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name> <build-app-srcrev"  % sys.argv[0])
+if len(sys.argv) != 8:
+    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name> <build-app-srcrev> <publish-dir>"  % sys.argv[0])
     sys.exit(1)
 
 target = sys.argv[1]
@@ -28,6 +29,9 @@ branchname = sys.argv[3]
 reponame = sys.argv[4]
 sstate_release = sys.argv[5]
 buildappsrcrev = sys.argv[6]
+publish = None
+if sys.argv[7] != "None":
+    publish = sys.argv[7]
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig(__file__)
@@ -92,6 +96,10 @@ for stepnum in range(maxsteps):
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, target, stepnum + 1)
     for cmd in cmds:
         bitbakecmd(builddir, cmd)
+
+if publish:
+    utils.printheader("Running publish artefacts")
+    subprocess.check_call([scriptsdir + "/publish-artefacts", builddir, publish, target])
 
 sys.exit(finalret)
 
