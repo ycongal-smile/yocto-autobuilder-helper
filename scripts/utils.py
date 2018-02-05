@@ -5,6 +5,7 @@ import json
 import errno
 import time
 import codecs
+import sys
 
 #
 # Check if config contains all the listed params
@@ -143,7 +144,12 @@ def mkdir(path):
             # Do not complain if the directory exists
             raise e
 
+def flush():
+    sys.stdout.flush()
+    sys.stderr.flush()
+
 def printheader(msg):
+    flush()
     print("")
     print("====================================================================================================")
     print(msg)
