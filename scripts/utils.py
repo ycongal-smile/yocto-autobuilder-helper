@@ -128,7 +128,7 @@ def fetchgitrepo(clonedir, repo, params, stashdir):
 
 def publishrepo(clonedir, repo, publishdir):
     sharedrepo = "%s/%s" % (clonedir, repo)
-    revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=sharedrepo)
+    revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=sharedrepo).decode('utf-8')
     archive_name = repo + "-" + revision + ".tar.bz2"
     subprocess.check_call("git archive --format=tar HEAD --prefix=" + repo + "/ | bzip2 -c > " + archive_name, shell=True, cwd=sharedrepo)
     subprocess.check_call("md5sum " + archive_name + " >> " + archive_name + ".md5sum", shell=True, cwd=sharedrepo)
