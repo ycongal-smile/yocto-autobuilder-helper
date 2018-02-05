@@ -629,7 +629,7 @@
         "nightly" : {
             "SDKMACHINE" : "x86_64",
             "MACHINE" : "qemux86",
-            "BBTARGETS" : "universe -c fetch",
+            "BBTARGETS" : "universe -c fetch -k",
             "extravars" : [
                 "SOURCE_MIRROR_FETCH = '1'"
             ]
