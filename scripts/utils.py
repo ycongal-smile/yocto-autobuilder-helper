@@ -149,12 +149,12 @@ def flush():
     sys.stderr.flush()
 
 def printheader(msg):
-    flush()
     print("")
     print("====================================================================================================")
     print(msg)
     print("====================================================================================================")
     print("")
+    flush()
 
 def errorreportdir(builddir):
     return builddir + "/tmp/log/error-report/"
