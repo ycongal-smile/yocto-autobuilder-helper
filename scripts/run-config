@@ -19,8 +19,8 @@ import errno
 
 import utils
 
-if len(sys.argv) != 8:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name> <build-app-srcrev> <publish-dir>"  % sys.argv[0])
+if len(sys.argv) != 9:
+    print("Incorrect number of parameters, please call as %s <nightly-target> <target-builddir> <branch-name> <repo-name> <sstate-publish-dir> 	<build-app-srcrev> <publish-dir> <error-report-url>"  % sys.argv[0])
     sys.exit(1)
 
 target = sys.argv[1]
@@ -32,6 +32,9 @@ buildappsrcrev = sys.argv[6]
 publish = None
 if sys.argv[7] != "None":
     publish = sys.argv[7]
+errorurl = None
+if sys.argv[8] != "None":
+    errorurl = sys.argv[8]
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig(__file__)
@@ -54,23 +57,41 @@ def flush():
     sys.stdout.flush()
     sys.stderr.flush()
 
-def bitbakecmd(builddir, cmd):
+lognum = 0
+def logname(path):
+    global lognum
+    lognum += 1
+    return path + "/command.log.%s" % lognum
+
+revision = "unknown"
+report = utils.ErrorReport(ourconfig, target, builddir, branchname, revision)
+errordir = utils.errorreportdir(builddir)
+utils.mkdir(errordir)
+
+
+def bitbakecmd(builddir, cmd, report, stepnum):
     global finalret
     flush()
-    ret = subprocess.call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=builddir + "/..")
+    log = logname(builddir)
+    errordir = utils.errorreportdir(builddir)
+    numreports = len(os.listdir(errordir))
+    ret = subprocess.call(". ./oe-init-build-env; %s | tee %s" % (cmd, log), shell=True, cwd=builddir + "/..")
     if ret:
         utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
+        # No error report was written but the command failed so we should write one
+        if len(os.listdir(errordir)) == numreports:
+            report.create(cmd, stepnum, log)
         finalret = 1
 
 bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, target, reponame, branchname)
-if bh_path:
+if False and bh_path:
     utils.runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
 
 for stepnum in range(maxsteps):
     # Add any layers specified
     layers = utils.getconfiglist("ADDLAYER", ourconfig, target, stepnum + 1)
     for layer in layers:
-        bitbakecmd(builddir, "bitbake-layers add-layer %s" % layer)
+        bitbakecmd(builddir, "bitbake-layers add-layer %s" % layer, report, stepnum + 1)
 
     # Generate the configuration files needed for this step
     flush()
@@ -80,26 +101,30 @@ for stepnum in range(maxsteps):
     targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum + 1)
     if targets:
         utils.printheader("Running bitbake %s" % targets)
-        bitbakecmd(builddir, "bitbake %s" % targets)
+        bitbakecmd(builddir, "bitbake %s" % targets, report, stepnum + 1)
 
     # Execute the sanity targets for this configuration
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, target, stepnum + 1)
     if sanitytargets:
         utils.printheader("Running bitbake %s" % sanitytargets)
-        bitbakecmd(builddir, "checkvnc; DISPLAY=:1 bitbake %s" % sanitytargets)
+        bitbakecmd(builddir, "checkvnc; DISPLAY=:1 bitbake %s" % sanitytargets, report, stepnum + 1)
 
     # Remove any layers we added
     for layer in layers:
-        bitbakecmd(builddir, "bitbake-layers remove-layer %s" % layer)
+        bitbakecmd(builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum + 1)
 
     # Run any extra commands specified
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, target, stepnum + 1)
     for cmd in cmds:
-        bitbakecmd(builddir, cmd)
+        bitbakecmd(builddir, cmd, report, stepnum + 1)
 
 if publish:
     utils.printheader("Running publish artefacts")
     subprocess.check_call([scriptsdir + "/publish-artefacts", builddir, publish, target])
+
+if errorurl:
+    utils.printheader("Sending any error reports")
+    subprocess.check_call([scriptsdir + "/upload-error-reports", builddir, errorurl])
 
 sys.exit(finalret)
 

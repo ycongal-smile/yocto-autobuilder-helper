@@ -3,6 +3,8 @@ import copy
 import os
 import json
 import errno
+import time
+import codecs
 
 #
 # Check if config contains all the listed params
@@ -139,3 +141,55 @@ def printheader(msg):
     print(msg)
     print("====================================================================================================")
     print("")
+
+def errorreportdir(builddir):
+    return builddir + "/tmp/log/error-report/"
+
+class ErrorReport(object):
+    def __init__(self, ourconfig, target, builddir, branchname, revision):
+        self.ourconfig = ourconfig
+        self.target = target
+        self.builddir = builddir
+        self.branchname = branchname
+        self.revision = revision
+
+
+    def create(self, command, stepnum, logfile):
+        report = {}
+        report['machine'] = getconfigvar("MACHINE", self.ourconfig, self.target, stepnum)
+        report['distro'] = getconfigvar("DISTRO", self.ourconfig, self.target, stepnum)
+
+        report['build_sys'] = "unknown"
+        report['nativelsb'] = "unknown"
+        report['target_sys'] = "unknown"
+
+        report['component'] = 'bitbake'
+
+        report['branch_commit'] = self.branchname + ': ' + self.revision
+
+        failure = {}
+        failure['package'] = "bitbake"
+        if 'bitbake-selftest' in command:
+            report['error_type'] = 'bitbake-selftest'
+            failure['task'] = command[command.find('bitbake-selftest'):]
+        else:
+            report['error_type'] = 'core'
+            failure['task'] = command[command.find('bitbake'):]
+
+        if os.path.exists(logfile):
+            with open(logfile) as f:
+                loglines = f.readlines()
+
+            failure['log'] = "".join(loglines)
+        else:
+            failure['log'] = "Command failed"
+
+        report['failures'] = [failure]
+
+        errordir = errorreportdir(self.builddir)
+        mkdir(errordir)
+
+        filename = os.path.join(errordir, "error_report_bitbake_%d.txt" % (int(time.time())))
+        with codecs.open(filename, 'w', 'utf-8') as f:
+            json.dump(report, f, indent=4, sort_keys=True)
+
