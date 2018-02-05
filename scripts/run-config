@@ -9,6 +9,7 @@
 #             $5 - The directory to publish sstate into
 #             $6 - A build-appliance SRCREV to use
 #             $7 - Where to publish artefacts to (or None)
+#             $8 - URL back to this build (for the error reporting system)
 #
 
 import json
