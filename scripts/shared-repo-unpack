@@ -6,6 +6,7 @@
 #             $2 - The shared directory where the repos are to be transferred from (can be 'None')
 #             $3 - The autobuilder working directory
 #             $4 - The target to filter the repos to
+#             $5 - Directory to publish artefacts to
 #
 
 import json
@@ -18,14 +19,18 @@ import random
 
 import utils
 
-if len(sys.argv) != 5:
-    print("Incorrect number of parameters, please call as %s repo.json <shared-sources-dir> <autobuilder-workdir> <target>" % sys.argv[0])
+if len(sys.argv) != 6:
+    print("Incorrect number of parameters, please call as %s repo.json <shared-sources-dir> <autobuilder-workdir> <target> <publish-dir>" % sys.argv[0])
     sys.exit(1)
 
 repojson = sys.argv[1]
 shared = sys.argv[2]
 targetdir = sys.argv[3]
 target = sys.argv[4]
+publish = None
+if sys.argv[5] != "None":
+    publish = sys.argv[5]
+
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig(__file__)
@@ -50,5 +55,7 @@ for repo in sorted(repos.keys()):
     else:
         utils.printheader("Fetching repo %s" % repo)
         utils.fetchgitrepo(targetsubdir, repo, repos[repo], stashdir)
+        if publish:
+            utils.publishrepo(shared, repo, publish)
 
 subprocess.check_call([scriptsdir + "/layer-config", targetdir, target])

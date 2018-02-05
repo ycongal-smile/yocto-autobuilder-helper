@@ -4,6 +4,7 @@
 #
 # Called with $1 - The json file containing the repositories to use
 #             $2 - The shared directory where the repos are to be transferred
+#             $3 - Directory to publish artefacts to
 #
 
 import json
@@ -14,12 +15,15 @@ import errno
 
 import utils
 
-if len(sys.argv) != 3:
-    print("Incorrect number of parameters, please call as %s <repo.json> <shared-sources-dir>" % sys.argv[0])
+if len(sys.argv) != 4:
+    print("Incorrect number of parameters, please call as %s <repo.json> <shared-sources-dir> <publish-dir>" % sys.argv[0])
     sys.exit(1)
 
 repojson = sys.argv[1]
 shared = sys.argv[2]
+publish = None
+if sys.argv[3] != "None":
+    publish = sys.argv[3]
 
 ourconfig = utils.loadconfig(__file__)
 
@@ -31,3 +35,5 @@ stashdir = ourconfig["REPO_STASH_DIR"]
 for repo in sorted(repos.keys()):
     utils.printheader("Intially fetching repo %s" % repo)
     utils.fetchgitrepo(shared, repo, repos[repo], stashdir)
+    if publish:
+        utils.publishrepo(shared, repo, publish)
