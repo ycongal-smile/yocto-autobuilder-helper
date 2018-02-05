@@ -81,7 +81,7 @@ def bitbakecmd(builddir, cmd, report, stepnum):
         # No error report was written but the command failed so we should write one
         if len(os.listdir(errordir)) == numreports:
             report.create(cmd, stepnum, log)
-        finalret = 1
+        finalret += 1
 
 bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, target, reponame, branchname)
 if False and bh_path:
@@ -100,13 +100,13 @@ for stepnum in range(maxsteps):
     # Execute the targets for this configuration
     targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum + 1)
     if targets:
-        utils.printheader("Running bitbake %s" % targets)
+        utils.printheader("Step %s/%s: Running bitbake %s" % (stepnum +1, maxsteps, targets))
         bitbakecmd(builddir, "bitbake %s" % targets, report, stepnum + 1)
 
     # Execute the sanity targets for this configuration
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, target, stepnum + 1)
     if sanitytargets:
-        utils.printheader("Running bitbake %s" % sanitytargets)
+        utils.printheader("Step %s/%s: Running bitbake %s" % (stepnum +1, maxsteps, sanitytargets))
         bitbakecmd(builddir, "checkvnc; DISPLAY=:1 bitbake %s" % sanitytargets, report, stepnum + 1)
 
     # Remove any layers we added
@@ -126,5 +126,8 @@ if errorurl:
     utils.printheader("Sending any error reports")
     subprocess.check_call([scriptsdir + "/upload-error-reports", builddir, errorurl])
 
-sys.exit(finalret)
+if finalret:
+    utils.printheader("There were %s failures" % finalret)
+    sys.exit(1)
+sys.exit(0)
 
