@@ -79,7 +79,13 @@ def bitbakecmd(builddir, cmd, report, stepnum):
         numreports = len(os.listdir(errordir))
     except FileNotFoundError:
         numreports = 0
-    ret = subprocess.call(". ./oe-init-build-env; %s | tee %s" % (cmd, log), shell=True, cwd=builddir + "/..")
+
+    with subprocess.Popen(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'wb') as f:
+        for line in p.stdout:
+            sys.stdout.buffer.write(line)
+            sys.stdout.flush()
+            f.write(line)
+        ret = p.wait()
     if ret:
         utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
         # No error report was written but the command failed so we should write one
