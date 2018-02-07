@@ -491,7 +491,8 @@
             "extravars" : [
                 "RPM_GPG_SIGN_CHUNK = '1'"
             ],
-            "EXTRACMDS" : ["checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg"]
+            "EXTRACMDS" : ["checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg"],
+            "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
         },
         "nightly-refkit" : {
             "MACHINE" : "intel-corei7-64",
