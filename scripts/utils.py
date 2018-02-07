@@ -186,6 +186,9 @@ class ErrorReport(object):
         if 'bitbake-selftest' in command:
             report['error_type'] = 'bitbake-selftest'
             failure['task'] = command[command.find('bitbake-selftest'):]
+        elif  'oe-selftest' in command:
+            report['error_type'] = 'oe-selftest'
+            failure['task'] = command[command.find('oe-selftest'):]
         else:
             report['error_type'] = 'core'
             failure['task'] = command[command.find('bitbake'):]
