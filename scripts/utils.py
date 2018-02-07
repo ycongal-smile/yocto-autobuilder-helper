@@ -148,10 +148,13 @@ def flush():
     sys.stdout.flush()
     sys.stderr.flush()
 
-def printheader(msg):
+def printheader(msg, timestamp=True):
     print("")
     print("====================================================================================================")
-    print(msg)
+    if timestamp:
+        print("%s (%s)" % (msg, time.time()))
+    else
+        print(msg)
     print("====================================================================================================")
     print("")
     flush()
