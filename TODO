@@ -1,11 +1,15 @@
 Todo list of things that still need work:
 
-* run-config needs to list the number of failures at the end
-* run-config needs to print a header containing 'X of Y' steps
 * revision in tgrid is helper script revision, we need poky
-* nightly doesn't build
-* switch over to and test new publish artefacts script
-* convert gplv3 test step?
+* need to add nightly-checkuri
+* convert gplv3 test step
 * convert eclipse build to new helper script?
-* add error report uploading functionality
+* fix eclipse publish artefacts problem
+* add bitbake selftest somewhere
+* Add YP-Compat Layers tests somewhere
+* Handle refkit
+* World LSB check?
+* Add update-buildhistory piece
+* Add QA Email
+* Current Link (from nightly?)
 
