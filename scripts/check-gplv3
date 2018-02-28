@@ -1,0 +1,9 @@
+#!/bin/bash
+# Called within the build directory
+for x in `find ./tmp/deploy/licenses -name "license.manifest"`; do cat $x|grep -E "GPLv3|GPL-3"; done | grep -v '|'
+if [ $? = 1 ]; then
+    echo "GPLv3 components not found"
+    exit 0
+fi
+echo "GPLv3 components found"
+exit 1

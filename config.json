@@ -442,6 +442,9 @@
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline",
             "extravars" : [
                 "INCOMPATIBLE_LICENSE = '*GPLv3'"
+            ],
+            "EXTRACMDS" : [
+                "../../yocto-autobuilder-helper/scripts/check-gplv3"
             ]
         },
         "nightly-no-x11" : {
