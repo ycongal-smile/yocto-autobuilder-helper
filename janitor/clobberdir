@@ -1,0 +1,53 @@
+#!/usr/bin/env python2
+#
+# Delete a directory using the ionice backgrounded command
+#
+# Called with $1 - Our config file
+#             $2 - The directory to delete
+#
+
+import os
+import sys
+import subprocess
+import errno
+import time
+import random
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
+
+import utils
+
+ourconfig = utils.loadconfig(os.path.dirname(__file__) + "/../scripts/dummy")
+
+
+def mkdir(path):
+    try:
+        os.makedirs(path)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            # Do not complain if the directory exists
+            raise e
+
+if len(sys.argv) != 2:
+    print("Incorrect number of parameters, please call as %s <clobber-dir>" % sys.argv[0])
+    sys.exit(1)
+
+clobberdir = sys.argv[1]
+
+if clobberdir == "/" or clobberdir == ".":
+    print("Deleting %s is probably not what you want" % clobberdir)
+    sys.exit(1)
+
+
+if "TRASH_DIR" not in ourconfig:
+    print("Please set TRASH_DIR in the configuration file")
+    sys.exit(1)
+
+trashdir = ourconfig["TRASH_DIR"]
+
+for x in [clobberdir]:
+    if os.path.exists(x):
+        trashdest = trashdir + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
+        mkdir(trashdest)
+        subprocess.check_call(['mv', x, trashdest])
+

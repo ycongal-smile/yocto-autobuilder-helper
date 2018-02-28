@@ -1,0 +1,110 @@
+#!/usr/bin/python3
+'''
+Created on Feb 19, 2014
+
+__author__ = "Richard Purdie"
+__copyright__ = "Copyright 2014, 2018 Linux Foundation"
+__credits__ = ["Richard Purdie"]
+__license__ = "GPL"
+__version__ = "2.0"
+__maintainer__ = "Richard Purdie"
+__email__ = "richard.purdie@linuxfoundation.org"
+'''
+
+import signal
+import os
+import sys
+import threading
+import time
+
+tmpfile = '/tmp/.buildworker-janitor'+os.getcwd().replace('/', '-')
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'scripts'))
+
+import utils
+
+ourconfig = utils.loadconfig(os.path.dirname(__file__) + "/../scripts/dummy")
+
+if "TRASH_DIR" not in ourconfig:
+    print("Please set TRASH_DIR in the configuration file")
+    sys.exit(1)
+
+if "REPO_STASH_DIR" not in ourconfig:
+    print("Please set REPO_STASH_DIR in the configuration file")
+    sys.exit(1)
+
+trashdir = ourconfig["TRASH_DIR"]
+mirrordir = ourconfig["REPO_STASH_DIR"]
+
+def trash_processor(trashdir):
+    print("Monitoring trashdir %s" % trashdir)
+    if not os.path.exists(trashdir):
+        os.makedirs(trashdir)
+    if trashdir == "/":
+        print("Not prepared to use a trashdir of /")
+        return
+    while True:
+        try:
+            files = os.listdir(trashdir)
+            if files:
+                os.system("ionice -c 3 rm %s/* -rf" % trashdir)
+            else:
+                time.sleep(120*60) # 30 minutes
+        except Exception as e:
+            print("Exception %s in trash cleaner" % str(e))
+            time.sleep(60) # 1 minute timeout to prevent crazy looping
+            pass
+    return
+
+def mirror_processor(mirrordir):
+    print("Updating mirrors in %s" % mirrordir)
+    mirrorpaths = []
+    for repo in ourconfig["repo-defaults"]:
+        mirror = ourconfig["repo-defaults"][repo]["url"]
+        mirrorpath = os.path.join(mirrordir, repo)
+        mirrorpaths.append(mirrorpath)
+        if not os.path.exists(mirrorpaths[-1] + "/.git/"):
+            os.system("git clone %s %s" % (mirror, mirrorpaths[-1]))
+    while True:
+        for path in mirrorpaths:
+            os.chdir(path)
+            os.system("git fetch --prune --all")
+        time.sleep(30*60) # 30 minutes
+    return
+
+#Check to see if this is running already. If so, kill it and rerun
+if os.path.exists(tmpfile) and os.path.isfile(tmpfile):
+    print("A prior PID file exists. Attempting to kill.")
+    with open(tmpfile, 'r') as f:
+        pid=f.readline()
+    try:
+        os.kill(int(pid), signal.SIGKILL)
+        # We need to sleep for a second or two just to give the SIGKILL time
+        time.sleep(2)
+    except OSError as ex:
+        print("""We weren't able to kill the prior buildworker-janitor. Trying again.""")
+        pass
+    # Check if the process that we killed is alive.
+    try:
+       os.kill(int(pid), 0)
+    except OSError as ex:
+       pass
+elif os.path.exists(tmpfile) and not os.path.isfile(tmpfile):
+    raise Exception("""/tmp/.buildworker-janitor is a director. remove it to continue.""")
+try:
+    os.unlink(tmpfile)
+except:
+    pass
+with open(tmpfile, 'w') as f:
+    print(os.getpid(), file=f)
+
+threads = []
+threads.append(threading.Thread(target=trash_processor, args=(trashdir,)))
+threads[-1].start()
+threads.append(threading.Thread(target=mirror_processor, args=(mirrordir,)))
+threads[-1].start()
+
+# wait for all threads to finish
+for t in threads:
+    t.join()
+sys.exit(0)
