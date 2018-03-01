@@ -64,7 +64,7 @@ def mirror_processor(mirrordir):
         mirrorpath = os.path.join(mirrordir, repo)
         mirrorpaths.append(mirrorpath)
         if not os.path.exists(mirrorpaths[-1] + "/.git/"):
-            os.system("git clone %s %s" % (mirror, mirrorpaths[-1]))
+            os.system("git clone --bare --mirror %s %s" % (mirror, mirrorpaths[-1]))
     while True:
         for path in mirrorpaths:
             os.chdir(path)
