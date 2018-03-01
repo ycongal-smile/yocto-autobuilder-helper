@@ -20,7 +20,7 @@
         "SDKEXTRAS" : ["SSTATE_MIRRORS += '\\", "file://.* http://sstate.yoctoproject.org/dev/@RELEASENUM@PATH;downloadfilename=PATH'"],
         "BUILDINFO" : false,
         "BUILDINFOVARS" : ["INHERIT += 'image-buildinfo'", "IMAGE_BUILDINFO_VARS_append = ' IMAGE_BASENAME IMAGE_NAME'"],
-        "WRITECONFG" : true,
+        "WRITECONFIG" : true,
         "SENDERRORS" : true,
         "extravars" : [
             "QEMU_USE_KVM = 'True'",
@@ -628,7 +628,7 @@
         },
         "eclipse-plugin-neon" : {
             "NEEDREPOS" : ["eclipse-poky-neon"],
-            "WRITECONFG" : false,
+            "WRITECONFIG" : false,
             "SENDERRORS" : false,
             "EXTRAPLAINCMDS" : [
                 "cd scripts; ./setup.sh; ECLIPSE_HOME=`pwd`/eclipse/ ./build.sh neon-master master development"
@@ -637,7 +637,7 @@
         },
         "eclipse-plugin-oxygen" : {
             "NEEDREPOS" : ["eclipse-poky-oxygen"],
-            "WRITECONFG" : false,
+            "WRITECONFIG" : false,
             "SENDERRORS" : false,
             "EXTRAPLAINCMDS" : [
                 "cd scripts; ./setup.sh; ECLIPSE_HOME=`pwd`/eclipse/ ./build.sh oxygen-master master development"
