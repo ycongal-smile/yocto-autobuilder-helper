@@ -126,6 +126,8 @@ def fetchgitrepo(clonedir, repo, params, stashdir):
         subprocess.check_call(["git", "clone", params["url"], sharedrepo])
 
     subprocess.check_call(["git", "checkout", branch], cwd=sharedrepo)
+    # git reset revision==HEAD won't help, we need to reset onto the potentially fetched origin branch
+    subprocess.check_call(["git", "reset", "origin/" + branch, "--hard"], cwd=sharedrepo)
     subprocess.check_call(["git", "reset", revision, "--hard"], cwd=sharedrepo)
 
 def publishrepo(clonedir, repo, publishdir):
