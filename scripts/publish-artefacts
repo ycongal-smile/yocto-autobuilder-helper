@@ -159,14 +159,14 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemu-tiny
         ;;
     "eclipse-plugin-neon")
-        DIR=$WORKDIR/scripts
+        DIR=$WORKDIR/../scripts
         # create md5sums only for the zip files
         for x in `ls $DIR/*.zip`; do md5sum $x >> $x.md5sum; done
         mkdir -p $DEST/eclipse-plugin/neon
         cp --no-dereference --preserve=links $DIR/org.*.zip $DIR/org.*.md5sum $DEST/eclipse-plugin/neon
         ;;
     "eclipse-plugin-oxygen")
-        DIR=$WORKDIR/scripts
+        DIR=$WORKDIR/../scripts
         # create md5sums only for the zip files
         for x in `ls $DIR/*.zip`; do md5sum $x >> $x.md5sum; done
         mkdir -p $DEST/eclipse-plugin/oxygen
