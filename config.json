@@ -680,14 +680,14 @@
             "no-layer-add" : true
         },
         "eclipse-poky-neon" : {
-            "url" : "git://git.yoctoproject.org/eclipse-poky",
+            "url" : "git://git.yoctoproject.org/eclipse-yocto",
             "branch" : "neon-master",
             "revision" : "HEAD",
             "checkout-dirname" : ".",
             "no-layer-add" : true
         },
         "eclipse-poky-oxygen" : {
-            "url" : "git://git.yoctoproject.org/eclipse-poky",
+            "url" : "git://git.yoctoproject.org/eclipse-yocto",
             "branch" : "oxygen-master",
             "revision" : "HEAD",
             "checkout-dirname" : ".",
