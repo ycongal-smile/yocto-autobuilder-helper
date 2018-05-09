@@ -130,9 +130,11 @@ for stepnum in range(1, maxsteps + 1):
     # Run any extra commands specified
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, target, stepnum)
     for cmd in cmds:
+        utils.printheader("Step %s/%s: Running command %s" % (stepnum, maxsteps, cmd))
         bitbakecmd(builddir, cmd, report, stepnum)
     cmds = utils.getconfiglist("EXTRAPLAINCMDS", ourconfig, target, stepnum)
     for cmd in cmds:
+        utils.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
         bitbakecmd(builddir, cmd, report, stepnum, oeenv=False)
 
     # Remove any layers we added
