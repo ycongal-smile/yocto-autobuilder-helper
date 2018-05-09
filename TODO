@@ -1,13 +1,6 @@
 Todo list of things that still need work:
 
-* revision in tgrid is helper script revision, we need poky
-* need to add nightly-checkuri
-* convert gplv3 test step
-* convert eclipse build to new helper script?
-* fix eclipse publish artefacts problem
-* add bitbake selftest somewhere
-* Add YP-Compat Layers tests somewhere
-* Handle refkit
+* revision in tgrid is set late in build from helper script revision to poky revision
 * World LSB check?
 * Add update-buildhistory piece
 * Add QA Email
