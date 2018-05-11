@@ -497,7 +497,7 @@
                 "RPM_GPG_SIGN_CHUNK = '1'"
             ],
             "step1" : {
-                "EXTRACMDS" : ["bitbake-selftest"],
+                "EXTRACMDS" : ["bitbake-selftest"]
             },
             "step2" : {
                 "EXTRACMDS" : ["checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg"],
@@ -507,16 +507,16 @@
         "nightly-check-layer" : {
             "NEEDREPOS" : ["poky", "meta-gplv2", "meta-mingw"],
             "step1" : {
-                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-poky"],
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-poky"]
             },
             "step2" : {
-                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-yocto-bsp"],
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-yocto-bsp"]
             },
             "step3" : {
-                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-mingw"],
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-mingw"]
             },
             "step4" : {
-                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-gplv2"],
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-gplv2"]
             }
         },
         "nightly-refkit" : {
