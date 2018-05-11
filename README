@@ -2,6 +2,9 @@ This repo is designed to work in conjuction yocto-autobuilder. Whilst
 yocto-autobuilder is designed to cover all releases, this repo has a branch per
 release and contains the hooks that do the actual build configuration and execution.
 
+pre-commit-hook.sh can be used to verify the JSON before committing, symlink this
+to .git/hooks/pre-commit.
+
 Authors: 
   Richard Purdie <richard.purdie@linuxfoundation.org>
   Joshua Lock <joshua.g.lock@intel.com>
