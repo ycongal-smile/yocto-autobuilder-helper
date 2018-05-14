@@ -38,7 +38,11 @@
             "SANITY_TESTED_DISTROS = ''",
             "SDK_EXT_TYPE = 'minimal'",
             "SDK_INCLUDE_TOOLCHAIN = '1'"
-        ]
+        ],
+        "QAMAIL_TO" : "yocto@yoctoproject.org",
+        "QAMAIL_CC" : "pidge@toganlabs.com, otavio@ossystems.com.br, yi.zhao@windriver.com, tracy.graydon@intel.com, joshua.g.lock@intel.com, apoorv.sangal@intel.com, ee.peng.yeoh@intel.com, aaron.chun.yew.chan@intel.com, rebecca.swee.fun.chang@intel.com, chin.huat.ang@intel.com",
+        "WEBPUBLISH_DIR" : "/srv/autobuilder/autobuilder.yoctoproject.org/",
+        "WEBPUBLISH_URL" : "https://autobuilder.yocto.io/"
     },
 
     "templates" : {

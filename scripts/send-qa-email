@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+#
+# Iterate over a set of configurations from json.conf, calling setup-config for each one, then running the build.
+#
+# Called with $1 - The json file containing the repositories to use
+#             $2 - Where the artefacts were published
+#             $3 - The build 'name' for release purposes
+#
+
+import json
+import os
+import sys
+import subprocess
+import errno
+
+import utils
+
+if len(sys.argv) != 4:
+    print("Incorrect number of parameters, please call as %s <nightly-target> <target-builddir> <branch-name> <repo-name> <sstate-publish-dir> 	<build-app-srcrev> <publish-dir> <error-report-url>"  % sys.argv[0])
+    sys.exit(1)
+
+repojson = sys.argv[1]
+publish = sys.argv[2]
+rel_name = sys.argv[3]
+
+scriptsdir = os.path.dirname(os.path.realpath(__file__))
+ourconfig = utils.loadconfig(__file__)
+
+with open(repojson) as f:
+    repos = json.load(f)
+
+buildhashes = ""
+for repo in sorted(repos.keys()):
+    buildhashes += "%s: %s" % (repo, repos[repo]["revision"])
+
+web_root = ourconfig.get('WEBPUBLISH_DIR')
+web_url = ourconfig.get('WEBPUBLISH_URL')
+
+email = ""
+mailto = ourconfig.get("QAMAIL_TO")
+if mailto:
+    email += "To: " + mailto + "\n"
+mailcc = ourconfig.get("QAMAIL_CC")
+if mailcc:
+    email += "Cc: " + mailcc + "\n"
+mailbcc = ourconfig.get("QAMAIL_BCC")
+if mailbcc:
+    email += "Bcc: " + mailbcc + "\n"
+
+email += "Subject: " + "QA notification for completed autobuilder build (%s)\n" % rel_name
+email += '''\n
+A build flagged for QA (%s) was completed on the autobuilder and is available at:\n\n
+    %s\n\n
+Build hash information: \n
+%s
+
+\nThis is an automated message from the Yocto Project Autobuilder\nGit: git://git.yoctoproject.org/yocto-autobuilder2\nEmail: richard.purdie@linuxfoundation.org\n
+
+''' % (rel_name, publish.replace(web_root, web_url), buildhashes)
+
+utils.printheader("Sending QA email")
+subprocess.check_call('echo "' + email +' " | sendmail -t', shell=True)
+
+
