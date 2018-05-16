@@ -4,7 +4,8 @@
 #
 # Called with $1 - The json file containing the repositories to use
 #             $2 - Where the artefacts were published
-#             $3 - The build 'name' for release purposes
+#             $3 - The build/release 'name' for release purposes
+#             $4 - The shared repos directory (to resolve the repo revision hashes)
 #
 
 import json
@@ -15,13 +16,14 @@ import errno
 
 import utils
 
-if len(sys.argv) != 4:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <target-builddir> <branch-name> <repo-name> <sstate-publish-dir> 	<build-app-srcrev> <publish-dir> <error-report-url>"  % sys.argv[0])
+if len(sys.argv) != 5:
+    print("Incorrect number of parameters, please call as %s <repojson> <publish-dir> <release-name> <sharedrepodir>"  % sys.argv[0])
     sys.exit(1)
 
 repojson = sys.argv[1]
 publish = sys.argv[2]
 rel_name = sys.argv[3]
+repodir = sys.argv[4]
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig(__file__)
@@ -31,7 +33,10 @@ with open(repojson) as f:
 
 buildhashes = ""
 for repo in sorted(repos.keys()):
-    buildhashes += "%s: %s" % (repo, repos[repo]["revision"])
+    # Need the finalised revisions (not 'HEAD')
+    targetrepodir = "%s/%s" % (repodir, repo)
+    revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=targetrepodir).decode('utf-8').strip()
+    buildhashes += "%s: %s\n" % (repo, revision)
 
 web_root = ourconfig.get('WEBPUBLISH_DIR')
 web_url = ourconfig.get('WEBPUBLISH_URL')
