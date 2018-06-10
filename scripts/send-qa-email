@@ -16,16 +16,17 @@ import errno
 
 import utils
 
-if len(sys.argv) != 5:
-    print("Incorrect number of parameters, please call as %s <repojson> <publish-dir> <release-name> <sharedrepodir>"  % sys.argv[0])
+if len(sys.argv) != 6:
+    print("Incorrect number of parameters, please call as %s <send-email> <repojson> <publish-dir> <release-name> <sharedrepodir>"  % sys.argv[0])
     sys.exit(1)
 
-repojson = sys.argv[1]
-publish = sys.argv[2]
-rel_name = sys.argv[3]
-repodir = sys.argv[4]
+send = sys.argv[1]
+repojson = sys.argv[2]
+publish = sys.argv[3]
+rel_name = sys.argv[4]
+repodir = sys.argv[5]
 
-if publish == "None":
+if send != "True" or publish == "None" or rel_name == "None":
     utils.printheader("Not sending QA email")
     sys.exit(0)
 
