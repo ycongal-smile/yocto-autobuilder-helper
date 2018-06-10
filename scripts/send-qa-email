@@ -25,6 +25,10 @@ publish = sys.argv[2]
 rel_name = sys.argv[3]
 repodir = sys.argv[4]
 
+if publish == "None":
+    utils.printheader("Not sending QA email")
+    sys.exit(0)
+
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig(__file__)
 
