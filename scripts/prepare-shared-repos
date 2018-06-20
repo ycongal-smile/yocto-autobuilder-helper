@@ -30,7 +30,7 @@ ourconfig = utils.loadconfig(__file__)
 with open(repojson) as f:
     repos = json.load(f)
 
-stashdir = ourconfig["REPO_STASH_DIR"]
+stashdir = utils.getconfig("REPO_STASH_DIR", ourconfig)
 
 for repo in sorted(repos.keys()):
     utils.printheader("Intially fetching repo %s" % repo)

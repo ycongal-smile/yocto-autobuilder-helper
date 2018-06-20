@@ -43,17 +43,17 @@ for repo in sorted(repos.keys()):
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=targetrepodir).decode('utf-8').strip()
     buildhashes += "%s: %s\n" % (repo, revision)
 
-web_root = ourconfig.get('WEBPUBLISH_DIR')
-web_url = ourconfig.get('WEBPUBLISH_URL')
+web_root = utils.getconfig('WEBPUBLISH_DIR', ourconfig)
+web_url = utils.getconfig('WEBPUBLISH_URL', ourconfig)
 
 email = ""
-mailto = ourconfig.get("QAMAIL_TO")
+mailto = utils.getconfig("QAMAIL_TO", ourconfig)
 if mailto:
     email += "To: " + mailto + "\n"
-mailcc = ourconfig.get("QAMAIL_CC")
+mailcc = utils.getconfig("QAMAIL_CC", ourconfig)
 if mailcc:
     email += "Cc: " + mailcc + "\n"
-mailbcc = ourconfig.get("QAMAIL_BCC")
+mailbcc = utils.getconfig("QAMAIL_BCC", ourconfig)
 if mailbcc:
     email += "Bcc: " + mailbcc + "\n"
 

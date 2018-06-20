@@ -133,16 +133,16 @@ def loadconfig(f):
 #
 def getbuildhistoryconfig(ourconfig, target, reponame, branchname):
     if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
-        if target in ourconfig["build-history-targets"]:
+        if target in getconfig("build-history-targets", ourconfig):
             base = None
-            if (reponame + ":" + branchname) in ourconfig["BUILD_HISTORY_DIRECTPUSH"]:
+            if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_DIRECTPUSH", ourconfig):
                 base = reponame + ":" + branchname
-            if (reponame + ":" + branchname) in ourconfig["BUILD_HISTORY_FORKPUSH"]:
-                base = ourconfig["BUILD_HISTORY_FORKPUSH"][reponame + ":" + branchname]
+            if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
+                base = getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
             if base:
                 baserepo, basebranch = base.split(":")
-                bh_path = os.path.join(ourconfig["BUILD_HISTORY_DIR"], reponame, branchname, target)
-                remoterepo = ourconfig["BUILD_HISTORY_REPO"]
+                bh_path = os.path.join(getconfig("BUILD_HISTORY_DIR", ourconfig), reponame, branchname, target)
+                remoterepo = getconfig("BUILD_HISTORY_REPO", ourconfig)
                 remotebranch = reponame + "/" + branchname + "/" + target
                 baseremotebranch = baserepo + "/" + basebranch + "/" + target
 
