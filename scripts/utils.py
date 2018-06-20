@@ -27,7 +27,6 @@ def configtrue(name, config):
 # need to handle expansion in list and dicts
 __expand_re__ = re.compile(r"\${[^{}@\n\t :]+}")
 def expandresult(entry, config):
-    print(str(entry))
     if isinstance(entry, list):
         ret = []
         for k in entry:
@@ -44,9 +43,9 @@ def expandresult(entry, config):
         def __init__(self, config):
             self.config = config
         def expand(self, entry):
-            ret = getconfig(entry[0][2:-1], config)
+            ret = getconfig(entry.group(0)[2:-1], config)
             if not ret:
-                return entry[0][2:-1]
+                return entry.group(0)[2:-1]
             return ret
 
     e = expander(config)
