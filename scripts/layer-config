@@ -22,7 +22,7 @@ targetdir = sys.argv[1]
 target = sys.argv[2]
 targetbuilddir = targetdir
 
-ourconfig = utils.loadconfig(__file__)
+ourconfig = utils.loadconfig()
 
 def bitbakecmd(targetbuilddir, cmd):
     ret = subprocess.call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=targetbuilddir)

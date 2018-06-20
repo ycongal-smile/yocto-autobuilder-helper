@@ -31,7 +31,7 @@ if send != "True" or publish == "None" or rel_name == "None":
     sys.exit(0)
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
-ourconfig = utils.loadconfig(__file__)
+ourconfig = utils.loadconfig()
 
 with open(repojson) as f:
     repos = json.load(f)

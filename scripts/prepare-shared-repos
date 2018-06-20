@@ -25,7 +25,7 @@ publish = None
 if sys.argv[3] != "None":
     publish = sys.argv[3]
 
-ourconfig = utils.loadconfig(__file__)
+ourconfig = utils.loadconfig()
 
 with open(repojson) as f:
     repos = json.load(f)

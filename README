@@ -5,6 +5,23 @@ release and contains the hooks that do the actual build configuration and execut
 pre-commit-hook.sh can be used to verify the JSON before committing, symlink this
 to .git/hooks/pre-commit (ln -s ../../scripts/pre-commit-hook.sh .git/hooks/pre-commit).
 
+Its likely most users will end up having to customise this repository for their needs. The
+scripts themselves should be more generically reusable, the config.json, less so as it 
+represents the Yocto Project Autobuilder test matrix.
+
+There are two customisation options possible, one is through variable substitution, the other
+is through overlaying configuration files. The standard config.json tries to at least allow
+substitution of the paths. A local-example.json is included to show how you could override
+these from a separate config file, simply passing:
+
+ABHELPER_JSON="config.json local-example.json"
+
+into the environment of the autobuilder.
+
+ABHELPER_JSON="config.json /some/location/local.json"
+
+would also allow customisation.
+
 Authors: 
   Richard Purdie <richard.purdie@linuxfoundation.org>
   Joshua Lock <joshua.g.lock@intel.com>

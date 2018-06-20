@@ -113,13 +113,32 @@ def expandtemplates(ourconfig):
     return ourconfig
 
 #
-# Helper to load the config.json file for scripts in the scripts directory (pass in __file__)
+# Helper to load the json config files
 #
-def loadconfig(f):
-    scriptsdir = os.path.dirname(os.path.realpath(f))
+# Defaults to the top level config.json file
+# however this can be customised from the environment, e.g.:
+#   ABHELPER_JSON="config.json local.json"
+#   ABHELPER_JSON="config.json /path/to/local.json"
+# files without paths are assumed to be in scripts/..
+#
+# Values from later files overwrite values from earlier files
+#
+def loadconfig():
+    files = "config.json"
+    if "ABHELPER_JSON" in os.environ:
+        files = os.environ["ABHELPER_JSON"]
 
-    with open(os.path.join(scriptsdir, '..', 'config.json')) as f:
-        ourconfig = json.load(f)
+    scriptsdir = os.path.dirname(os.path.realpath(__file__))
+
+    ourconfig = {}
+    for f in files.split():
+        p = f
+        if not f.startswith("/"):
+            p = os.path.join(scriptsdir, '..', f)
+        with open(p) as j:
+            config = json.load(j)
+            for c in config:
+                ourconfig[c] = config[c]
 
     # Expand templates in the configuration
     ourconfig = expandtemplates(ourconfig)

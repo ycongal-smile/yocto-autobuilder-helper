@@ -33,7 +33,7 @@ if sys.argv[5] != "None":
 
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
-ourconfig = utils.loadconfig(__file__)
+ourconfig = utils.loadconfig()
 
 stashdir = utils.getconfig("REPO_STASH_DIR", ourconfig)
 

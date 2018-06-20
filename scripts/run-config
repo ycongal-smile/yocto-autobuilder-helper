@@ -38,7 +38,7 @@ if sys.argv[8] != "None":
     errorurl = sys.argv[8]
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
-ourconfig = utils.loadconfig(__file__)
+ourconfig = utils.loadconfig()
 
 # Find out the number of steps this target has
 maxsteps = 1

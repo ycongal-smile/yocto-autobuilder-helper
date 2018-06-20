@@ -31,7 +31,7 @@ reponame = sys.argv[5]
 sstate_release = sys.argv[6]
 buildappsrcrev = sys.argv[7]
 
-ourconfig = utils.loadconfig(__file__)
+ourconfig = utils.loadconfig()
 
 variables = []
 
