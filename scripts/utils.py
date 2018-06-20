@@ -87,7 +87,7 @@ def getconfiglist(name, config, target, stepnum):
             ret.extend(config['overrides'][target][name])
     if name in config['defaults']: 
         ret.extend(config['defaults'][name])
-    return ret
+    return expandresult(ret, config)
 
 #
 # Expand 'templates' with the configuration
