@@ -6,6 +6,7 @@ import errno
 import time
 import codecs
 import sys
+import re
 
 #
 # Check if config contains all the listed params
@@ -22,16 +23,59 @@ def configtrue(name, config):
         return True
     return False
 
-# Get a configuration variable, check overrides, first, the defaults
-def getconfigvar(name, config, target, stepnum):
-    step = "step" + str(stepnum)
-    if target in config['overrides']:
-        if step in config['overrides'][target] and name in config['overrides'][target][step]:
-            return config['overrides'][target][step][name]
-        if name in config['overrides'][target]:
-            return config['overrides'][target][name]
+# Handle variable expansion of return values, variables are of the form ${XXX}
+# need to handle expansion in list and dicts
+__expand_re__ = re.compile(r"\${[^{}@\n\t :]+}")
+def expandresult(entry, config):
+    print(str(entry))
+    if isinstance(entry, list):
+        ret = []
+        for k in entry:
+            ret.append(expandresult(k, config))
+        return ret
+    if isinstance(entry, dict):
+        ret = {}
+        for k in entry:
+            ret[expandresult(k, config)] = expandresult(entry[k], config)
+        return ret
+    if not isinstance(entry, str):
+        return entry
+    class expander:
+        def __init__(self, config):
+            self.config = config
+        def expand(self, entry):
+            ret = getconfig(entry[0][2:-1], config)
+            if not ret:
+                return entry[0][2:-1]
+            return ret
+
+    e = expander(config)
+    while entry.find('${') != -1:
+        entry = __expand_re__.sub(e.expand, entry)
+    return entry
+
+# Get a configuration value
+def getconfig(name, config):
+    if name in config:
+        ret = config[name]
+        return expandresult(ret, config)
+    return False
+
+# Get a build configuration variable, check overrides first, then defaults
+def getconfigvar(name, config, target=None, stepnum=None):
+    if target:
+        if target in config['overrides']:
+            if stepnum:
+                step = "step" + str(stepnum)
+                if step in config['overrides'][target] and name in config['overrides'][target][step]:
+                    ret = config['overrides'][target][step][name]
+                    return expandresult(ret, config)
+            if name in config['overrides'][target]:
+                ret = config['overrides'][target][name]
+                return expandresult(ret, config)
     if name in config['defaults']: 
-        return config['defaults'][name]
+        ret = config['defaults'][name]
+        return expandresult(ret, config)
     return False
 
 def getconfiglist(name, config, target, stepnum):
