@@ -122,6 +122,8 @@ def expandtemplates(ourconfig):
 # files without paths are assumed to be in scripts/..
 #
 # Values from later files overwrite values from earlier files
+# Lists are replaced, dict elements are replaced.
+# Deletion of a field isn't possible
 #
 def loadconfig():
     files = "config.json"
@@ -129,6 +131,16 @@ def loadconfig():
         files = os.environ["ABHELPER_JSON"]
 
     scriptsdir = os.path.dirname(os.path.realpath(__file__))
+
+    def handledict(config, ourconfig, c):
+        if not c in ourconfig:
+            ourconfig[c] = config[c]
+            return
+        for x in config[c]:
+            if isinstance(config[c][x], dict):
+                handledict(config[c], ourconfig[c], x)
+            else:
+                ourconfig[c][x] = config[c][x]
 
     ourconfig = {}
     for f in files.split():
@@ -138,7 +150,10 @@ def loadconfig():
         with open(p) as j:
             config = json.load(j)
             for c in config:
-                ourconfig[c] = config[c]
+                if isinstance(config[c], dict):
+                    handledict(config, ourconfig, c)
+                else:
+                    ourconfig[c] = config[c]
 
     # Expand templates in the configuration
     ourconfig = expandtemplates(ourconfig)
