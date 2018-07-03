@@ -533,7 +533,7 @@
             "SDKMACHINE" : "x86_64",
             "DISTRO" : "refkit",
             "PACKAGE_CLASSES" : "package_ipk",
-            "SSTATEDIR" : false,
+            "SSTATEDIR" : [],
             "PRSERV" : false,
             "extravars" : [
                 "require conf/distro/include/refkit-ci.inc",
