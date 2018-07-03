@@ -45,7 +45,7 @@ def expandresult(entry, config):
         def expand(self, entry):
             ret = getconfig(entry.group(0)[2:-1], config)
             if not ret:
-                return entry.group(0)[2:-1]
+                return entry.group(0)
             return ret
 
     e = expander(config)
