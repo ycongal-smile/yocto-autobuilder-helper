@@ -50,7 +50,10 @@ def expandresult(entry, config):
 
     e = expander(config)
     while entry.find('${') != -1:
-        entry = __expand_re__.sub(e.expand, entry)
+        newentry = __expand_re__.sub(e.expand, entry)
+        if newentry == entry:
+            break
+        entry = newentry
     return entry
 
 # Get a configuration value
