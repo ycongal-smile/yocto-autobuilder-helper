@@ -1,6 +1,0 @@
-Todo list of things that still need work:
-
-* revision in tgrid is set late in build from helper script revision to poky revision
-* World LSB check?
-* Add update-buildhistory piece
-
