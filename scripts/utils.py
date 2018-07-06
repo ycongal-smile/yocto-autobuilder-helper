@@ -171,6 +171,10 @@ def getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname):
     if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
         if target in getconfig("build-history-targets", ourconfig):
             base = None
+            if "/" in reponame:
+                reponame = reponame.rsplit("/", 1)
+            if reponame.endswith(".git"):
+                reponame = reponame[:-4]
             if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_DIRECTPUSH", ourconfig):
                 base = reponame + ":" + branchname
             if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
