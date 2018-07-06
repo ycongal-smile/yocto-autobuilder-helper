@@ -167,7 +167,7 @@ def loadconfig():
 #
 # Common function to determine if buildhistory is enabled and what the parameters are
 #
-def getbuildhistoryconfig(ourconfig, target, reponame, branchname):
+def getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname):
     if contains(["BUILD_HISTORY_DIR", "build-history-targets", "BUILD_HISTORY_REPO"], ourconfig):
         if target in getconfig("build-history-targets", ourconfig):
             base = None
@@ -178,6 +178,8 @@ def getbuildhistoryconfig(ourconfig, target, reponame, branchname):
             if base:
                 baserepo, basebranch = base.split(":")
                 bh_path = os.path.join(getconfig("BUILD_HISTORY_DIR", ourconfig), reponame, branchname, target)
+                if not os.path.isabs(bh_path):
+                    bh_path = os.path.join(builddir, bh_path)
                 remoterepo = getconfig("BUILD_HISTORY_REPO", ourconfig)
                 remotebranch = reponame + "/" + branchname + "/" + target
                 baseremotebranch = baserepo + "/" + basebranch + "/" + target

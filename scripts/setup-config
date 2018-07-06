@@ -86,11 +86,14 @@ extravars = utils.getconfiglist("extravars", ourconfig, target, stepnum)
 if extravars:
     variables.extend(extravars)
 
-bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, target, reponame, branchname)
+bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname)
 if bh_path:
     variables.append('INHERIT += "buildhistory"')
     variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
-    variables.append('BUILDHISTORY_PUSH_REPO = "%s %s:%s"' % (remoterepo, remotebranch, remotebranch))
+    force = ""
+    if remotebranch != baseremotebranch:
+        force = "-f "
+    variables.append('BUILDHISTORY_PUSH_REPO = "%s%s %s:%s"' % (force, remoterepo, remotebranch, remotebranch))
     variables.append("BUILDHISTORY_COMMIT = '1'")
     variables.append('ERROR_QA_remove = "version-going-backwards"')
 

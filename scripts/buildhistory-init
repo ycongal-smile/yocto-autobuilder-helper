@@ -21,13 +21,10 @@ cd $BUILDHISTDIR
 git checkout -b $REMOTEBRANCH
 
 if git ls-remote --exit-code $REMOTEREPO refs/heads/$BASEBRANCH > /dev/null; then
-    git fetch $REMOTEREPO refs/heads/$BASEBRANCH:refs/remotes/$BASEBRANCH
+    git fetch --depth=5 $REMOTEREPO refs/heads/$BASEBRANCH:refs/remotes/$BASEBRANCH
     git reset refs/remotes/$BASEBRANCH --hard
 else
     echo 'Initializing Repo' >> README
     git add README
-    git commit -s -m 'Initializing Repo'
+    git commit -s -m 'Initializing Buildhistory'
 fi
-
-#git push -q -f $REMOTEREPO $REMOTEBRANCH:$REMOTEBRANCH
-

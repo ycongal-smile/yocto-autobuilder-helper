@@ -100,9 +100,9 @@ def bitbakecmd(builddir, cmd, report, stepnum, oeenv=True):
             report.create(cmd, stepnum, log)
         finalret += 1
 
-bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, target, reponame, branchname)
-if False and bh_path:
-    utils.runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
+bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname)
+if bh_path:
+    runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
 
 for stepnum in range(1, maxsteps + 1):
     # Add any layers specified
