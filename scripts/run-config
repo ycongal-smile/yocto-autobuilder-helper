@@ -40,6 +40,10 @@ if sys.argv[8] != "None":
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig()
 
+testmode = False
+if "ABHELPERTEST" in os.environ:
+    testmode = True
+
 # Find out the number of steps this target has
 maxsteps = 1
 if target in ourconfig['overrides']:
@@ -83,6 +87,10 @@ def bitbakecmd(builddir, cmd, report, stepnum, oeenv=True):
     if oeenv:
         cmd = ". ./oe-init-build-env; %s" % cmd
 
+    if testmode:
+        print("Running %s" % cmd)
+        return
+
     with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'wb') as f:
         for line in p.stdout:
             sys.stdout.buffer.write(line)
@@ -100,6 +108,13 @@ def bitbakecmd(builddir, cmd, report, stepnum, oeenv=True):
             report.create(cmd, stepnum, log)
         finalret += 1
 
+def runcmd(cmd, *args, **kwargs):
+    if testmode:
+        print("Running %s" % cmd)
+        if "setup-config" not in cmd[0]:
+            return
+    subprocess.check_call(cmd, *args, **kwargs)
+
 bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname)
 if bh_path:
     runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
@@ -113,7 +128,7 @@ for stepnum in range(1, maxsteps + 1):
     flush()
     # Generate the configuration files needed for this step
     if utils.getconfigvar("WRITECONFIG", ourconfig, target, stepnum):
-        subprocess.check_call([scriptsdir + "/setup-config", target, str(stepnum - 1), builddir, branchname, reponame, sstate_release, buildappsrcrev])
+        runcmd([scriptsdir + "/setup-config", target, str(stepnum - 1), builddir, branchname, reponame, sstate_release, buildappsrcrev])
 
     # Execute the targets for this configuration
     targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum)
@@ -143,11 +158,11 @@ for stepnum in range(1, maxsteps + 1):
 
 if publish:
     utils.printheader("Running publish artefacts")
-    subprocess.check_call([scriptsdir + "/publish-artefacts", builddir, publish, target])
+    runcmd([scriptsdir + "/publish-artefacts", builddir, publish, target])
 
 if errorurl and utils.getconfigvar("SENDERRORS", ourconfig, target, stepnum):
     utils.printheader("Sending any error reports")
-    subprocess.check_call([scriptsdir + "/upload-error-reports", builddir, errorurl])
+    runcmd([scriptsdir + "/upload-error-reports", builddir, errorurl])
 
 if finalret:
     utils.printheader("There were %s failures" % finalret)
