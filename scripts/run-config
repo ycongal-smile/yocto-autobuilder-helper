@@ -152,8 +152,8 @@ for stepnum in range(1, maxsteps + 1):
         utils.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
         bitbakecmd(builddir, cmd, report, stepnum, oeenv=False)
 
-    # Remove any layers we added
-    for layer in layers:
+    # Remove any layers we added in a reverse order
+    for layer in reversed(layers):
         bitbakecmd(builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum)
 
 if publish:
