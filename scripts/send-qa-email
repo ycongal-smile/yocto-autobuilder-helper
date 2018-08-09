@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 #
-# Iterate over a set of configurations from json.conf, calling setup-config for each one, then running the build.
-#
-# Called with $1 - The json file containing the repositories to use
-#             $2 - Where the artefacts were published
-#             $3 - The build/release 'name' for release purposes
-#             $4 - The shared repos directory (to resolve the repo revision hashes)
+# Send email about the build to prompt QA to begin testing
 #
 
 import json
@@ -16,30 +11,38 @@ import errno
 
 import utils
 
-if len(sys.argv) != 6:
-    print("Incorrect number of parameters, please call as %s <send-email> <repojson> <publish-dir> <release-name> <sharedrepodir>"  % sys.argv[0])
-    sys.exit(1)
 
-send = sys.argv[1]
-repojson = sys.argv[2]
-publish = sys.argv[3]
-rel_name = sys.argv[4]
-repodir = sys.argv[5]
+parser = utils.ArgParser(description='Sends an email about the build to prompt QA to begin testing.')
 
-if send != "True" or publish == "None" or rel_name == "None":
+parser.add_argument('send',
+                    help="True to send email, otherwise the script will display a message and exit")
+parser.add_argument('repojson',
+                    help="The json file containing the repositories to use")
+parser.add_argument('sharedrepodir',
+                    help="The shared repos directory (to resolve the repo revision hashes)")
+parser.add_argument('-p', '--publish-dir',
+                    action='store',
+                    help="Where the artefacts were published")
+parser.add_argument('-r', '--release',
+                    action='store',
+                    help="The build/release 'name' for release purposes (optional)")
+
+args = parser.parse_args()
+
+if args.send.lower() != 'true' or not args.publish_dir or not args.release:
     utils.printheader("Not sending QA email")
     sys.exit(0)
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig()
 
-with open(repojson) as f:
+with open(args.repojson) as f:
     repos = json.load(f)
 
 buildhashes = ""
 for repo in sorted(repos.keys()):
     # Need the finalised revisions (not 'HEAD')
-    targetrepodir = "%s/%s" % (repodir, repo)
+    targetrepodir = "%s/%s" % (args.sharedrepodir, repo)
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=targetrepodir).decode('utf-8').strip()
     buildhashes += "%s: %s\n" % (repo, revision)
 
@@ -57,7 +60,7 @@ mailbcc = utils.getconfig("QAMAIL_BCC", ourconfig)
 if mailbcc:
     email += "Bcc: " + mailbcc + "\n"
 
-email += "Subject: " + "QA notification for completed autobuilder build (%s)\n" % rel_name
+email += "Subject: " + "QA notification for completed autobuilder build (%s)\n" % args.release
 email += '''\n
 A build flagged for QA (%s) was completed on the autobuilder and is available at:\n\n
     %s\n\n
@@ -66,7 +69,7 @@ Build hash information: \n
 
 \nThis is an automated message from the Yocto Project Autobuilder\nGit: git://git.yoctoproject.org/yocto-autobuilder2\nEmail: richard.purdie@linuxfoundation.org\n
 
-''' % (rel_name, publish.replace(web_root, web_url), buildhashes)
+''' % (args.release, args.publish_dir.replace(web_root, web_url), buildhashes)
 
 utils.printheader("Sending QA email")
 subprocess.check_call('echo "' + email +' " | sendmail -t', shell=True)

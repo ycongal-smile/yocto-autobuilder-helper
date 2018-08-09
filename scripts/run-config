@@ -2,16 +2,6 @@
 #
 # Iterate over a set of configurations from json.conf, calling setup-config for each one, then running the build.
 #
-# Called with $1 - The 'nightly' target the autobuilder is running
-#             $2 - The target build directory to configure
-#             $3 - The poky branch name the build is running on
-#             $4 - The name of the repository the build is running on
-#             $5 - The directory to publish sstate into
-#             $6 - A build-appliance SRCREV to use
-#             $7 - Where to publish artefacts to (or None)
-#             $8 - URL back to this build (for the error reporting system)
-#             $9 - Disable echoing logs to stdout (if specified)
-#
 
 import json
 import os
@@ -21,44 +11,55 @@ import errno
 
 import utils
 
-if len(sys.argv) != 9 and len(sys.argv) != 10:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <target-builddir> <branch-name> <repo-name> <sstate-publish-dir> 	<build-app-srcrev> <publish-dir> <error-report-url>"  % sys.argv[0])
-    sys.exit(1)
+parser = utils.ArgParser(description='Runs configurations in json.conf.')
 
-target = sys.argv[1]
-builddir = sys.argv[2]
-branchname = sys.argv[3]
-reponame = sys.argv[4]
-sstate_release = sys.argv[5]
-buildappsrcrev = sys.argv[6]
-publish = None
-if sys.argv[7] != "None":
-    publish = sys.argv[7]
-errorurl = None
-if sys.argv[8] != "None":
-    errorurl = sys.argv[8]
-echologs = True
-if len(sys.argv) == 10:
-    echologs = False
+parser.add_argument('target',
+                    help="The 'nightly' target the autobuilder is running")
+parser.add_argument('builddir',
+                    help="The target build directory to configure")
+parser.add_argument('branchname',
+                    help="The poky branch name the build is running on")
+parser.add_argument('reponame',
+                    help="The name of the repository the build is running on")
+parser.add_argument('-s', '--sstateprefix',
+                    default='',
+                    help="The directory prefix to publish sstate into")
+parser.add_argument('-b', '--buildappsrcrev',
+                    default='',
+                    help="A build appliance SRCREV to use")
+parser.add_argument('-p', '--publish-dir',
+                    action='store',
+                    help="Where to publish artefacts to (optional)")
+parser.add_argument('-u', '--build-url',
+                    action='store',
+                    help="URL back to this build (for the error reporting system)")
+parser.add_argument('-t', '--test',
+                    action='store_true',
+                    default=False,
+                    help="Test mode - perform setup and dry-run of commands only")
+parser.add_argument('-q', '--quietlogging',
+                    action='store_true',
+                    default=False,
+                    help="Quiet mode - don't echo bitbake logs to stdout")
+
+args = parser.parse_args()
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig()
 
-testmode = False
-if "ABHELPERTEST" in os.environ:
-    testmode = True
+testmode = args.test
 
 # Find out the number of steps this target has
 maxsteps = 1
-if target in ourconfig['overrides']:
-    for v in ourconfig['overrides'][target]:
+if args.target in ourconfig['overrides']:
+    for v in ourconfig['overrides'][args.target]:
         if v.startswith("step"):
             n = int(v[4:])
             if n <= maxsteps:
                 continue
             maxsteps = n
 
-utils.printheader("Target task %s has %d steps" % (target, maxsteps))
+utils.printheader("Target task %s has %d steps" % (args.target, maxsteps))
 
 finalret = 0
 
@@ -73,8 +74,8 @@ def logname(path):
     return path + "/command.log.%s" % lognum
 
 revision = "unknown"
-report = utils.ErrorReport(ourconfig, target, builddir, branchname, revision)
-errordir = utils.errorreportdir(builddir)
+report = utils.ErrorReport(ourconfig, args.target, args.builddir, args.branchname, revision)
+errordir = utils.errorreportdir(args.builddir)
 utils.mkdir(errordir)
 
 
@@ -100,7 +101,7 @@ def bitbakecmd(builddir, cmd, report, stepnum, oeenv=True):
 
     with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'ab') as f:
         for line in p.stdout:
-            if echologs:
+            if not args.quietlogging:
                 sys.stdout.buffer.write(line)
                 sys.stdout.flush()
             f.write(line)
@@ -124,54 +125,54 @@ def runcmd(cmd, *args, **kwargs):
             return
     subprocess.check_call(cmd, *args, **kwargs)
 
-bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname)
+bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, args.builddir, args.target, args.reponame, args.branchname)
 if bh_path:
     runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
 
 for stepnum in range(1, maxsteps + 1):
     # Add any layers specified
-    layers = utils.getconfiglist("ADDLAYER", ourconfig, target, stepnum)
+    layers = utils.getconfiglist("ADDLAYER", ourconfig, args.target, stepnum)
     for layer in layers:
-        bitbakecmd(builddir, "bitbake-layers add-layer %s" % layer, report, stepnum)
+        bitbakecmd(args.builddir, "bitbake-layers add-layer %s" % layer, report, stepnum)
 
     flush()
     # Generate the configuration files needed for this step
-    if utils.getconfigvar("WRITECONFIG", ourconfig, target, stepnum):
-        runcmd([scriptsdir + "/setup-config", target, str(stepnum - 1), builddir, branchname, reponame, sstate_release, buildappsrcrev])
+    if utils.getconfigvar("WRITECONFIG", ourconfig, args.target, stepnum):
+        runcmd([scriptsdir + "/setup-config", args.target, str(stepnum - 1), args.builddir, args.branchname, args.reponame, "-s", args.sstateprefix, "-b", args.buildappsrcrev])
 
     # Execute the targets for this configuration
-    targets = utils.getconfigvar("BBTARGETS", ourconfig, target, stepnum)
+    targets = utils.getconfigvar("BBTARGETS", ourconfig, args.target, stepnum)
     if targets:
         utils.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, targets))
-        bitbakecmd(builddir, "bitbake %s" % targets, report, stepnum)
+        bitbakecmd(args.builddir, "bitbake %s" % targets, report, stepnum)
 
     # Execute the sanity targets for this configuration
-    sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, target, stepnum)
+    sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, args.target, stepnum)
     if sanitytargets:
         utils.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
-        bitbakecmd(builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s" % (scriptsdir, sanitytargets), report, stepnum)
+        bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s" % (scriptsdir, sanitytargets), report, stepnum)
 
     # Run any extra commands specified
-    cmds = utils.getconfiglist("EXTRACMDS", ourconfig, target, stepnum)
+    cmds = utils.getconfiglist("EXTRACMDS", ourconfig, args.target, stepnum)
     for cmd in cmds:
         utils.printheader("Step %s/%s: Running command %s" % (stepnum, maxsteps, cmd))
-        bitbakecmd(builddir, cmd, report, stepnum)
-    cmds = utils.getconfiglist("EXTRAPLAINCMDS", ourconfig, target, stepnum)
+        bitbakecmd(args.builddir, cmd, report, stepnum)
+    cmds = utils.getconfiglist("EXTRAPLAINCMDS", ourconfig, args.target, stepnum)
     for cmd in cmds:
         utils.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
-        bitbakecmd(builddir, cmd, report, stepnum, oeenv=False)
+        bitbakecmd(args.builddir, cmd, report, stepnum, oeenv=False)
 
     # Remove any layers we added in a reverse order
     for layer in reversed(layers):
-        bitbakecmd(builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum)
+        bitbakecmd(args.builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum)
 
-if publish:
+if args.publish_dir:
     utils.printheader("Running publish artefacts")
-    runcmd([scriptsdir + "/publish-artefacts", builddir, publish, target])
+    runcmd([scriptsdir + "/publish-artefacts", args.builddir, args.publish_dir, args.target])
 
-if errorurl and utils.getconfigvar("SENDERRORS", ourconfig, target, stepnum):
+if args.build_url and utils.getconfigvar("SENDERRORS", ourconfig, args.target, stepnum):
     utils.printheader("Sending any error reports")
-    runcmd([scriptsdir + "/upload-error-reports", builddir, errorurl])
+    runcmd([scriptsdir + "/upload-error-reports", args.builddir, args.build_url])
 
 if finalret:
     utils.printheader("There were %s failures" % finalret)

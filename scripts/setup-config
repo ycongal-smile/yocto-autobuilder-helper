@@ -2,14 +2,6 @@
 #
 # Generate an auto.conf and associated other config files for a given autobuilder configuration
 #
-# Called with $1 - The 'nightly' target the autobuilder is running
-#             $2 - The autobuilder step number (a given target can run multiple steps with different configurations)
-#             $3 - The target build directory to configure
-#             $4 - The poky branch name the build is running on
-#             $5 - The name of the repository the build is running on
-#             $6 - The directory to publish sstate into
-#             $7 - A build-appliance SRCREV to use
-#
 
 import json
 import os
@@ -17,44 +9,57 @@ import sys
 import subprocess
 import errno
 import copy
+
 import utils
 
-if len(sys.argv) != 8:
-    print("Incorrect number of parameters, please call as %s <nightly-target> <stepnumber> <target-builddir> <branch-name> <repo-name> <sstate-publish-dir> <build-app-srcrev>" % sys.argv[0])
-    sys.exit(1)
 
-target = sys.argv[1]
-stepnum = int(sys.argv[2]) + 1 # Our step numbering is 1 2 3 etc., not 0 of buildbot
-builddir = sys.argv[3]
-branchname = sys.argv[4]
-reponame = sys.argv[5]
-sstate_release = sys.argv[6]
-buildappsrcrev = sys.argv[7]
+parser = utils.ArgParser(description='Generates an auto.conf and associated other config files for a given autobuilder configuration.')
+
+parser.add_argument('target',
+                    help="The 'nightly' target the autobuilder is running")
+parser.add_argument('stepnumber',
+                    help="The autobuilder step number (a given target can run multiple steps with different configurations)")
+parser.add_argument('builddir',
+                    help="The target build directory to configure")
+parser.add_argument('branchname',
+                    help="The poky branch name the build is running on")
+parser.add_argument('reponame',
+                    help="The name of the repository the build is running on")
+parser.add_argument('-s', '--sstateprefix',
+                    default='',
+                    help="The directory prefix to publish sstate into")
+parser.add_argument('-b', '--buildappsrcrev',
+                    default='',
+                    help="A build appliance SRCREV to use")
+
+args = parser.parse_args()
+
+stepnum = int(args.stepnumber) + 1 # Our step numbering is 1 2 3 etc., not 0 of buildbot
 
 ourconfig = utils.loadconfig()
 
 variables = []
 
-autoconf = os.path.join(builddir, "conf", "auto.conf")
+autoconf = os.path.join(args.builddir, "conf", "auto.conf")
 if os.path.exists(autoconf):
     os.remove(autoconf)
 
 # Ensure autoconf's directory exists
 utils.mkdir(os.path.dirname(autoconf))
 
-sdkextraconf = os.path.join(builddir, "conf", "sdk-extra.conf")
+sdkextraconf = os.path.join(args.builddir, "conf", "sdk-extra.conf")
 if os.path.exists(sdkextraconf):
     os.remove(sdkextraconf)
 
 for v in ["MACHINE", "DISTRO", "SDKMACHINE"]:
-    value = utils.getconfigvar(v, ourconfig, target, stepnum)
+    value = utils.getconfigvar(v, ourconfig, args.target, stepnum)
     if value and value != "None":
         variables.append(v + ' = "%s"' % value)
 
-distro = utils.getconfigvar("DISTRO", ourconfig, target, stepnum)
+distro = utils.getconfigvar("DISTRO", ourconfig, args.target, stepnum)
 
 for v in ["DLDIR", "PRSERV"]:
-    value = utils.getconfigvar(v, ourconfig, target, stepnum)
+    value = utils.getconfigvar(v, ourconfig, args.target, stepnum)
     if value:
         variables.append(value)
 
@@ -63,30 +68,30 @@ for v in ["DLDIR", "PRSERV"]:
 # have a directory of symlinks to sstate objects
 # that can be published for the release
 key = "SSTATEDIR"
-if sstate_release != "None":
+if args.sstateprefix:
     key = "SSTATEDIR_RELEASE"
-value = utils.getconfiglist(key, ourconfig, target, stepnum)
+value = utils.getconfiglist(key, ourconfig, args.target, stepnum)
 for v in value:
-    v = v.replace("@RELEASENUM@", sstate_release)
+    v = v.replace("@RELEASENUM@", args.sstateprefix)
     variables.append(v)
 
-if buildappsrcrev != "None" and buildappsrcrev != "DEFAULT":
-    if buildappsrcrev == "AUTOREV":
-        buildappsrcrev = "${AUTOREV}"
-    value = utils.getconfiglist("BUILDAPP_SRCREV", ourconfig, target, stepnum)
+if args.buildappsrcrev and args.buildappsrcrev != "DEFAULT":
+    if args.buildappsrcrev == "AUTOREV":
+        args.buildappsrcrev = "${AUTOREV}"
+    value = utils.getconfiglist("BUILDAPP_SRCREV", ourconfig, args.target, stepnum)
     for v in value:
-        v = v.replace("@SRCREV@", buildappsrcrev)
+        v = v.replace("@SRCREV@", args.buildappsrcrev)
         variables.append(v)
 
-if utils.getconfigvar("BUILDINFO", ourconfig, target, stepnum):
-    infovars = utils.getconfiglist("BUILDINFOVARS", ourconfig, target, stepnum)
+if utils.getconfigvar("BUILDINFO", ourconfig, args.target, stepnum):
+    infovars = utils.getconfiglist("BUILDINFOVARS", ourconfig, args.target, stepnum)
     variables.extend(infovars)
 
-extravars = utils.getconfiglist("extravars", ourconfig, target, stepnum)
+extravars = utils.getconfiglist("extravars", ourconfig, args.target, stepnum)
 if extravars:
     variables.extend(extravars)
 
-bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname)
+bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, args.builddir, args.target, args.reponame, args.branchname)
 if bh_path:
     variables.append('INHERIT += "buildhistory"')
     variables.append('BUILDHISTORY_DIR = "%s"' % bh_path)
@@ -105,10 +110,10 @@ with open(autoconf, "w") as f:
 
 utils.printheader("Writing %s with contents:" % sdkextraconf)
 with open(sdkextraconf, "w") as f:
-    for v in utils.getconfiglist("SDKEXTRAS", ourconfig, target, stepnum):
+    for v in utils.getconfiglist("SDKEXTRAS", ourconfig, args.target, stepnum):
         replace = ""
-        if sstate_release != "None":
-            replace = sstate_release + "/"
+        if args.sstateprefix:
+            replace = args.sstateprefix + "/"
         v = v.replace("@RELEASENUM@", replace)
         print("  " + v)
         f.write(v + "\n")

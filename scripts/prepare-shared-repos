@@ -2,10 +2,6 @@
 #
 # Iterate over a set of repositories in a json file and setup a shared directory containing them
 #
-# Called with $1 - The json file containing the repositories to use
-#             $2 - The shared directory where the repos are to be transferred
-#             $3 - Directory to publish artefacts to
-#
 
 import json
 import os
@@ -15,25 +11,28 @@ import errno
 
 import utils
 
-if len(sys.argv) != 4:
-    print("Incorrect number of parameters, please call as %s <repo.json> <shared-sources-dir> <publish-dir>" % sys.argv[0])
-    sys.exit(1)
 
-repojson = sys.argv[1]
-shared = sys.argv[2]
-publish = None
-if sys.argv[3] != "None":
-    publish = sys.argv[3]
+parser = utils.ArgParser(description='Iterates over a set of repositories in a json file and sets up a shared directory containing them.')
+
+parser.add_argument('repojson',
+                    help="The json file containing the repositories to use")
+parser.add_argument('sharedsrcdir',
+                    help="The shared directory where the repos are to be transferred")
+parser.add_argument('-p', '--publish-dir',
+                    action='store',
+                    help="Where to publish artefacts to (optional)")
+
+args = parser.parse_args()
 
 ourconfig = utils.loadconfig()
 
-with open(repojson) as f:
+with open(args.repojson) as f:
     repos = json.load(f)
 
 stashdir = utils.getconfig("REPO_STASH_DIR", ourconfig)
 
 for repo in sorted(repos.keys()):
     utils.printheader("Intially fetching repo %s" % repo)
-    utils.fetchgitrepo(shared, repo, repos[repo], stashdir)
-    if publish:
-        utils.publishrepo(shared, repo, publish)
+    utils.fetchgitrepo(args.sharedsrcdir, repo, repos[repo], stashdir)
+    if args.publish_dir:
+        utils.publishrepo(args.sharedsrcdir, repo, args.publish_dir)

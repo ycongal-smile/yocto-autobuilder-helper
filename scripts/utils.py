@@ -7,6 +7,7 @@ import time
 import codecs
 import sys
 import re
+import argparse
 
 #
 # Check if config contains all the listed params
@@ -302,3 +303,9 @@ class ErrorReport(object):
         with codecs.open(filename, 'w', 'utf-8') as f:
             json.dump(report, f, indent=4, sort_keys=True)
 
+class ArgParser(argparse.ArgumentParser):
+    def error(self, message):
+        # Show the help if there's an argument parsing error (e.g. no arguments, missing argument, ...)
+        sys.stderr.write('error: %s\n' % message)
+        self.print_help()
+        sys.exit(2)

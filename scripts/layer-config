@@ -2,9 +2,6 @@
 #
 # Move the repositories into the correct layout and generate bblayers.conf
 #
-# Called with $1 - The autobuilder working directory
-#             $2 - The target to filter the repos to
-#
 
 import json
 import os
@@ -14,22 +11,24 @@ import errno
 
 import utils
 
-if len(sys.argv) != 3:
-    print("Incorrect number of parameters, please call as %s <autobuilder-workdir> <target>" % sys.argv[0])
-    sys.exit(1)
 
-targetdir = sys.argv[1]
-target = sys.argv[2]
-targetbuilddir = targetdir
+parser = utils.ArgParser(description='Moves the repositories into the correct layout and generates bblayers.conf.')
+
+parser.add_argument('abworkdir',
+                    help="The autobuilder working directory")
+parser.add_argument('target',
+                    help="The target to filter the repos to")
+
+args = parser.parse_args()
 
 ourconfig = utils.loadconfig()
 
-def bitbakecmd(targetbuilddir, cmd):
-    ret = subprocess.call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=targetbuilddir)
+def bitbakecmd(targetdir, cmd):
+    ret = subprocess.call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=targetdir)
     if ret:
         utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
 
-needrepos = utils.getconfigvar("NEEDREPOS", ourconfig, target, None)
+needrepos = utils.getconfigvar("NEEDREPOS", ourconfig, args.target, None)
 
 callinit = False
 
@@ -42,15 +41,15 @@ for repo in needrepos:
             callinit = True
         if "checkout-dirname" in repos[repo]:
             checkdir = repos[repo]["checkout-dirname"]
-    utils.mkdir(targetbuilddir + "/" + checkdir)
-    for f in os.listdir(targetdir + "/repos/" + repo):
-        subprocess.check_call(['mv', targetdir + "/repos/" + repo + "/" + f, targetbuilddir + "/" + checkdir + "/"])
+    utils.mkdir(args.abworkdir + "/" + checkdir)
+    for f in os.listdir(args.abworkdir + "/repos/" + repo):
+        subprocess.check_call(['mv', args.abworkdir + "/repos/" + repo + "/" + f, args.abworkdir + "/" + checkdir + "/"])
 
 if callinit:
-    subprocess.check_call(". ./oe-init-build-env", shell=True, cwd=targetbuilddir)
+    subprocess.check_call(". ./oe-init-build-env", shell=True, cwd=args.abworkdir)
 
 for repo in needrepos:
     if repo in repos and "no-layer-add" in repos[repo] and repos[repo]["no-layer-add"]:
         continue
-    bitbakecmd(targetbuilddir, "bitbake-layers add-layer %s" % (targetbuilddir + "/" + repo))
+    bitbakecmd(args.abworkdir, "bitbake-layers add-layer %s" % (args.abworkdir + "/" + repo))
 
