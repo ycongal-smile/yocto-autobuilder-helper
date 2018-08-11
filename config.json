@@ -510,7 +510,7 @@
                 "EXTRACMDS" : ["bitbake-selftest"]
             },
             "step2" : {
-                "EXTRACMDS" : ["checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg"],
+                "EXTRACMDS" : ["checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg -j 15"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
         },
