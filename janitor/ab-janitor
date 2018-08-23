@@ -25,16 +25,18 @@ import utils
 
 ourconfig = utils.loadconfig()
 
-if "TRASH_DIR" not in ourconfig:
+
+
+trashdir = utils.getconfig("TRASH_DIR", ourconfig)
+mirrordir = utils.getconfig("REPO_STASH_DIR", ourconfig)
+
+if not trashdir:
     print("Please set TRASH_DIR in the configuration file")
     sys.exit(1)
 
-if "REPO_STASH_DIR" not in ourconfig:
+if not mirrordir:
     print("Please set REPO_STASH_DIR in the configuration file")
     sys.exit(1)
-
-trashdir = ourconfig["TRASH_DIR"]
-mirrordir = ourconfig["REPO_STASH_DIR"]
 
 def trash_processor(trashdir):
     print("Monitoring trashdir %s" % trashdir)
