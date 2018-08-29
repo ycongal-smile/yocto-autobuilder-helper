@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+#
+# =====================================================================================
+# Developed By : Chan, Aaron <aaron.chun.yew.chan@intel.com>
+# Organization : Yocto Project Open Source Technology Center (Intel)
+# Date         : 27-Aug-2018 (Initial release)
+# =====================================================================================
+#
+# This script is to trigger a signal to LAVA server to terminate the lava-job once the
+# test cases has been completely executed on the target hardware from the host machine.
+# Once LAVA server receives the signal to end the job, LAVA server will clean-up tmpfs
+# overlay on LAVA Dispatcher and gracefully shutdown the target hardware/board/device.
+# In the same way, autobuilder will received the handoff signal from LAVA server and
+# run any remaining post script and end the job in autobuilder.
+#
+# Options:
+# $1 - Supply the NFS and/or absolute path on the board_info.json generated from hardware.
+# $2 - Supply the command to run on target hardware, by default "shutdown" to power down
+#      target hardware/board/device
+#
+import subprocess
+import argparse
+import re
+import os
+import sys
+
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),"scripts"))
+import utils
+
+parser = argparse.ArgumentParser(description='SSH Client to Target Board.')
+parser.add_argument('--json', action='store', dest='brdinfo', help='Define default board user')
+parser.add_argument('--cmd', action='store', dest='ipcmd', help='Define default command to the board')
+
+results = parser.parse_args()
+
+# Enable this section on manual run
+# os.environ['ABHELPER_JSON'] = "config.json /home/pokybuild/yocto-autobuilder-helper/config-intelqa-x86_64-lava.json"
+
+brdinfo = results.brdinfo
+if os.path.isfile(os.path.expanduser(brdinfo)):
+    os.environ['ABHELPER_JSON'] += (" " + brdinfo)
+    ourconfig=utils.loadconfig()
+else:
+    print("ERROR: Failed to retrieve [%s] thru NFS. Check your NFS mount on the worker/hosts" % brdinfo)
+    sys.exit(1)
+
+ipcmd = results.ipcmd
+ipaddr = ourconfig['network']['ipaddr'].strip('\n')
+user = ourconfig['user'].strip('\n')
+
+if user is None or ipaddr is None:
+    print("ERROR: Failed to retrieve (e.g username/IP) from hardware. Check network interface on target device.")
+    sys.exit(1)
+else:
+    if re.match(ipcmd, 'shutdown'):
+        ipcmd = 'touch minnow.idle.done'
+    else:
+        ipcmd = 'echo Completed.'
+    shellCommand = ["ssh", "-oStrictHostKeyChecking=no", "%s@%s" % (user, ipaddr), "uname -a;", ipcmd]
+
+    ssh = subprocess.Popen(shellCommand, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ssherr = ssh.stderr.read().decode('utf-8')
+
+    if re.search('man-in-the-middle\s*attack', ssherr):
+        match=True
+    elif re.search('Connection\s*timed\*out', ssherr):
+        print("ERROR: Connection to board timeout due board unresponsive, check your hardware.")
+        match=False
+    else:
+        match=False
+
+    if match:
+        ssh_keygen = subprocess.Popen(
+            ["ssh-keygen", "-f", "\"" + os.path.expanduser("~/.ssh/known_hosts") + "\"", "-R", ipaddr],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        sshout = subprocess.Popen(shellCommand, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print("INFO: %s" % sshout.stdout.read())
+    else:
+        print("ERROR %s" % sshout.stderr.read())
