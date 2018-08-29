@@ -1,0 +1,96 @@
+#!/usr/bin/env python3
+#
+# Parser loads JSON file (e.g. config-intelqa-x86_64-lava) and converts Jinja2 template 
+# format into a LAVA Job configuration in YAML format.
+#
+# Parameters:
+# $1 - Define the absolute path of Jinja2 template stored
+# $2 - Inherits the Job name in autobuilder (e.g. nightly-x86)
+# $3 - Inherits the Build number in autobuilder (Defaults to None)
+# $4 - Device type definition on LAVA Dispatcher
+#
+import os
+import sys
+import re
+import json
+import jinja2
+import time
+from jinja2 import Template, Environment, FileSystemLoader
+
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),"scripts"))
+import utils
+
+# Enable this section on manual run
+# os.environ["ABHELPER_JSON"]="config.json /home/ab/yocto-autobuilder-helper/config-intelqa-x86_64-lava.json"
+
+def jinja_helper():
+    print("USAGE: python3 run-jinja-parser <Jinja Template> <Build Name> <Build num> <LAVA Device Type>")
+    print("       python3 scripts/run-jinja-parser lava/device/bsp-packages.jinja2 nightly-x86-64-bsp None minnowboard")
+    sys.exit(0)
+
+# Create Job definition in YAML based on autobuilder job name
+def jinja_writer(name, data):
+    yamlFile=name + ".yaml"
+    yamlNewFile= "-".join([name, time.strftime("%d%m%Y-%H%M%S")]) + ".yaml"
+    if os.path.isfile(yamlFile):
+        os.rename(yamlFile, yamlNewFile)
+        print("INFO: Found previous job config [%s] & rename to [%s]" % (yamlFile, yamlNewFile))
+    with open(yamlFile, "w+") as fh:
+        fh.write(data)
+    fh.close()
+
+# Handles data expansion based on pattern matching
+def getconfig_expand(config, ourconfig, pattern, match, buildname, buildnum):
+    newconfig={}
+    expansion=re.compile(pattern)
+    for items in ourconfig.items():
+        if items[0] in match:
+            if items[0] in "DEPLOY_DIR":
+                imagedeploy= "file://" + os.path.join(items[1], buildname)
+                newconfig[items[0]] = imagedeploy
+                if buildnum is not None and buildnum != "None":
+                    newconfig[items[0]] = os.path.join(imagedeploy, str(buildnum))
+            else:
+                newconfig[items[0]] = items[1]
+            config=config.replace('${' + items[0] + '}', newconfig[items[0]])
+    newconfig['DEPLOY_DIR_IMAGE']=config
+    return newconfig['DEPLOY_DIR_IMAGE']
+
+try:
+    jinjaTempl=sys.argv[1]
+    target=sys.argv[2]
+    buildnum=sys.argv[3]
+    device=sys.argv[4]
+    debug=True
+except:
+    jinja_helper()
+
+ourconfig  = utils.loadconfig()
+jobconfig  = ourconfig['overrides'][target]
+lavaconfig = ourconfig['lava-devices'][device]
+deploydir  = getconfig_expand(jobconfig['DEPLOY_DIR_IMAGE'], jobconfig, "\${(.+)}/images/\${(.+)}/", ['DEPLOY_DIR', 'MACHINE'], target, buildnum)
+newconfig  = { 'DEPLOY_DIR_IMAGE' : deploydir }
+jinjaTempl = os.path.abspath(jinjaTempl)
+
+for img in ['kernel', 'modules', 'nfsrootfs']:
+    lavaconfig['deploy'][img]['url'] = getconfig_expand(lavaconfig['deploy'][img]['url'], newconfig, "\${(.+)}.+", ['DEPLOY_DIR_IMAGE'], target, buildnum)
+lavaconfig['device_type'] = device
+
+if not os.path.isfile(jinjaTempl):
+    print("ERROR: Unable to find Jinja2 Template: [%s]" % jinjaTempl)
+    sys.exit(1)
+
+# JSON Dumps
+if debug:
+    print(json.dumps(lavaconfig, indent=4))
+
+jinjaPath = "/".join(jinjaTempl.split("/")[0:-1])
+jinjaFile = jinjaTempl.split("/")[-1]
+
+templateLoader = jinja2.FileSystemLoader(searchpath=jinjaPath)
+templateEnv    = jinja2.Environment(loader=templateLoader)
+templateJinja  = templateEnv.get_template(jinjaFile)
+outText        = templateJinja.render(lavaconfig)
+
+jinja_writer(target, outText)
+print("INFO: Job configuration [%s] is ready to be triggered in next step" % target)
