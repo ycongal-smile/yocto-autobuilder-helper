@@ -1,0 +1,43 @@
+device_type: {{ device_type }}
+job_name: {{ job_name }}
+timeouts: 
+  job:
+    minutes: {{ timeout.job.minutes }}
+  action:
+    minutes: {{ timeout.action.minutes }}
+  connection:
+    minutes: {{ timeout.connection.minutes }}
+priority: {{ priority }}
+visibility: {{ visibility }}
+actions:
+- deploy:
+    timeout:
+      minutes: {{ deploy.timeout }}
+    to: {{ deploy.to }}
+    kernel:
+      url: {{ deploy.kernel.url }}
+      type: {{ deploy.kernel.type }}
+    modules:
+      url: {{ deploy.modules.url }}
+      compression: {{ deploy.modules.compression }}
+    nfsrootfs:
+      url: {{ deploy.nfsrootfs.url }}
+      compression: {{ deploy.nfsrootfs.compression }}
+    os: {{ deploy.os }}
+- boot:
+    timeout:
+      minutes: {{ boot.timeout }}
+    method: {{ boot.method }}
+    commands: {{ boot.commands }}
+    auto_login: { login_prompt: {{ boot.auto_login.login_prompt }}, username: {{ boot.auto_login.username }} }
+    prompts:
+      - {{ boot.prompts }}
+- test:
+    timeout:
+      minutes: {{ test.timeout }}
+    name: {{ test.name }}
+    definitions:
+    - repository: {{ test.definitions.repository }}
+      from: {{ test.definitions.from }}
+      path: {{ test.definitions.path }}
+      name: {{ test.definitions.name }}
