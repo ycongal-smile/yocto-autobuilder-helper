@@ -137,6 +137,14 @@ case "$target" in
         md5sums $TMPDIR/deploy/images/genericx86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86-64/*genericx86-64* $DEST/machines/genericx86-64-lsb
         ;;
+    "nightly-x86-64-bsp")
+        rm -rf $DEST/$target/images/intel-corei7-64/*
+        mkdir -p $DEST/$target/images/intel-corei7-64
+        md5sums $TMPDIR/deploy/images/intel-corei7-64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/intel-corei7-64/bzImage* $DEST/$target/images/intel-corei7-64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/intel-corei7-64/*core-image-sato-sdk-intel-corei7-64*tar* $DEST/$target/images/intel-corei7-64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/intel-corei7-64/*modules-* $DEST/$target/images/intel-corei7-64
+        ;;
     "nightly-x86")
         mkdir -p $DEST/machines/qemu/qemux86
         md5sums $TMPDIR/deploy/images/qemux86
