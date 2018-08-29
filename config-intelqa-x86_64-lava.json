@@ -1,23 +1,139 @@
 {
+    "lava-defaults" : {
+        "username" : "< LAVA user >",
+        "token"    : "< LAVA token >",
+        "server"   : "< LAVA server >:< LAVA port >",
+        "interface": "< Board network interface >"
+    },
+    "lava-devices" : {
+        "minnowboard" : {
+            "job_name" : "Minnowboard Turbot with Yocto core-image-sato-sdk (intel-corei7-64)",
+            "priority" : "medium",
+            "visibility" : "public",
+                "timeout" : {
+                "job"        : { "minutes" : 180 },
+                "action"     : { "minutes" : 60 },
+                "connection" : { "minutes" : 60 }
+            },
+            "deploy" : {
+              "timeout" : 60,
+              "to" : "tftp",
+              "kernel" : {
+                "url"  : "${DEPLOY_DIR_IMAGE}bzImage",
+                "type" : "BzImage"
+              },
+              "modules" : {
+                "url" : "${DEPLOY_DIR_IMAGE}modules-intel-corei7-64.tgz",
+                "compression" : "gz"
+              },
+              "nfsrootfs" : {
+                "url" : "${DEPLOY_DIR_IMAGE}core-image-sato-sdk-intel-corei7-64.tar.gz",
+                "compression" : "gz"
+              },
+              "os": "oe"
+            },
+            "boot" : {
+                "timeout" : 60,
+                "method"  : "grub",
+                "commands" : "nfs",
+                "auto_login" : {
+                    "login_prompt" : "'intel-corei7-64 login:'",
+                    "username" : "root"
+                },
+                "prompts" : "'root@intel-corei7-64:~#'"
+            },
+            "test" : {
+                "timeout" : 3600,
+                "name" : "yocto-bsp-test",
+                "definitions" : {
+                    "repository" : "https://git.yoctoproject.org/git/yocto-autobuilder-helper",
+                    "from" : "git",
+                    "path" : "lava-templates/auto-bsp-test.yaml",
+                    "name" : "yocto-bsp-test"
+                }
+            }
+        },
+        "beaglebone-black" : {
+            "job_name" : "Beaglebone with Yocto core-image-sato-sdk (ARM Cortex)",
+            "priority" : "medium",
+            "visibility" : "public",
+            "timeout" : {
+                "job"        : { "minutes" : 180 },
+                "action"     : { "minutes" : 60 },
+                "connection" : { "minutes" : 60 }
+            }
+        },
+        "beaglebone-mx" : {},
+        "x86" : {},
+        "qemu" : {},
+        "dragonboard-410c" : {},
+        "mustang" : {}
+    },
     "overrides" : {
         "nightly-x86-64-bsp" : {
-            "NEEDREPOS" : ["poky", "meta-intel", "meta-openembedded"],
-	    "step1" : {
-                "MACHINE" : "intel-corei7-64",
-                "SDKMACHINE" : "x86_64",
-                "extravars" : [
-                    "DISTRO_FEATURES_append = \" systemd\"",
-                    "IMAGE_INSTALL_append = \" udev util-linux systemd\"",
-                    "CORE_IMAGE_EXTRA_INSTALL_append += \"python3 python3-pip python-pip git socat apt dpkg openssh\"",
-                    "IMAGE_FSTYPES = \"tar.gz\""
+            "MACHINE" : "intel-corei7-64",
+            "DEPLOY_DIR" : "/srv/data/builds",
+            "DEPLOY_DIR_IMAGE" : "${DEPLOY_DIR}/images/${MACHINE}/",
+            "NEEDREPOS" : ["poky", "meta-intel", "meta-openembedded", "meta-security", "meta-ros", "meta-browser"],
+            "step1" : {
+                "SDKMACHINE": "x86_64",
+                "WRITECONFIG": true,
+                "extravars": [
+                    "DISTRO_FEATURES_append = \" systemd ptest\"",
+                    "VIRTUAL-RUNTIME_init_manager = \"systemd\"",
+                    "DISTRO_FEATURES_BACKFILL_CONSIDERED = \"sysvinit\"",
+                    "VIRTUAL-RUNTIME_initscripts = \"\"",
+                    "IMAGE_INSTALL_append = \" php-cli udev util-linux systemd\"",
+                    "EXTRA_IMAGE_FEATURES += \"ptest-pkgs\"",
+                    "CORE_IMAGE_EXTRA_INSTALL_append += \"python3 python3-pip python3-netifaces python3-requests python3-jinja2 python3-twisted python-pip git socat apt dpkg openssh nfs-utils ufw nmap lshw php ser2net xterm xclock xrdb tigervnc x11vnc mailx p7zip firefox glmark2 e2fsprogs-ptest zlib-ptest\"",
+                    "IMAGE_FSTYPES = \"tar.gz\"",
+                    "TEST_SUITES_append = \" bspruntime usb microsd\"",
+                    "TEST_TARGET_IP = ''",
+                    "TEST_SERVER_IP = ''",
+                    "TEST_TARGET = \"simpleremote\"",
+                    "HARDWARE_TEST = \"1\""
                 ],
-                "ADDLAYER" : [
+                "ADDLAYER": [
                     "../meta-intel",
-                    "../meta-openembedded"
+                    "../meta-openembedded/meta-oe",
+                    "../meta-openembedded/meta-python",
+                    "../meta-openembedded/meta-perl",
+                    "../meta-openembedded/meta-networking",
+                    "../meta-security",
+                    "../meta-ros",
+                    "../meta-browser"
                 ],
-                "BBTARGETS" : "core-image-sato-sdk"
+                "BBTARGETS" : "core-image-sato-sdk",
+                "EXTRAPLAINCMDS" : [
+                    "../yocto-autobuilder-helper/scripts/publish-artefacts build /srv/data/builds nightly-x86-64-bsp;",
+                    "../yocto-autobuilder-helper/lava/run-jinja-parser ../yocto-autobuilder-helper/lava-templates/generate-jobconfig.jinja2 nightly-x86-64-bsp None minnowboard",
+                    "../yocto-autobuilder-helper/lava/trigger-lava-jobs nightly-x86-64-bsp.yaml build/conf/auto.conf /srv/data/LAVA/lava-job;"
+                ]
+            },
+            "step2" : {
+                "WRITECONFIG": false,
+                "ADDLAYER": [
+                    "../meta-intel",
+                    "../meta-openembedded/meta-oe",
+                    "../meta-openembedded/meta-python",
+                    "../meta-openembedded/meta-perl",
+                    "../meta-openembedded/meta-networking",
+                    "../meta-security",
+                    "../meta-ros",
+                    "../meta-browser"
+                ],
+                "SANITYTARGETS": "core-image-sato-sdk:do_testimage",
+                "EXTRAPLAINCMDS" : [
+                    "../yocto-autobuilder-helper/lava/resume-lava-jobs --json board_info.json --cmd 'shutdown'"
+                ]
             }
-        }
+        },
+        "nightly-x86-bsp"    : {},
+        "nightly-arm-bsp"    : {},
+        "nightly-arm64-bsp"  : {},
+        "nightly-mips-bsp"   : {},
+        "nightly-mips64-bsp" : {},
+        "nightly-ppc-bsp"    : {}
     },
     "repo-defaults" : {
         "meta-intel" : {
@@ -28,7 +144,26 @@
         "meta-openembedded" : {
             "url" : "git://git.openembedded.org/meta-openembedded",
             "branch" : "master",
-            "revision" : "HEAD"
+            "revision" : "HEAD",
+            "no-layer-add" : true
+        },
+        "meta-security" : {
+            "url" : "git://git.yoctoproject.org/meta-security",
+            "branch" : "master",
+            "revision" : "HEAD",
+            "no-layer-add" : true
+        },
+        "meta-ros" : {
+            "url" : "git://github.com/bmwcarit/meta-ros",
+            "branch" : "master",
+            "revision" : "HEAD",
+            "no-layer-add" : true
+        },
+        "meta-browser" : {
+            "url" : "git://github.com/OSSystems/meta-browser.git",
+            "branch" : "master",
+            "revision" : "HEAD",
+            "no-layer-add" : true
         }
     }
 }
