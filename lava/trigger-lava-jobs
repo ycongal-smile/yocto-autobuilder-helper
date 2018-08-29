@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+# 
+# =====================================================================================
+# XML-RPC API reference taken from
+# -- https://validation.linaro.org/static/docs/v2/data-export.html#xml-rpc
+# Developed By : Chan, Aaron <aaron.chun.yew.chan@intel.com>
+# Organization : Yocto Project Open Source Technology Center (Intel)
+# Date         : 27-Aug-2018 (Initial release)
+# =====================================================================================
+#
+# Triggers a job execution define by YAML template on LAVA server end from autobuilder.
+# This script will monitor the lava-job status until the hardware boots up successfully
+# and returns the IPv4 addr pre-configure over network boot (PXE) on the board.
+# Once the IPv4 addr has been recovered, script will update the auto.conf with
+# TEST_TARGET_IP, TEST_SERVER_IP to establish a client-host connection and prepare to
+# execute automated harware test case(s) on hardware on the next step.
+#
+# Options:
+#
+# $1 - Supply lava-job template in a YAML format (e.g. <filename>.yaml)
+# $2 - Supply autobuilder buildername (e.g. nightly-x86-64-bsp, nightly-arm64-bsp)
+# $3 - By default set to "None", else parse in the buildnumber to create the NFS path
+# $4 - Supply device/board name (same as LAVA device type)
+#
+import xmlrpc.client
+import sys
+import os
+import time
+import re
+import json
+import netifaces
+import time
+from shutil import copyfile
+from lava_scheduler import *
+
+sys.path.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),"scripts"))
+import utils
+
+# Enable this section on manual run
+# os.environ['ABHELPER_JSON'] = "config.json /home/pokybuild/yocto-autobuilder-helper/config-intelqa-x86_64-lava.json"
+
+def lava_jobsStatus(server, jobid, timeout, bootUp=False, ipaddr=None, iparch=None, timeInt=5):
+    jobStatus = scheduler.lava_jobs_status(server, jobid)['job_status']
+
+    while jobStatus == "Submitted" or jobStatus == "Running" or bootUp == False:
+        time.sleep(timeInt)
+        timeout += timeInt
+        for logs in scheduler.lava_jobs_logs(server, jobid, 0):
+            ipaddr = re.search("Station\s*IP\s*address\s*is\s*(.*)\"", str(logs), re.I)
+            iparch = re.search("Detected\s*architecture\s*(.*)\.", str(logs), re.I)
+            dbmsg = re.search("Board\s*boot\s*up\s*successfully", str(logs), re.I)
+            if ipaddr: ipaddr = ipaddr.group(1)
+            if iparch: iparch = iparch.group(1)
+            if dbmsg:
+                bootUp = True
+                break
+        if bootUp:
+            print("INFO : Board booted up successfully. LAVA is ready to handover to Buildbot-CI [%s]" % str(bootUp))
+            break
+        if timeout > 3000:
+            scheduler.lava_jobs_cancel(server, jobid)
+            print("WARNING: Board exceeded bootup time threshold %d, Job will be %s and powered down" % (
+            timeout, scheduler.lava_jobs_status(server, jobid)['job_status']))
+            break
+
+    jobStatus = scheduler.lava_jobs_status(server, jobid)['job_status']
+    print("INFO : Job has current status [%s]" % jobStatus)
+    # Job Status #
+    if jobStatus == 'Incomplete':
+        print("ABORTED: %s test!. Rerun again if required" % jobStatus)
+    elif jobStatus == 'Cancel':
+        print("ABORTED: Job has been [%s]led by user" % jobStatus)
+    elif jobStatus == 'Complete':
+        print("SUCCESS: Current JobID [%s] has been successfully [%s] and passed" % (jobid, jobStatus))
+    elif jobStatus == 'Running':
+        print("INFO : %s in %d seconds ..." % (jobStatus, timeout))
+    elif jobStatus == 'Submitted':
+        print("INFO : Lava job has been successfully %s and running in progress..." % jobStatus)
+    else:
+        print("ERROR : Job is either %s or in an unknown state. Report to LAVA Mailing Lists" % jobStatus)
+
+    return ipaddr, iparch, jobStatus
+
+
+def lava_jobsSubmit(server, hostname, cfgfile, debug=False):
+    #if os.path.isfile(cfgfile):
+    with open(cfgfile, 'r') as yaml:
+        yamlCfg = yaml.read()
+    yaml.close()
+
+    if debug: print("INFO : Current YAML Job Definition\n%s" % yamlCfg)
+    jobid = scheduler.lava_jobs_submit(server, yamlCfg)
+    if jobid is not None:
+        print("SUCCESS: Job submitted to http://%s/scheduler/job/%s#bottom to LAVA-CI server" % (hostname, jobid))
+        (boardIp, boardArch, boardStat) = lava_jobsStatus(server, jobid, 0)
+    #else:
+    #    print("ERROR: YAML Config not found on the LAVA-Server")
+    return boardIp, boardArch, boardStat, jobid
+
+
+def lava_jobsDetail(server, jobid, elements, items=[]):
+    jobInfo = scheduler.lava_jobs_details(server, jobid)
+
+    if type(elements) is str:
+        return jobInfo[elements]
+    elif type(elements) is list:
+        for item in elements:
+            items.append(jobInfo[item])
+        return items
+    else:
+        return jobInfo
+
+
+def lava_listmethods(server):
+    print(server.system.listMethods())
+
+
+def lava_publisher(username, token, server):
+    return xmlrpc.client.ServerProxy("http://%s:%s@%s/RPC2/" % (username, token, server))
+
+
+def check_isfile(filename):
+    if not os.path.isfile(filename):
+        print("ERROR: Failed to locate filename %s" % filename)
+        sys.exit(1)
+    return True
+
+def check_until(filename, isfound=None):
+    if os.path.isfile(filename):
+        isfound=False
+    else:
+        isfound=True
+    return isfound
+
+# Starts here
+def main():
+    """
+    For Yocto Project Reference scripts, this tool was developed to trigger a Job in LAVA
+    server based on URL, TCP/IP port defined on config-intelqa-x86_64-lava.json.
+    Requirement to run this script to ensure <filename>.yaml, build/build/conf/auto.conf
+    is present.
+    """
+    yamlconf  = sys.argv[1]
+    autoconf  = sys.argv[2]
+    try   : boardinfo = sys.argv[3]
+    except: boardinfo = None
+
+    ourconfig = utils.loadconfig()
+    lavadefs  = ourconfig["lava-defaults"]
+    username  = lavadefs['username']
+    token     = lavadefs['token']
+    server    = lavadefs['server']
+    interface = lavadefs['interface']
+
+    timemin = timesec = 0
+    cwd=os.path.join(os.getcwd(), "board_info.json")
+
+    # Instantiate LAVA server connection with RPC 
+    lavaserver = lava_publisher(username, token, server)
+
+    isfile = check_isfile(yamlconf)
+    if isfile:
+        target_ip, boardArch, boardStat, jobid = lava_jobsSubmit(lavaserver, server, yamlconf)
+
+    if boardStat == 'Canceling' and boardStat == 'Incomplete':
+        print("Board/hardware unresponsive or software image loaded is incompatiable. Ending session.")
+        sys.exit(1)
+
+    if boardinfo is not None:
+        boardinfo = os.path.join(boardinfo, str(jobid), 'board_info.json')
+        print("Search if board info exists [%s]" % boardinfo)
+        while(check_until(boardinfo)):
+            time.sleep(1)
+            timesec += 1
+            if timesec > 2500:
+                print("Board discovery exceeds timeout %s. Ending session." % str(timesec))
+                sys.exit(1)
+            print("Board discovery in %s secs ..." % str(timesec))
+        (timemin, timesec)=divmod(timesec, 60)
+        print("Board has been discovered in %s mins, %s secs" % (timemin, timesec))
+        
+        if os.path.isfile(cwd):
+            os.system(" ls -al %s" % boardinfo)
+            print("Board info existed, file will be deleted and recopied over to %s" % cwd)
+            os.remove(cwd)
+        else:
+            print("Board info to be copied over to %s" % cwd)
+        copyfile(boardinfo, cwd)
+
+        os.environ['ABHELPER_JSON'] += (" " + boardinfo)
+        ourconfig = utils.loadconfig()
+        target_ip = ourconfig['network']['ipaddr']
+    
+    lavaurl = "http://" + server + str(lava_jobsDetail(lavaserver, jobid, 'absolute_url'))
+    jobinfo = lava_jobsDetail(lavaserver, jobid, ['actual_device_id', 'start_time', 'end_time'])
+    server_ip = netifaces.ifaddresses(interface)[2][0]['addr']
+
+    # Update auto.conf with board IPv4 and server IPv4 addressing
+    isauto = check_isfile(autoconf)
+    if isauto:
+        with open(autoconf, "a") as autof:
+            autof.writelines("TEST_SERVER_IP = \"%s\"\n" % server_ip)
+            autof.writelines("TEST_TARGET_IP = \"%s\"\n" % target_ip)
+        autof.close()
+
+    print("="*50)
+    print("""
+ SUMMARY:
+ LAVA-url    : %s
+ LAVA-job    : %s
+ LAVA-status : %s
+ Device-IP   : %s
+ Device-ARCH : %s
+ """ % (lavaurl, jobinfo, boardStat, target_ip, boardArch))
+    print("="*50)
+
+if __name__ == '__main__':
+    main()
