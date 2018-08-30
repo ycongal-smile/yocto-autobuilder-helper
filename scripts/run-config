@@ -10,6 +10,7 @@
 #             $6 - A build-appliance SRCREV to use
 #             $7 - Where to publish artefacts to (or None)
 #             $8 - URL back to this build (for the error reporting system)
+#             $9 - Disable echoing logs to stdout (if specified)
 #
 
 import json
@@ -20,7 +21,7 @@ import errno
 
 import utils
 
-if len(sys.argv) != 9:
+if len(sys.argv) != 9 and len(sys.argv) != 10:
     print("Incorrect number of parameters, please call as %s <nightly-target> <target-builddir> <branch-name> <repo-name> <sstate-publish-dir> 	<build-app-srcrev> <publish-dir> <error-report-url>"  % sys.argv[0])
     sys.exit(1)
 
@@ -36,6 +37,9 @@ if sys.argv[7] != "None":
 errorurl = None
 if sys.argv[8] != "None":
     errorurl = sys.argv[8]
+echologs = True
+if len(sys.argv) == 10:
+    echologs = False
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig()
@@ -88,14 +92,19 @@ def bitbakecmd(builddir, cmd, report, stepnum, oeenv=True):
         cmd = ". ./oe-init-build-env; %s" % cmd
 
     if testmode:
-        print("Running %s" % cmd)
+        print("Would run '%s'" % cmd)
         return
 
-    with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'wb') as f:
+    print("Running '%s' with output to %s" % (cmd, log))
+    flush()
+
+    with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'ab') as f:
         for line in p.stdout:
-            sys.stdout.buffer.write(line)
-            sys.stdout.flush()
+            if echologs:
+                sys.stdout.buffer.write(line)
+                sys.stdout.flush()
             f.write(line)
+            f.flush()
         ret = p.wait()
     if ret:
         utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
