@@ -140,7 +140,7 @@ for stepnum in range(1, maxsteps + 1):
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, target, stepnum)
     if sanitytargets:
         utils.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
-        bitbakecmd(builddir, "checkvnc; DISPLAY=:1 bitbake %s" % sanitytargets, report, stepnum)
+        bitbakecmd(builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s" % (scriptsdir, sanitytargets), report, stepnum)
 
     # Run any extra commands specified
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, target, stepnum)

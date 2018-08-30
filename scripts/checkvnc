@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# check if vnc server is running, and if not, cleanup and restart
+#
+grep ':170D' /proc/net/tcp > /dev/null
+if [ $? != 0 ]; then
+    echo "Xvnc not running, attempting restart"
+    vncserver -kill :1
+    vncserver
+fi
