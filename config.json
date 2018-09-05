@@ -594,15 +594,18 @@
                     "TMPDIR = '${TOPDIR}/newtmp'",
                     "require ../locked-sigs.inc"
                 ]
-            },
-            "step9" : {
+            }
+        },
+        "nightly-qa-extras2" : {
+            "MACHINE" : "qemux86-64",
+            "step1" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato:do_populate_sdk_ext",
                 "extravars" : [
                     "TMPDIR = '${TOPDIR}/sdktmp'"
                 ]
             },
-            "step10" : {
+            "step2" : {
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -610,7 +613,7 @@
                     "TEST_SUITES_append = ' logrotate'"
                 ]
             },
-            "step11" : {
+            "step3" : {
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -618,7 +621,7 @@
                     "TEST_SUITES_append = ' pam'"
                 ]
             },
-            "step12" : {
+            "step4" : {
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -627,7 +630,7 @@
                 ],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-skeleton"]
             },
-            "step13" : {
+            "step5" : {
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -636,7 +639,7 @@
                     "TEST_SUITES_append = ' systemd'"
                 ]
             },
-            "step14" : {
+            "step6" : {
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -644,7 +647,7 @@
                     "VIRTUAL-RUNTIME_init_manager = 'sysvinit'"
                 ]
             },
-            "step15" : {
+            "step7" : {
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
