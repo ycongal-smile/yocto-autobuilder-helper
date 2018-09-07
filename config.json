@@ -656,6 +656,13 @@
                     "VIRTUAL-RUNTIME_init_manager = 'systemd'",
                     "DISTRO_FEATURES_BACKFILL_CONSIDERED = 'sysvinit'"
                 ]
+            },
+            "step8" : {
+                "BBTARGETS" : "core-image-sato",
+                "SANITYTARGETS" : "core-image-sato:do_testimage",
+                "extravars" : [
+                    "PACKAGECONFIG_append_x86-64_pn-mesa = ' gallium-llvm gallium r600'"
+                ]
 
             }
         },
