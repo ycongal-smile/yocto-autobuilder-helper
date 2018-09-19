@@ -429,6 +429,10 @@
             "step2" : {
                 "SDKMACHINE" : "i686",
                 "BBTARGETS" : "uninative-tarball"
+            },
+            "step3" : {
+                "SDKMACHINE" : "aarch64",
+                "BBTARGETS" : "uninative-tarball"
             }
         },
         "build-appliance" : {
