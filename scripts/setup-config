@@ -51,7 +51,7 @@ sdkextraconf = os.path.join(args.builddir, "conf", "sdk-extra.conf")
 if os.path.exists(sdkextraconf):
     os.remove(sdkextraconf)
 
-for v in ["MACHINE", "DISTRO", "SDKMACHINE"]:
+for v in ["MACHINE", "DISTRO", "SDKMACHINE", "PACKAGE_CLASSES"]:
     value = utils.getconfigvar(v, ourconfig, args.target, stepnum)
     if value and value != "None":
         variables.append(v + ' = "%s"' % value)
