@@ -72,6 +72,8 @@ Build hash information: \n
 ''' % (args.release, args.publish_dir.replace(web_root, web_url), buildhashes)
 
 utils.printheader("Sending QA email")
-subprocess.check_call('echo "' + email +' " | sendmail -t', shell=True)
-
+env = os.environ.copy()
+# Many distros have sendmail in */sbin
+env["PATH"] = env["PATH"] + ":/usr/sbin:/sbin"
+subprocess.check_call('echo "' + email +' " | sendmail -t', shell=True, env=env)
 
