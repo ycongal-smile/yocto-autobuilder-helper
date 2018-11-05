@@ -736,16 +736,6 @@
             "checkout-dirname" : ".",
             "no-layer-add" : true
         },
-        "meta-qt4" : {
-            "url" : "git://git.yoctoproject.org/meta-qt4",
-            "branch" : "master",
-            "revision" : "HEAD"
-        },
-        "meta-qt3" : {
-            "url" : "git://git.yoctoproject.org/meta-qt3",
-            "branch" : "master",
-            "revision" : "HEAD"
-        },
         "meta-mingw" : {
             "url" : "git://git.yoctoproject.org/meta-mingw",
             "branch" : "master",
