@@ -145,6 +145,19 @@
                 "SANITYTARGETS" : "core-image-minimal:do_testsdkext"
             }
         },
+       "nightly-bringup" : {
+            "MACHINE" : "qemuarm",
+            "TEMPLATE" : "nightly-arch",
+            "step2" : {
+                "MACHINE" : "beaglebone-yocto",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest core-image-sato:do_populate_sdk"
+            },
+            "step5" : {
+                "MACHINE" : "qemux86-64",
+                "SDKMACHINE" : "x86_64",
+                "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk"
+            }
+        },
         "nightly-mips" : {
             "MACHINE" : "qemumips",
             "TEMPLATE" : "nightly-arch",
