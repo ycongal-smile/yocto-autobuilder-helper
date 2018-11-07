@@ -1,6 +1,7 @@
 {
     "BASE_HOMEDIR" : "/home/pokybuild",
-    "BASE_SHAREDDIR" : "/srv/www/vhosts/autobuilder.yoctoproject.org",
+    "BASE_SHAREDDIR" : "/srv/autobuilder/autobuilder.yoctoproject.org",
+    "BASE_PUBLISHDIR" : "/srv/autobuilder/downloads.yoctoproject.org",
 
     "build-history-targets" : ["nightly-arm64", "nightly-arm", "nightly-arm-lsb", "nightly-mips64", "nightly-mips", "nightly-mips-lsb", "nightly-ppc", "nightly-ppc-lsb", "nightly-x86-64", "nightly-x86-64-lsb", "nightly-x86", "nightly-x86-lsb"],
     "BUILD_HISTORY_DIR" : "buildhistory",
@@ -24,7 +25,7 @@
         "PRSERV" : "PRSERV_HOST = 'localhost:0'",
         "DLDIR" : "DL_DIR = '${BASE_SHAREDDIR}/current_sources'",
         "SSTATEDIR" : ["SSTATE_DIR ?= '${BASE_SHAREDDIR}/pub/sstate'"],
-        "SSTATEDIR_RELEASE" : ["SSTATE_MIRRORS += 'file://.* file://${BASE_SHAREDDIR}/pub/sstate/PATH'", "SSTATE_DIR ?= '/srv/www/vhosts/downloads.yoctoproject.org/sstate/@RELEASENUM@'"],
+        "SSTATEDIR_RELEASE" : ["SSTATE_MIRRORS += 'file://.* file://${BASE_SHAREDDIR}/pub/sstate/PATH'", "SSTATE_DIR ?= '${BASE_PUBLISHDIR}/sstate/@RELEASENUM@'"],
         "SDKEXTRAS" : ["SSTATE_MIRRORS += '\\", "file://.* http://sstate.yoctoproject.org/dev/@RELEASENUM@PATH;downloadfilename=PATH'"],
         "BUILDINFO" : false,
         "BUILDINFOVARS" : ["INHERIT += 'image-buildinfo'", "IMAGE_BUILDINFO_VARS_append = ' IMAGE_BASENAME IMAGE_NAME'"],
