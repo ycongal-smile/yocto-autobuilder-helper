@@ -70,7 +70,7 @@ for v in ["DLDIR", "PRSERV"]:
 key = "SSTATEDIR"
 if args.sstateprefix:
     key = "SSTATEDIR_RELEASE"
-value = utils.getconfiglist(key, ourconfig, args.target, stepnum)
+value = utils.getconfigvar(key, ourconfig, args.target, stepnum)
 for v in value:
     v = v.replace("@RELEASENUM@", args.sstateprefix)
     variables.append(v)
