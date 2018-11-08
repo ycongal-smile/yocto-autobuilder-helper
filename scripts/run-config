@@ -45,6 +45,7 @@ parser.add_argument('-q', '--quietlogging',
 args = parser.parse_args()
 
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
+os.environ["SCRIPTSDIR"] = scriptsdir
 ourconfig = utils.loadconfig()
 
 testmode = args.test
