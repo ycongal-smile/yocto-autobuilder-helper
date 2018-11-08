@@ -146,16 +146,27 @@
             }
         },
        "nightly-bringup" : {
-            "MACHINE" : "qemuarm",
             "TEMPLATE" : "nightly-arch",
+            "SSTATEDIR" : [],
+            "MACHINE" : "qemuarm64",
             "step2" : {
-                "MACHINE" : "beaglebone-yocto",
-                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest core-image-sato:do_populate_sdk"
+                "MACHINE" : "qemux86-64"
             },
             "step5" : {
                 "MACHINE" : "qemux86-64",
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk"
+            },
+            "step6" : {
+                "MACHINE" : "qemux86-64",
+                "SDKMACHINE" : "x86_64",
+                "PACKAGE_CLASSES" : "package_rpm",
+                "PRSERV" : false,
+                "extravars" : [
+                    "RPM_GPG_SIGN_CHUNK = '1'"
+                ],
+                "EXTRACMDS" : ["checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg -j 15"],
+                "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
         },
         "nightly-mips" : {
