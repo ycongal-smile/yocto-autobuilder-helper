@@ -241,13 +241,23 @@ def flush():
 def printheader(msg, timestamp=True):
     print("")
     print("====================================================================================================")
-    if timestamp:
-        print("%s (%s)" % (msg, time.time()))
+    if timestamp is True:
+        print("%s (%s)" % (msg, round(time.time(), 1)))
+    elif timestamp:
+        print("%s (%s)" % (msg, timestamp))
     else:
         print(msg)
     print("====================================================================================================")
     print("")
     flush()
+
+class HeaderPrinter(object):
+    def __init__(self):
+        self.last = time.time()
+    def printheader(self, msg):
+        time = round(time.time(), 1)
+        printheader(msg, time + ": " + round(time.time() - self.last, 1))
+        self.last = time.time()
 
 def errorreportdir(builddir):
     return builddir + "/tmp/log/error-report/"

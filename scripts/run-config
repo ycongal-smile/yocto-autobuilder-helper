@@ -48,6 +48,8 @@ scriptsdir = os.path.dirname(os.path.realpath(__file__))
 os.environ["SCRIPTSDIR"] = scriptsdir
 ourconfig = utils.loadconfig()
 
+hp = utils.HeaderPrinter()
+
 testmode = args.test
 
 # Find out the number of steps this target has
@@ -60,7 +62,7 @@ if args.target in ourconfig['overrides']:
                 continue
             maxsteps = n
 
-utils.printheader("Target task %s has %d steps" % (args.target, maxsteps))
+hp.printheader("Target task %s has %d steps" % (args.target, maxsteps))
 
 finalret = 0
 
@@ -110,7 +112,7 @@ def bitbakecmd(builddir, cmd, report, stepnum, logsuffix, oeenv=True):
             f.flush()
         ret = p.wait()
     if ret:
-        utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
+        hp.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
         # No error report was written but the command failed so we should write one
         try:
             finalnumreports = len(os.listdir(errordir))
@@ -146,23 +148,23 @@ for stepnum in range(1, maxsteps + 1):
     # Execute the targets for this configuration
     targets = utils.getconfigvar("BBTARGETS", ourconfig, args.target, stepnum)
     if targets:
-        utils.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, targets))
+        hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, targets))
         bitbakecmd(args.builddir, "bitbake %s" % targets, report, stepnum, 'b')
 
     # Execute the sanity targets for this configuration
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, args.target, stepnum)
     if sanitytargets:
-        utils.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
+        hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
         bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s" % (scriptsdir, sanitytargets), report, stepnum, 'c')
 
     # Run any extra commands specified
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, args.target, stepnum)
     for cmd in cmds:
-        utils.printheader("Step %s/%s: Running command %s" % (stepnum, maxsteps, cmd))
+        hp.printheader("Step %s/%s: Running command %s" % (stepnum, maxsteps, cmd))
         bitbakecmd(args.builddir, cmd, report, stepnum, 'd')
     cmds = utils.getconfiglist("EXTRAPLAINCMDS", ourconfig, args.target, stepnum)
     for cmd in cmds:
-        utils.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
+        hp.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
         bitbakecmd(args.builddir, cmd, report, stepnum, 'd', oeenv=False)
 
     # Remove any layers we added in a reverse order
@@ -170,16 +172,16 @@ for stepnum in range(1, maxsteps + 1):
         bitbakecmd(args.builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum, 'a')
 
 if args.publish_dir:
-    utils.printheader("Running publish artefacts")
+    hp.printheader("Running publish artefacts")
     runcmd([scriptsdir + "/publish-artefacts", args.builddir, args.publish_dir, args.target])
 
 if args.build_url and utils.getconfigvar("SENDERRORS", ourconfig, args.target, stepnum):
-    utils.printheader("Sending any error reports")
+    hp.printheader("Sending any error reports")
     runcmd([scriptsdir + "/upload-error-reports", args.builddir, args.build_url])
 
 if finalret:
-    utils.printheader("There were %s failures" % finalret)
-    utils.printheader("Failures in logfiles: %s" % " ".join(errorlogs))
+    hp.printheader("There were %s failures" % finalret)
+    hp.printheader("Failures in logfiles: %s" % " ".join(errorlogs))
     sys.exit(1)
 sys.exit(0)
 
