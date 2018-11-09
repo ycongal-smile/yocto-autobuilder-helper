@@ -255,7 +255,7 @@ class HeaderPrinter(object):
     def __init__(self):
         self.last = time.time()
     def printheader(self, msg):
-        printheader(msg, round(time.time(), 1) + ": " + round(time.time() - self.last, 1))
+        printheader(msg, "%s: %s" % (round(time.time(), 1), round(time.time() - self.last, 1)))
         self.last = time.time()
 
 def errorreportdir(builddir):
