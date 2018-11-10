@@ -163,6 +163,7 @@
                 "SDKMACHINE" : "x86_64",
                 "PACKAGE_CLASSES" : "package_rpm",
                 "PRSERV" : false,
+                "SSTATEDIR" : ["${HELPERBUILDDIR}/../sstate"],
                 "extravars" : [
                     "RPM_GPG_SIGN_CHUNK = '1'"
                 ],

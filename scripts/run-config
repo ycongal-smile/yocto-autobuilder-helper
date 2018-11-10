@@ -47,6 +47,7 @@ args = parser.parse_args()
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 os.environ["SCRIPTSDIR"] = scriptsdir
 ourconfig = utils.loadconfig()
+ourconfig["HELPERBUILDDIR"] = builddir
 
 hp = utils.HeaderPrinter()
 
