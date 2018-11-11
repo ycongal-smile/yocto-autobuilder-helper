@@ -147,7 +147,7 @@
         },
        "nightly-bringup" : {
             "TEMPLATE" : "nightly-arch",
-            "SSTATEDIR" : [],
+            "SSTATEDIR" : ["SSTATE_DIR ?= '${HELPERBUILDDIR}/sstate'"],
             "MACHINE" : "qemuarm64",
             "step2" : {
                 "MACHINE" : "qemux86-64"
@@ -163,7 +163,6 @@
                 "SDKMACHINE" : "x86_64",
                 "PACKAGE_CLASSES" : "package_rpm",
                 "PRSERV" : false,
-                "SSTATEDIR" : ["${HELPERBUILDDIR}/../sstate"],
                 "extravars" : [
                     "RPM_GPG_SIGN_CHUNK = '1'"
                 ],
