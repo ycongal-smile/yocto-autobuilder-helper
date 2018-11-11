@@ -37,6 +37,7 @@ args = parser.parse_args()
 stepnum = int(args.stepnumber) + 1 # Our step numbering is 1 2 3 etc., not 0 of buildbot
 
 ourconfig = utils.loadconfig()
+ourconfig["HELPERBUILDDIR"] = args.builddir
 
 variables = []
 
