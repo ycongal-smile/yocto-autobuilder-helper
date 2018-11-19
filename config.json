@@ -548,19 +548,6 @@
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-gplv2"]
             }
         },
-        "nightly-refkit" : {
-            "MACHINE" : "intel-corei7-64",
-            "SDKMACHINE" : "x86_64",
-            "DISTRO" : "refkit",
-            "PACKAGE_CLASSES" : "package_ipk",
-            "SSTATEDIR" : [],
-            "PRSERV" : false,
-            "extravars" : [
-                "require conf/distro/include/refkit-ci.inc",
-                "SUPPORTED_RECIPES_CHECK_append = ' warn'",
-                "SUPPORTED_RECIPES_CHECK_remove = 'fatal'"
-            ]
-        },
         "nightly-qa-extras" : {
             "NEEDREPOS" : ["poky", "meta-mingw"],
             "MACHINE" : "qemux86-64",
