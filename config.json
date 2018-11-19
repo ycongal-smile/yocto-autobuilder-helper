@@ -59,7 +59,7 @@
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
             },
             "step2" : {
-                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest"
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest core-image-sato:do_populate_sdk"
             },
             "step3" : {
                 "BBTARGETS" : "core-image-sato:do_populate_sdk",
@@ -112,8 +112,7 @@
             "MACHINE" : "qemuarm",
             "TEMPLATE" : "nightly-arch",
             "step2" : {
-                "MACHINE" : "beaglebone-yocto",
-                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest core-image-sato:do_populate_sdk"
+                "MACHINE" : "beaglebone-yocto"
             },
             "step5" : {
                 "MACHINE" : "beaglebone-yocto",
