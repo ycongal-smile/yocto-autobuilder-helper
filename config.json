@@ -6,7 +6,7 @@
     "build-history-targets" : ["nightly-arm64", "nightly-arm", "nightly-arm-lsb", "nightly-mips64", "nightly-mips", "nightly-mips-lsb", "nightly-ppc", "nightly-ppc-lsb", "nightly-x86-64", "nightly-x86-64-lsb", "nightly-x86", "nightly-x86-lsb"],
     "BUILD_HISTORY_DIR" : "buildhistory",
     "BUILD_HISTORY_REPO" : "ssh://git@push.yoctoproject.org/poky-buildhistory",
-    "BUILD_HISTORY_DIRECTPUSH" : ["poky:morty", "poky:pyro", "poky:rocko", "poky:master"],
+    "BUILD_HISTORY_DIRECTPUSH" : ["poky:morty", "poky:pyro", "poky:rocko", "poky:sumo", "poky:thud", "poky:master"],
     "BUILD_HISTORY_FORKPUSH" : {"poky-contrib:ross/mut" : "poky:master", "poky:master-next" : "poky:master"},
 
     "REPO_STASH_DIR" : "${BASE_HOMEDIR}/git/mirror",
