@@ -1,0 +1,11 @@
+#!/bin/bash
+WORKDIR=$1
+DEST=$2
+target=$3
+
+RESFILE=$WORKDIR/tmp/log/oeqa/testresults.json 
+
+if [ -e $RESFILE ]; then
+    mkdir -p $DEST/$target
+    cp $WORKDIR/tmp/log/oeqa/testresults.json  $DEST/$target/
+fi

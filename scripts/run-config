@@ -30,6 +30,9 @@ parser.add_argument('-b', '--buildappsrcrev',
 parser.add_argument('-p', '--publish-dir',
                     action='store',
                     help="Where to publish artefacts to (optional)")
+parser.add_argument('-r', '--results-dir',
+                    action='store',
+                    help="Where to publish test results to (optional)")
 parser.add_argument('-u', '--build-url',
                     action='store',
                     help="URL back to this build (for the error reporting system)")
@@ -175,6 +178,10 @@ for stepnum in range(1, maxsteps + 1):
 if args.publish_dir:
     hp.printheader("Running publish artefacts")
     runcmd([scriptsdir + "/publish-artefacts", args.builddir, args.publish_dir, args.target])
+
+if args.results_dir:
+    hp.printheader("Running results collection")
+    runcmd([scriptsdir + "/collect-results", args.builddir, args.results_dir, args.target])
 
 if args.build_url and utils.getconfigvar("SENDERRORS", ourconfig, args.target, stepnum):
     hp.printheader("Sending any error reports")
