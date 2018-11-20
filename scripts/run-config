@@ -184,5 +184,11 @@ if finalret:
     hp.printheader("There were %s failures" % finalret)
     hp.printheader("Failures in logfiles: %s" % " ".join(errorlogs))
     sys.exit(1)
+
+# Clean up our build directory if things were successful and we're not publishing anything
+# (keep published builds around for longer just in case we need them)
+if not finalret and not args.publish_dir:
+    runcmd([scriptsdir + "../janitor/clobberdir", args.builddir])
+
 sys.exit(0)
 
