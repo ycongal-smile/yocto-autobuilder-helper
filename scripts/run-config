@@ -189,6 +189,9 @@ if finalret:
 # (keep published builds around for longer just in case we need them)
 if not finalret and not args.publish_dir:
     runcmd([scriptsdir + "../janitor/clobberdir", args.builddir])
+else:
+    # Rename any completed build directory so that other builds can't reference paths within it
+    runcmd(["mv", args.builddir, args.builddir + "-renamed"])
 
 sys.exit(0)
 
