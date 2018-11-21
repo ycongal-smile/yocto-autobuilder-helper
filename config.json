@@ -247,7 +247,7 @@
         },
         "genericx86-64" : {
             "MACHINE" : "genericx86-64",
-            "TEMPLATE" : "arch-qemu",
+            "TEMPLATE" : "arch-hw",
             "step1" : {
                 "extravars" : [
                      "IMAGE_FSTYPES_append = ' wic wic.bmap'"
