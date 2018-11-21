@@ -146,7 +146,7 @@ case "$target" in
     "qemux86-64-lsb")
         mkdir -p $DEST/machines/qemu/qemux86-64-lsb
         md5sums $TMPDIR/deploy/images/qemux86-64
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64-lsb
         ;;
     "genericx86-64-lsb")
         mkdir -p $DEST/machines/genericx86-64-lsb
