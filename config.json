@@ -3,7 +3,7 @@
     "BASE_SHAREDDIR" : "/srv/autobuilder/autobuilder.yoctoproject.org",
     "BASE_PUBLISHDIR" : "/srv/autobuilder/downloads.yoctoproject.org",
 
-    "build-history-targets" : ["nightly-arm64", "nightly-arm", "nightly-arm-lsb", "nightly-mips64", "nightly-mips", "nightly-mips-lsb", "nightly-ppc", "nightly-ppc-lsb", "nightly-x86-64", "nightly-x86-64-lsb", "nightly-x86", "nightly-x86-lsb"],
+    "build-history-targets" : ["qemuarm64", "qemuarm", "qemuarm-lsb", "qemumips64", "qemumips", "qemumips-lsb", "qemuppc", "qemuppc-lsb", "qemux86-64", "qemux86-64-lsb", "qemux86", "qemux86-lsb"],
     "BUILD_HISTORY_DIR" : "buildhistory",
     "BUILD_HISTORY_REPO" : "ssh://git@push.yoctoproject.org/poky-buildhistory",
     "BUILD_HISTORY_DIRECTPUSH" : ["poky:morty", "poky:pyro", "poky:rocko", "poky:sumo", "poky:thud", "poky:master"],
@@ -50,40 +50,44 @@
             "BB_DISKMON_DIRS = 'STOPTASKS,${TMPDIR},1G,100K STOPTASKS,${DL_DIR},1G STOPTASKS,${SSTATE_DIR},1G STOPTASKS,/tmp,100M,100K ABORT,${TMPDIR},100M,1K ABORT,${DL_DIR},100M ABORT,${SSTATE_DIR},100M ABORT,/tmp,10M,1K'"
         ]
     },
-
     "templates" : {
-        "nightly-arch" : {
+        "arch-qemu" : {
             "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-sato:do_testsdk"
             },
             "step2" : {
-                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest core-image-sato:do_populate_sdk",
-                "SANITYTARGETS" : "core-image-sato:do_testsdk"
-            },
-            "step3" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
             }
-
         },
-        "nightly-lsb" : {
+        "lsb-qemu" : {
             "DISTRO" : "poky-lsb",
             "BUILDINFO" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
                 "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
-            },
-            "step2" : {
+            }
+        },
+        "arch-hw" : {
+            "BUILDINFO" : true,
+            "step1" : {
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+            }
+        },
+        "lsb-hw" : {
+            "DISTRO" : "poky-lsb",
+            "BUILDINFO" : true,
+            "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
             }
         }
     },
-
     "overrides" : {
-        "nightly-oecore" : {
+        "qemuarm-oecore" : {
             "NEEDREPOS" : ["oecore", "bitbake"],
             "MACHINE" : "qemuarm",
             "DISTRO" : "None",
@@ -105,49 +109,49 @@
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             }
         },
-        "nightly-arm" : {
+        "qemuarm" : {
             "MACHINE" : "qemuarm",
-            "TEMPLATE" : "nightly-arch",
+            "TEMPLATE" : "arch-qemu"
+        },
+        "qemuarm-lsb" : {
+            "MACHINE" : "qemuarm",
+            "TEMPLATE" : "lsb-qemu"
+        },
+        "beaglebone" : {
+            "MACHINE" : "beaglebone-yocto",
+            "TEMPLATE" : "arch-hw",
             "step2" : {
-                "MACHINE" : "beaglebone-yocto"
-            },
-            "step4" : {
-                "MACHINE" : "beaglebone-yocto",
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk"
             }
         },
-        "nightly-arm-lsb" : {
-            "MACHINE" : "qemuarm",
-            "TEMPLATE" : "nightly-lsb",
-            "step2" : {
-                "MACHINE" : "beaglebone-yocto"
-            }
+        "beaglebone-lsb" : {
+            "MACHINE" : "beaglebone-yocto",
+            "TEMPLATE" : "lsb-hw"
         },
-        "nightly-arm64" : {
+        "qemuarm64" : {
             "MACHINE" : "qemuarm64",
-            "BUILDINFO" : true,
-            "step1" : {
-                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
-                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
-            },
-            "step2" : {
-                "BBTARGETS" : "core-image-sato:do_populate_sdk",
-                "SANITYTARGETS" : "core-image-sato:do_testsdk"
-            },
-            "step3" : {
-                "SDKMACHINE" : "x86_64",
-                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext",
-                "SANITYTARGETS" : "core-image-minimal:do_testsdkext"
-            }
+            "TEMPLATE" : "arch-qemu"
         },
-       "nightly-bringup" : {
-            "TEMPLATE" : "nightly-arch",
+       "bringup" : {
+            "BUILDINFO" : true,
             "SSTATEDIR" : ["SSTATE_DIR ?= '${HELPERBUILDDIR}/sstate'"],
             "MACHINE" : "qemuarm64",
+             "step1" : {
+                 "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato:do_populate_sdk",
+                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-sato:do_testsdk"
+             },
             "step2" : {
-                "MACHINE" : "qemux86-64"
+                "MACHINE" : "qemux86-64",
+                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato-sdk-ptest core-image-sato:do_populate_sdk",
+                "SANITYTARGETS" : "core-image-sato:do_testsdk"
+
             },
+            "step3" : {
+                 "SDKMACHINE" : "x86_64",
+                 "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
+                 "SANITYTARGETS" : "core-image-sato:do_testsdk core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
+             },
             "step4" : {
                 "MACHINE" : "qemux86-64",
                 "SDKMACHINE" : "x86_64",
@@ -166,90 +170,95 @@
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
         },
-        "nightly-mips" : {
+        "qemumips" : {
             "MACHINE" : "qemumips",
-            "TEMPLATE" : "nightly-arch",
-            "step2" : {
-                "MACHINE" : "edgerouter"
-            }
+            "TEMPLATE" : "arch-qemu"
         },
-        "nightly-mips-lsb" : {
+        "qemumips-lsb" : {
             "MACHINE" : "qemumips",
-            "TEMPLATE" : "nightly-lsb",
-            "step2" : {
-                "MACHINE" : "edgerouter"
-            }
+            "TEMPLATE" : "lsb-qemu"
         },
-        "nightly-mips64" : {
+        "edgerouter" : {
+            "MACHINE" : "edgerouter",
+            "TEMPLATE" : "arch-hw"
+        },
+        "edgerouter-lsb" : {
+            "MACHINE" : "edgerouter",
+            "TEMPLATE" : "lsb-hw"
+        },
+        "qemumips64" : {
             "MACHINE" : "qemumips64",
-            "BUILDINFO" : true,
-            "step1" : {
-                "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
-                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
-            },
-            "step2" : {
-                "BBTARGETS" : "core-image-sato:do_populate_sdk",
-                "SANITYTARGETS" : "core-image-sato:do_testsdk"
-            },
-            "step3" : {
-                "SDKMACHINE" : "x86_64",
-                "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext",
-                "SANITYTARGETS" : "core-image-sato:do_testsdk"
-            }
+            "TEMPLATE" : "arch-qemu"
         },
-        "nightly-ppc" : {
+        "qemuppc" : {
             "MACHINE" : "qemuppc",
-            "TEMPLATE" : "nightly-arch",
-            "step2" : {
-                "MACHINE" : "mpc8315e-rdb"
-            }
+            "TEMPLATE" : "arch-qemu"
         },
-        "nightly-ppc-lsb" : {
+        "qemuppc-lsb" : {
             "MACHINE" : "qemuppc",
-            "TEMPLATE" : "nightly-lsb",
-            "step2" : {
-                "MACHINE" : "mpc8315e-rdb"
-            }
+            "TEMPLATE" : "lsb-qemu"
         },
-        "nightly-x86" : {
+        "mpc8315e-rdb" : {
+            "MACHINE" : "mpc8315e-rdb",
+            "TEMPLATE" : "arch-hw"
+        },
+        "mpc8315e-rdb-lsb" : {
+            "MACHINE" : "mpc8315e-rdb",
+            "TEMPLATE" : "lsb-hw"
+        },
+        "qemux86" : {
             "MACHINE" : "qemux86",
-            "TEMPLATE" : "nightly-arch",
+            "TEMPLATE" : "arch-qemu",
             "step1" : {
                 "extravars" : [
                      "IMAGE_FSTYPES_append = ' wic wic.bmap'"
                 ]
-            },
-            "step2" : {
-                "MACHINE" : "genericx86"
             }
         },
-        "nightly-x86-lsb" : {
+        "qemux86-lsb" : {
             "MACHINE" : "qemux86",
-            "TEMPLATE" : "nightly-lsb",
-            "step2" : {
-                "MACHINE" : "genericx86"
-            }
+            "TEMPLATE" : "lsb-qemu"
         },
-        "nightly-x86-64" : {
-            "MACHINE" : "qemux86-64",
-            "TEMPLATE" : "nightly-arch",
+        "genericx86" : {
+            "MACHINE" : "genericx86",
+            "TEMPLATE" : "arch-hw",
             "step1" : {
                 "extravars" : [
                      "IMAGE_FSTYPES_append = ' wic wic.bmap'"
                 ]
-            },
-            "step2" : {
-                "MACHINE" : "genericx86-64"
             }
         },
-        "nightly-x86-64-lsb" : {
+        "genericx86-lsb" : {
+            "MACHINE" : "genericx86",
+            "TEMPLATE" : "lsb-hw"
+        },
+        "qemux86-64" : {
             "MACHINE" : "qemux86-64",
-            "TEMPLATE" : "nightly-lsb",
-            "step2" : {
-                "MACHINE" : "genericx86-64"
+            "TEMPLATE" : "arch-qemu",
+            "step1" : {
+                "extravars" : [
+                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
+                ]
             }
         },
-        "nightly-world" : {
+        "qemux86-64-lsb" : {
+            "MACHINE" : "qemux86-64",
+            "TEMPLATE" : "lsb-hw"
+        },
+        "genericx86-64" : {
+            "MACHINE" : "genericx86-64",
+            "TEMPLATE" : "arch-qemu",
+            "step1" : {
+                "extravars" : [
+                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
+                ]
+            }
+        },
+        "genericx86-64-lsb" : {
+            "MACHINE" : "genericx86-64",
+            "TEMPLATE" : "lsb-hw"
+        },
+        "qemux86-world" : {
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "world",
@@ -259,7 +268,7 @@
                 "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'"
             ]
         },
-        "nightly-world-lsb" : {
+        "qemux86-world-lsb" : {
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "x86_64",
             "DISTRO" : "poky-lsb",
@@ -271,7 +280,7 @@
                 "QTDEMOS_remove = 'qmmp'"
             ]
         },
-        "nightly-x32" : {
+        "qemux86-64-x32" : {
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "BUILDINFO" : true,
@@ -290,7 +299,7 @@
                 ]
             }
         },
-        "nightly-multilib" : {
+        "multilib" : {
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "step1" : {
@@ -362,19 +371,19 @@
                 ]
             }
         },
-        "nightly-rpm-non-rpm" : {
+        "pkgman-rpm-non-rpm" : {
             "MACHINE" : "qemux86",
             "PACKAGE_CLASSES" : "package_rpm",
             "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
         },
-        "nightly-deb-non-deb" : {
+        "pkgman-deb-non-deb" : {
             "MACHINE" : "qemux86",
             "PACKAGE_CLASSES" : "package_deb",
             "BBTARGETS" : "core-image-sato core-image-sato-dev core-image-sato-sdk core-image-minimal core-image-minimal-dev",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
         },
-        "nightly-packagemanagers" : {
+        "pkgman-non-rpm" : {
             "MACHINE" : "qemux86",
             "step1" : {
                 "PACKAGE_CLASSES" : "package_ipk",
@@ -392,7 +401,7 @@
             "DISTRO" : "poky-tiny",
             "BBTARGETS" : "core-image-minimal"
         },
-        "nightly-wic" : {
+        "wic" : {
             "BUILDINFO" : true,
             "extravars" : [
                 "IMAGE_FSTYPES += ' hddimg'",
@@ -467,7 +476,7 @@
                 "BBTARGETS" : "build-appliance-image"
             }
         },
-        "nightly-non-gpl3" : {
+        "non-gpl3" : {
             "NEEDREPOS" : ["poky", "meta-gplv2"],
             "MACHINE" : "qemux86",
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline",
@@ -478,7 +487,7 @@
                 "../../yocto-autobuilder-helper/scripts/check-gplv3"
             ]
         },
-        "nightly-no-x11" : {
+        "no-x11" : {
             "MACHINE" : "qemux86-64",
             "BBTARGETS" : "core-image-full-cmdline core-image-weston world",
             "SANITYTARGETS" : "core-image-full-cmdline:do_testimage core-image-weston:do_testimage",
@@ -487,7 +496,7 @@
             ]
 
         },
-        "nightly-musl" : {
+        "musl-qemux86" : {
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline core-image-sato-sdk world",
@@ -496,7 +505,7 @@
                 "TCLIBC = 'musl'"
             ]
         },
-        "nightly-musl-x86-64" : {
+        "musl-qemux86-64" : {
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "BUILDINFO" : true,
@@ -506,7 +515,7 @@
                 "TCLIBC = 'musl'"
             ]
         },
-        "nightly-checkuri" : {
+        "checkuri" : {
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "universe:do_checkuri",
@@ -517,7 +526,7 @@
                 "do_checkuri_pn-lsof = ''"
             ]
         },
-        "nightly-oe-selftest" : {
+        "oe-selftest" : {
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "PACKAGE_CLASSES" : "package_rpm",
@@ -533,7 +542,7 @@
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
         },
-        "nightly-check-layer" : {
+        "check-layer" : {
             "NEEDREPOS" : ["poky", "meta-gplv2", "meta-mingw"],
             "step1" : {
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-poky"]
@@ -548,7 +557,7 @@
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-gplv2"]
             }
         },
-        "nightly-qa-extras" : {
+        "qa-extras" : {
             "NEEDREPOS" : ["poky", "meta-mingw"],
             "MACHINE" : "qemux86-64",
             "step1" : {
@@ -602,7 +611,7 @@
                 ]
             }
         },
-        "nightly-qa-extras2" : {
+        "qa-extras2" : {
             "MACHINE" : "qemux86-64",
             "step1" : {
                 "SDKMACHINE" : "x86_64",
