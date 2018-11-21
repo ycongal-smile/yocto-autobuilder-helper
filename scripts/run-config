@@ -187,11 +187,6 @@ if args.build_url and utils.getconfigvar("SENDERRORS", ourconfig, args.target, s
     hp.printheader("Sending any error reports")
     runcmd([scriptsdir + "/upload-error-reports", args.builddir, args.build_url])
 
-if finalret:
-    hp.printheader("There were %s failures" % finalret)
-    hp.printheader("Failures in logfiles: %s" % " ".join(errorlogs))
-    sys.exit(1)
-
 # Clean up our build directory if things were successful and we're not publishing anything
 # (keep published builds around for longer just in case we need them)
 if not finalret and not args.publish_dir:
@@ -199,6 +194,11 @@ if not finalret and not args.publish_dir:
 else:
     # Rename any completed build directory so that other builds can't reference paths within it
     runcmd(["mv", args.builddir, args.builddir + "-renamed"])
+
+if finalret:
+    hp.printheader("There were %s failures" % finalret)
+    hp.printheader("Failures in logfiles: %s" % " ".join(errorlogs))
+    sys.exit(1)
 
 sys.exit(0)
 
