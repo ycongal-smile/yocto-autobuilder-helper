@@ -74,7 +74,7 @@
         "ptest-qemu" : {
             "BUILDINFO" : true,
             "BBTARGETS" : "core-image-sato-sdk-ptest",
-            "SANITYTARGETS" : "core-image-sato-sdk:do_testimage"
+            "SANITYTARGETS" : "core-image-sato-sdk-ptest:do_testimage"
         },
         "arch-hw" : {
             "BUILDINFO" : true,
