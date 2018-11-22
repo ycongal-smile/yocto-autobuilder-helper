@@ -596,6 +596,7 @@
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "i686-mingw32",
             "BBTARGETS" : "core-image-minimal:do_populate_sdk",
+            "SANITYTARGETS" : "core-image-minimal:do_testsdk",
             "ADDLAYER" : ["${BUILDDIR}/../meta-mingw"]
         },
         "qa-extras" : {
