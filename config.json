@@ -594,10 +594,15 @@
         "meta-mingw" : {
             "NEEDREPOS" : ["poky", "meta-mingw"],
             "MACHINE" : "qemux86",
-            "SDKMACHINE" : "i686-mingw32",
             "BBTARGETS" : "core-image-minimal:do_populate_sdk",
-            "SANITYTARGETS" : "core-image-minimal:do_testsdk",
-            "ADDLAYER" : ["${BUILDDIR}/../meta-mingw"]
+            "ADDLAYER" : ["${BUILDDIR}/../meta-mingw"],
+            "step1" : {
+                "SDKMACHINE" : "i686-mingw32"
+            },
+            "step2" : {
+                "SDKMACHINE" : "x86_64-mingw32",
+                "SANITYTARGETS" : "core-image-minimal:do_testsdk"
+            }
         },
         "meta-oe" : {
             "NEEDREPOS" : ["poky", "meta-openembedded"],
