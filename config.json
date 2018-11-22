@@ -74,7 +74,10 @@
         "ptest-qemu" : {
             "BUILDINFO" : true,
             "BBTARGETS" : "core-image-sato-sdk-ptest",
-            "SANITYTARGETS" : "core-image-sato-sdk-ptest:do_testimage"
+            "SANITYTARGETS" : "core-image-sato-sdk-ptest:do_testimage",
+            "extravars" : [
+                "TEST_SUITES = 'ping ssh ptest'"
+            ]
         },
         "arch-hw" : {
             "BUILDINFO" : true,
