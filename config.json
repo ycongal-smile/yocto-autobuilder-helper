@@ -71,6 +71,11 @@
                 "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
             }
         },
+        "ptest-qemu" : {
+            "BUILDINFO" : true,
+            "BBTARGETS" : "core-image-sato-sdk-ptest",
+            "SANITYTARGETS" : "core-image-sato-sdk:do_testimage"
+        },
         "arch-hw" : {
             "BUILDINFO" : true,
             "step1" : {
@@ -148,6 +153,10 @@
         "qemuarm64" : {
             "MACHINE" : "qemuarm64",
             "TEMPLATE" : "arch-qemu"
+        },
+        "qemuarm64-ptest" : {
+            "MACHINE" : "qemuarm64",
+            "TEMPLATE" : "ptest-qemu"
         },
        "bringup" : {
             "BUILDINFO" : true,
@@ -314,6 +323,10 @@
                     "TEST_SUITES_append = ' x32lib'"
                 ]
             }
+        },
+        "qemux86-64-ptest" : {
+            "MACHINE" : "qemux86-64",
+            "TEMPLATE" : "ptest-qemu"
         },
         "multilib" : {
             "MACHINE" : "qemux86-64",
