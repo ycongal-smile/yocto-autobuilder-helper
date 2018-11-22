@@ -716,7 +716,15 @@
                 "cd scripts; ./setup.sh; ECLIPSE_HOME=`pwd`/eclipse/ ./build.sh oxygen-master master development"
             ]
         },
-        "nightly" : {
+        "a-quick" : {
+            "SDKMACHINE" : "x86_64",
+            "MACHINE" : "qemux86",
+            "BBTARGETS" : "universe -c fetch -k",
+            "extravars" : [
+                "SOURCE_MIRROR_FETCH = '1'"
+            ]
+        },
+        "a-full" : {
             "SDKMACHINE" : "x86_64",
             "MACHINE" : "qemux86",
             "BBTARGETS" : "universe -c fetch -k",
