@@ -588,8 +588,14 @@
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-gplv2"]
             }
         },
-        "qa-extras" : {
+        "meta-mingw" : {
             "NEEDREPOS" : ["poky", "meta-mingw"],
+            "MACHINE" : "qemux86",
+            "SDKMACHINE" : "i686-mingw32",
+            "BBTARGETS" : "core-image-minimal:do_populate_sdk",
+            "ADDLAYER" : ["${BUILDDIR}/../meta-mingw"]
+        },
+        "qa-extras" : {
             "MACHINE" : "qemux86-64",
             "step1" : {
                 "BBTARGETS" : "core-image-minimal",
@@ -612,28 +618,22 @@
                 ]
             },
             "step4" : {
-                "MACHINE" : "qemux86",
-                "SDKMACHINE" : "i686-mingw32",
-                "BBTARGETS" : "core-image-minimal:do_populate_sdk",
-                "ADDLAYER" : ["${BUILDDIR}/../meta-mingw"]
-            },
-            "step5" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext",
                 "extravars" : [
                     "SDK_EXT_TYPE = 'full'"
                 ]
             },
-            "step6" : {
+            "step5" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato core-image-sato:do_populate_sdk_ext"
             },
-            "step7" : {
+            "step6" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato -S none",
                 "EXTRACMDS" : ["rm -rf ${BUILDDIR}/../build/tmp"]
             },
-            "step8" : {
+            "step7" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato",
                 "extravars" : [
