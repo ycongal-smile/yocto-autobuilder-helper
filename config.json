@@ -84,6 +84,22 @@
             "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
             }
+        },
+        "selftest" : {
+            "MACHINE" : "qemux86-64",
+            "SDKMACHINE" : "x86_64",
+            "PACKAGE_CLASSES" : "package_rpm",
+            "PRSERV" : false,
+            "extravars" : [
+                "RPM_GPG_SIGN_CHUNK = '1'"
+            ],
+            "step1" : {
+                "EXTRACMDS" : ["bitbake-selftest"]
+            },
+            "step2" : {
+                "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg -j 15"],
+                "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
+            }
         }
     },
     "overrides" : {
@@ -527,20 +543,22 @@
             ]
         },
         "oe-selftest" : {
-            "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
-            "PACKAGE_CLASSES" : "package_rpm",
-            "PRSERV" : false,
-            "extravars" : [
-                "RPM_GPG_SIGN_CHUNK = '1'"
-            ],
-            "step1" : {
-                "EXTRACMDS" : ["bitbake-selftest"]
-            },
-            "step2" : {
-                "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg -j 15"],
-                "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
-            }
+            "TEMPLATE" : "selftest"
+        },
+        "oe-selftest-ubuntu" : {
+            "TEMPLATE" : "selftest"
+        },
+        "oe-selftest-debian" : {
+            "TEMPLATE" : "selftest"
+        },
+        "oe-selftest-fedora" : {
+            "TEMPLATE" : "selftest"
+        },
+        "oe-selftest-opensuse" : {
+            "TEMPLATE" : "selftest"
+        },
+        "oe-selftest-centos" : {
+            "TEMPLATE" : "selftest"
         },
         "check-layer" : {
             "NEEDREPOS" : ["poky", "meta-gplv2", "meta-mingw"],
