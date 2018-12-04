@@ -105,7 +105,21 @@
                 "EXTRACMDS" : ["bitbake-selftest"]
             },
             "step2" : {
-                "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg -j 15"],
+                "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg buildoptions.SourceMirroring.test_yocto_source_mirror -j 15"],
+                "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
+            }
+        },
+        "trigger-build" : {
+            "SDKMACHINE" : "x86_64",
+            "MACHINE" : "qemux86",
+            "step1" : {
+                "BBTARGETS" : "universe -c fetch -k",
+                "extravars" : [
+                    "SOURCE_MIRROR_FETCH = '1'"
+                ]
+            },
+            "step2" : {
+                "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest -r buildoptions.SourceMirroring.test_yocto_source_mirror"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
         }
@@ -194,7 +208,7 @@
                 "extravars" : [
                     "RPM_GPG_SIGN_CHUNK = '1'"
                 ],
-                "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg -j 15"],
+                "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg buildoptions.SourceMirroring.test_yocto_source_mirror -j 15"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
         },
@@ -765,20 +779,10 @@
             ]
         },
         "a-quick" : {
-            "SDKMACHINE" : "x86_64",
-            "MACHINE" : "qemux86",
-            "BBTARGETS" : "universe -c fetch -k",
-            "extravars" : [
-                "SOURCE_MIRROR_FETCH = '1'"
-            ]
+            "TEMPLATE" : "trigger-build"
         },
         "a-full" : {
-            "SDKMACHINE" : "x86_64",
-            "MACHINE" : "qemux86",
-            "BBTARGETS" : "universe -c fetch -k",
-            "extravars" : [
-                "SOURCE_MIRROR_FETCH = '1'"
-            ]
+            "TEMPLATE" : "trigger-build"
         }
     },
     "repo-defaults" : {
