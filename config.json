@@ -112,6 +112,7 @@
         "trigger-build" : {
             "SDKMACHINE" : "x86_64",
             "MACHINE" : "qemux86",
+            "PRSERV" : false,
             "step1" : {
                 "BBTARGETS" : "universe -c fetch -k",
                 "extravars" : [
