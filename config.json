@@ -13,7 +13,7 @@
     "TRASH_DIR" : "${BASE_HOMEDIR}/git/trash",
 
     "QAMAIL_TO" : "yocto@yoctoproject.org",
-    "QAMAIL_CC" : "pidge@toganlabs.com, otavio@ossystems.com.br, yi.zhao@windriver.com, tracy.graydon@intel.com, joshua.g.lock@intel.com, apoorv.sangal@intel.com, ee.peng.yeoh@intel.com, aaron.chun.yew.chan@intel.com, rebecca.swee.fun.chang@intel.com, chin.huat.ang@intel.com, richard.purdie@linuxfoundation.org, akuster808@gmail.com",
+    "QAMAIL_CC" : "otavio@ossystems.com.br, yi.zhao@windriver.com, apoorv.sangal@intel.com, ee.peng.yeoh@intel.com, aaron.chun.yew.chan@intel.com, chin.huat.ang@intel.com, richard.purdie@linuxfoundation.org, akuster808@gmail.com, stephen.k.jolley@intel.com",
     "WEBPUBLISH_DIR" : "${BASE_SHAREDDIR}/",
     "WEBPUBLISH_URL" : "https://autobuilder.yocto.io/",
 
