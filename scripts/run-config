@@ -80,6 +80,8 @@ def logname(path, stepnum, logsuffix):
     lognum += 1
     return path + "/command.log.%s%s" % (stepnum, logsuffix)
 
+utils.mkdir(args.builddir)
+
 revision = "unknown"
 report = utils.ErrorReport(ourconfig, args.target, args.builddir, args.branchname, revision)
 errordir = utils.errorreportdir(args.builddir)
