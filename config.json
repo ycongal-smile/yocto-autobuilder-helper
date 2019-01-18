@@ -17,6 +17,8 @@
     "WEBPUBLISH_DIR" : "${BASE_SHAREDDIR}/",
     "WEBPUBLISH_URL" : "https://autobuilder.yocto.io/",
 
+    "BUILDPERF_LOCALDIR" : "/home/pokybuild/buildperf-results",
+
     "defaults" : {
         "NEEDREPOS" : ["poky"],
         "DISTRO" : "poky",
@@ -92,6 +94,12 @@
             "step1" : {
                 "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
             }
+        },
+        "buildperf" : {
+            "MACHINE" : "qemux86",
+            "EXTRAPLAINCMDS" : [
+                "scripts/contrib/build-perf-test-wrapper.sh -a ${BUILDPERF_LOCALDIR}/archive -C ${BUILDPERF_LOCALDIR}/archive-repo -E yocto-perf@yoctoproject.org"
+            ]
         },
         "selftest" : {
             "MACHINE" : "qemux86-64",
@@ -778,6 +786,12 @@
             "EXTRAPLAINCMDS" : [
                 "cd scripts; ./setup.sh; ECLIPSE_HOME=`pwd`/eclipse/ ./build.sh oxygen-master master development"
             ]
+        },
+        "buildperf-ubuntu1604" : {
+            "TEMPLATE" : "buildperf"
+        },
+        "buildperf-centos7" : {
+            "TEMPLATE" : "buildperf"
         },
         "a-quick" : {
             "TEMPLATE" : "trigger-build"
