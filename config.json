@@ -17,7 +17,8 @@
     "WEBPUBLISH_DIR" : "${BASE_SHAREDDIR}/",
     "WEBPUBLISH_URL" : "https://autobuilder.yocto.io/",
 
-    "BUILDPERF_LOCALDIR" : "/home/pokybuild/buildperf-results",
+    "BUILDPERF_STATEDIR" : "/home/pokybuild/buildperf",
+    "BUILDPERF_RESULTSDIR" : "/home/pokybuild/buildperf-results",
 
     "defaults" : {
         "NEEDREPOS" : ["poky"],
@@ -98,7 +99,7 @@
         "buildperf" : {
             "MACHINE" : "qemux86",
             "EXTRAPLAINCMDS" : [
-                "scripts/contrib/build-perf-test-wrapper.sh -a ${BUILDPERF_LOCALDIR}/archive -C ${BUILDPERF_LOCALDIR}/archive-repo -E yocto-perf@yoctoproject.org"
+                "scripts/contrib/build-perf-test-wrapper.sh -a ${BUILDPERF_RESULTSDIR}/archive -C ${BUILDPERF_RESULTSDIR}/archive-repo -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -g ${BUILDPERF_RESULTSDIR}"
             ]
         },
         "selftest" : {
