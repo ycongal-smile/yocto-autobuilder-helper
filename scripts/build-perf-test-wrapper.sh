@@ -37,6 +37,7 @@ Optional arguments:
   -E EMAIL_ADDR     send email report
   -g GLOBALRES_DIR  where to place the globalres file
   -P GIT_REMOTE     push results to a remote Git repository
+  -r RESULTS_DIR    directory to store results artefacts in
   -R DEST           rsync reports to a remote destination
   -w WORK_DIR       work dir for this script
                     (default: GIT_TOP_DIR/build-perf-test)
@@ -53,7 +54,7 @@ get_os_release_var () {
 commitish=""
 oe_build_perf_test_extra_opts=()
 oe_git_archive_extra_opts=()
-while getopts "ha:c:C:d:E:g:P:R:w:x" opt; do
+while getopts "ha:c:C:d:E:g:P:r:R:w:x" opt; do
     case $opt in
         h)  usage
             exit 0
@@ -75,9 +76,17 @@ while getopts "ha:c:C:d:E:g:P:R:w:x" opt; do
             ;;
         P)  oe_git_archive_extra_opts+=("--push" "$OPTARG")
             ;;
+        r)  archive_dir=`realpath -s "$OPTARG"`/archive
+            results_repo=`realpath -s "$OPTARG"`/archive-repo
+            globalres_dir=`realpath -s "$OPTARG"`
+            mkdir -p $results_repo $archive_dir
+            ;;
         R)  rsync_dst="$OPTARG"
             ;;
         w)  base_dir=`realpath -s "$OPTARG"`
+            if [ -n "$base_dir" ]; then
+                rm -rf $base_dir/*
+            fi
             ;;
         x)  oe_build_perf_test_extra_opts+=("--xml")
             ;;
@@ -230,6 +239,9 @@ if [ -n "$results_repo" ]; then
     oe-build-perf-report -r "$results_repo" > $report_txt
     oe-build-perf-report -r "$results_repo" --html > $report_html
 
+    cp $report_txt $globalres_dir/`hostname`_${sanitized_branch}_$git_rev-$timestamp.txt
+    cp $report_html $globalres_dir/`hostname`_${sanitized_branch}_$git_rev-$timestamp.html
+
     # Send email report
     if [ -n "$email_to" ]; then
         echo "Emailing test report"
@@ -237,8 +249,7 @@ if [ -n "$results_repo" ]; then
         "$script_dir"/oe-build-perf-report-email.py --to "$email_to" --subject "Build Perf Test Report for $os_name" --text $report_txt --html $report_html "${OE_BUILD_PERF_REPORT_EMAIL_EXTRA_ARGS[@]}"
     fi
 
-    # Upload report files, unless we're on detached head
-    if [ -n "$rsync_dst" -a -n "$branch" ]; then
+    if [ -n "$rsync_dst" ]; then
         echo "Uploading test report"
         rsync $report_txt $report_html $rsync_dst
     fi

@@ -36,10 +36,9 @@ log = logging.getLogger('oe-build-perf-report')
 
 
 # Find js scaper script
-SCRAPE_JS = os.path.join(os.path.dirname(__file__), '..', 'lib', 'build_perf',
-                         'scrape-html-report.js')
+SCRAPE_JS = os.path.join(os.path.dirname(__file__), 'oe-build-perf-report-scrape-html-report.js')
 if not os.path.isfile(SCRAPE_JS):
-    log.error("Unableto find oe-build-perf-report-scrape.js")
+    log.error("Unableto find oe-build-perf-report-scrape-html-report.js")
     sys.exit(1)
 
 
