@@ -60,7 +60,8 @@ while getopts "ha:c:C:d:E:g:P:r:R:w:x" opt; do
         C)  mkdir -p "$OPTARG"
             results_repo=`realpath -s "$OPTARG"`
             ;;
-        d)  download_dir=`realpath -s "$OPTARG"`
+        d)  mkdir -p "$OPTARG"
+            download_dir=`realpath -s "$OPTARG"`
             ;;
         E)  email_to="$OPTARG"
             ;;
