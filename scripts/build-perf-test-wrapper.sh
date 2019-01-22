@@ -24,24 +24,20 @@ archive_dir=~/perf-results/archives
 
 usage () {
 cat << EOF
-Usage: $script [-h] [-c COMMITISH] [-C GIT_REPO]
+Usage: $script [-h] [-C GIT_REPO]
 
 Optional arguments:
   -h                show this help and exit.
   -a ARCHIVE_DIR    archive results tarball here, give an empty string to
                     disable tarball archiving (default: $archive_dir)
-  -c COMMITISH      test (checkout) this commit, <branch>:<commit> can be
-                    specified to test specific commit of certain branch
   -C GIT_REPO       commit results into Git
   -d DOWNLOAD_DIR   directory to store downloaded sources in
   -E EMAIL_ADDR     send email report
   -g GLOBALRES_DIR  where to place the globalres file
   -P GIT_REMOTE     push results to a remote Git repository
   -r RESULTS_DIR    directory to store results artefacts in
-  -R DEST           rsync reports to a remote destination
   -w WORK_DIR       work dir for this script
                     (default: GIT_TOP_DIR/build-perf-test)
-  -x                create xml report (instead of json)
 EOF
 }
 
@@ -51,7 +47,6 @@ get_os_release_var () {
 
 
 # Parse command line arguments
-commitish=""
 oe_build_perf_test_extra_opts=()
 oe_git_archive_extra_opts=()
 while getopts "ha:c:C:d:E:g:P:r:R:w:x" opt; do
@@ -61,8 +56,6 @@ while getopts "ha:c:C:d:E:g:P:r:R:w:x" opt; do
             ;;
         a)  mkdir -p "$OPTARG"
             archive_dir=`realpath -s "$OPTARG"`
-            ;;
-        c)  commitish=$OPTARG
             ;;
         C)  mkdir -p "$OPTARG"
             results_repo=`realpath -s "$OPTARG"`
@@ -81,14 +74,10 @@ while getopts "ha:c:C:d:E:g:P:r:R:w:x" opt; do
             globalres_dir=`realpath -s "$OPTARG"`
             mkdir -p $results_repo $archive_dir
             ;;
-        R)  rsync_dst="$OPTARG"
-            ;;
         w)  base_dir=`realpath -s "$OPTARG"`
             if [ -n "$base_dir" ]; then
                 rm -rf $base_dir/*
             fi
-            ;;
-        x)  oe_build_perf_test_extra_opts+=("--xml")
             ;;
         *)  usage
             exit 1
@@ -133,36 +122,6 @@ if ! git_topdir=$(git rev-parse --show-toplevel); then
 fi
 
 cd "$git_topdir"
-
-if [ -n "$commitish" ]; then
-    echo "Running git fetch"
-    git fetch &> /dev/null
-    git checkout HEAD^0 &> /dev/null
-
-    # Handle <branch>:<commit> format
-    if echo "$commitish" | grep -q ":"; then
-        commit=`echo "$commitish" | cut -d":" -f2`
-        branch=`echo "$commitish" | cut -d":" -f1`
-    else
-        commit="$commitish"
-        branch="$commitish"
-    fi
-
-    echo "Checking out $commitish"
-    git branch -D $branch &> /dev/null
-    if ! git checkout -f $branch &> /dev/null; then
-        echo "ERROR: Git checkout failed"
-        exit 1
-    fi
-
-    # Check that the specified branch really contains the commit
-    commit_hash=`git rev-parse --revs-only $commit --`
-    if [ -z "$commit_hash" -o "`git merge-base $branch $commit`" != "$commit_hash" ]; then
-        echo "ERROR: branch $branch does not contain commit $commit"
-        exit 1
-    fi
-    git reset --hard $commit > /dev/null
-fi
 
 # Determine name of the current branch
 branch=`git symbolic-ref HEAD 2> /dev/null`
@@ -248,19 +207,7 @@ if [ -n "$results_repo" ]; then
         os_name=`get_os_release_var PRETTY_NAME`
         "$script_dir"/oe-build-perf-report-email.py --to "$email_to" --subject "Build Perf Test Report for $os_name" --text $report_txt --html $report_html "${OE_BUILD_PERF_REPORT_EMAIL_EXTRA_ARGS[@]}"
     fi
-
-    if [ -n "$rsync_dst" ]; then
-        echo "Uploading test report"
-        rsync $report_txt $report_html $rsync_dst
-    fi
 fi
-
-
-echo -ne "\n\n-----------------\n"
-echo "Global results file:"
-echo -ne "\n"
-
-cat "$globalres_log"
 
 if [ -n "$archive_dir" ]; then
     echo -ne "\n\n-----------------\n"
