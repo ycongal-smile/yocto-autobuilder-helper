@@ -155,13 +155,13 @@ for stepnum in range(1, maxsteps + 1):
     targets = utils.getconfigvar("BBTARGETS", ourconfig, args.target, stepnum)
     if targets:
         hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, targets))
-        bitbakecmd(args.builddir, "bitbake %s" % targets, report, stepnum, 'b')
+        bitbakecmd(args.builddir, "bitbake %s -k" % targets, report, stepnum, 'b')
 
     # Execute the sanity targets for this configuration
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, args.target, stepnum)
     if sanitytargets:
         hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
-        bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s" % (scriptsdir, sanitytargets), report, stepnum, 'c')
+        bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s -k" % (scriptsdir, sanitytargets), report, stepnum, 'c')
 
     # Run any extra commands specified
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, args.target, stepnum)
