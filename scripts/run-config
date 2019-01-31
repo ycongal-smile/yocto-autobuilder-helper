@@ -134,7 +134,10 @@ def runcmd(cmd, *args, **kwargs):
         print("Running %s" % cmd)
         if "setup-config" not in cmd[0]:
             return
-    subprocess.check_call(cmd, *args, **kwargs)
+    try:
+        subprocess.check_call(cmd, *args, **kwargs)
+    except subprocess.CalledProcessError:
+        print("ERROR: Command %s failed" % cmd)
 
 bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, args.builddir, args.target, args.reponame, args.branchname)
 if bh_path:
