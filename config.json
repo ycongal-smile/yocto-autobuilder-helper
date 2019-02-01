@@ -99,7 +99,7 @@
         "buildperf" : {
             "MACHINE" : "qemux86",
             "EXTRAPLAINCMDS" : [
-                "${SCRIPTSDIR}/build-perf-test-wrapper.sh -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w /home/pokybuild/build-perf-test"
+                "${SCRIPTSDIR}/build-perf-test-wrapper.sh -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w /home/pokybuild/build-perf-test -p ${HELPERRESULTSDIR}"
             ]
         },
         "selftest" : {

@@ -51,6 +51,7 @@ scriptsdir = os.path.dirname(os.path.realpath(__file__))
 os.environ["SCRIPTSDIR"] = scriptsdir
 ourconfig = utils.loadconfig()
 ourconfig["HELPERBUILDDIR"] = args.builddir
+ourconfig["HELPERRESULTSDIR"] = (args.results_dir or "")
 
 hp = utils.HeaderPrinter()
 

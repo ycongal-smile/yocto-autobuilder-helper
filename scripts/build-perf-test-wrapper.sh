@@ -34,6 +34,7 @@ Optional arguments:
   -d DOWNLOAD_DIR   directory to store downloaded sources in
   -E EMAIL_ADDR     send email report
   -g GLOBALRES_DIR  where to place the globalres file
+  -p PUBLISH_DIR    directory to publish into
   -P GIT_REMOTE     push results to a remote Git repository
   -r RESULTS_DIR    directory to store results artefacts in
   -w WORK_DIR       work dir for this script
@@ -49,7 +50,7 @@ get_os_release_var () {
 # Parse command line arguments
 oe_build_perf_test_extra_opts=()
 oe_git_archive_extra_opts=()
-while getopts "ha:c:C:d:E:g:P:r:R:w:x" opt; do
+while getopts "ha:c:C:d:E:g:p:P:r:R:w:x" opt; do
     case $opt in
         h)  usage
             exit 0
@@ -67,6 +68,9 @@ while getopts "ha:c:C:d:E:g:P:r:R:w:x" opt; do
             ;;
         g)  mkdir -p "$OPTARG"
             globalres_dir=`realpath -s "$OPTARG"`
+            ;;
+        p)  mkdir -p "$OPTARG"
+            publish_dir=`realpath -s "$OPTARG"`
             ;;
         P)  oe_git_archive_extra_opts+=("--push" "$OPTARG")
             ;;
@@ -179,6 +183,10 @@ case $? in
         ;;
 esac
 
+if [ -n "$publish_dir" ]; then
+    cp -r ${results_dir}/* $publish_dir
+fi
+
 # Commit results to git
 if [ -n "$results_repo" ]; then
     echo -e "\nArchiving results in $results_repo"
@@ -199,8 +207,13 @@ if [ -n "$results_repo" ]; then
     oe-build-perf-report -r "$results_repo" > $report_txt
     oe-build-perf-report -r "$results_repo" --html > $report_html
 
-    cp $report_txt $globalres_dir/`hostname`_${sanitized_branch}_$git_rev-$timestamp.txt
-    cp $report_html $globalres_dir/`hostname`_${sanitized_branch}_$git_rev-$timestamp.html
+    cp $report_txt $globalres_dir/`hostname`_${sanitized_branch}__$timestamp_$git_rev.txt
+    cp $report_html $globalres_dir/`hostname`_${sanitized_branch}_$timestamp_$git_rev.html
+
+    if [ -n "$publish_dir" ]; then
+        cp $report_txt $publish_dir/`hostname`_${sanitized_branch}_$timestamp_$git_rev.txt
+        cp $report_html $publish_dir/`hostname`_${sanitized_branch}_$timestamp_$git_rev.html
+    fi
 
     # Send email report
     if [ -n "$email_to" ]; then
