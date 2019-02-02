@@ -99,7 +99,13 @@
         "buildperf" : {
             "MACHINE" : "qemux86",
             "EXTRAPLAINCMDS" : [
-                "${SCRIPTSDIR}/build-perf-test-wrapper.sh -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w /home/pokybuild/build-perf-test -p ${HELPERRESULTSDIR}"
+                "${SCRIPTSDIR}/build-perf-test-wrapper -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w /home/pokybuild/build-perf-test -p ${HELPERRESULTSDIR}"
+            ],
+            "extravars" : [
+                "BB_NUMBER_THREADS = '8'",
+                "PARALLEL_MAKE = '-j 8'",
+                "DL_DIR = '${BUILDPERF_STATEDIR}/downloads'",
+                "CONNECTIVITY_CHECK_URIS = ''"
             ]
         },
         "selftest" : {

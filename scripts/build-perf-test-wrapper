@@ -1,0 +1,218 @@
+#!/usr/bin/env python3
+#
+# Build performance test script wrapper
+#
+# Copyright (c) 2019, Linux Foundation
+#
+# This program is free software; you can redistribute it and/or modify it
+# under the terms and conditions of the GNU General Public License,
+# version 2, as published by the Free Software Foundation.
+#
+# This program is distributed in the hope it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# This script is a simple wrapper around the build performance tests
+
+import os
+import fcntl
+import errno
+import utils
+import subprocess
+import sys
+import datetime
+
+parser = utils.ArgParser(description='Run a build performance test and process the results.')
+
+parser.add_argument('-a', '--archive-dir',
+                    action='store',
+                    help="Where to archive a results tarball")
+parser.add_argument('-C', '--git-repo',
+                    action='store',
+                    help="Commit results into this git repository")
+parser.add_argument('-d', '--download-dir',
+                    action='store',
+                    help="Directory to download sources into")
+parser.add_argument('-E', '--email-addr',
+                    action='store',
+                    help="Send an email report to this address")
+parser.add_argument('-g', '--global-results',
+                    action='store',
+                    help="Save a global results file in this directory")
+parser.add_argument('-P', '--push-remote',
+                    action='store',
+                    help="Push git changes to this remote repository")
+parser.add_argument('-r', '--results-dir',
+                    action='store',
+                    help="Where to store results artefacts")
+parser.add_argument('-w', '--work-dir',
+                    action='store',
+                    help="build directory to run the tests in")
+parser.add_argument('-p', '--publish-dir',
+                    action='store',
+                    help="directory to publish into")
+
+args = parser.parse_args()
+
+scriptsdir = os.path.dirname(os.path.realpath(__file__))
+ourconfig = utils.loadconfig()
+
+if args.git_repo:
+    os.makedirs(args.git_repo, exist_ok=True)
+if args.download_dir:
+    os.makedirs(args.download_dir, exist_ok=True)
+if args.global_results:
+    os.makedirs(args.global_results, exist_ok=True)
+if args.publish_dir:
+    os.makedirs(args.publish_dir, exist_ok=True)
+archiveopts = ""
+if args.push_remote:
+    archiveopts += "--push " + args.push_remote
+if args.results_dir:
+    args.archive_dir = args.results_dir + "/archive"
+    args.git_repo = args.results_dir + "/archive-repo"
+    args.global_results = args.results_dir
+    os.makedirs(args.results_dir, exist_ok=True)
+
+if args.email_addr:
+    try:
+        subprocess.check_output(["which", "phantomjs"])
+    except subprocess.CalledProcessError:
+        print("Please install phantomjs to email reports")
+        sys.exit(1)
+    try:
+        subprocess.check_output(["which", "optipng"])
+    except subprocess.CalledProcessError:
+        print("Please install optipng to email reports")
+        sys.exit(1)
+
+op = fcntl.LOCK_EX
+try:
+    lf = open("/tmp/oe-build-perf-test-wrapper.lock", 'a+')
+    fileno = lf.fileno()
+    fcntl.flock(fileno, op)
+except OSError as e:
+    print("Another version of the script is running")
+    try:
+        lf.close()
+    except Exception:
+         pass
+    sys.exit(1)
+
+print("Running on " + os.uname()[1])
+
+try:
+    gitdir = subprocess.check_output("git rev-parse --show-toplevel", shell=True).decode("utf-8").strip()
+except subprocess.CalledProcessError:
+    print("The current working dir doesn't seem to be a git clone. Please cd there before running " + sys.argv[0])
+    sys.exit(1)
+
+os.chdir(gitdir)
+
+# Determine name of the current branch
+branch = subprocess.check_output("git symbolic-ref HEAD 2> /dev/null", shell=True).decode("utf-8").strip()
+# Strip refs/heads/
+branch = branch[11:]
+
+if not args.work_dir:
+    args.work_dir = gitdir + "/build-perf-test"
+if not args.archive_dir:
+    args.archive_dir = gitdir + "/archive-results"
+os.makedirs(args.archive_dir, exist_ok=True)
+
+# Ensure we start with a clean build buil directory
+subprocess.check_call("rm -rf %s/*" % args.work_dir, shell=True)
+os.makedirs(args.work_dir + "/conf", exist_ok=True)
+# copy in auto.conf
+subprocess.check_call("cp -r %s/build/conf/auto.conf %s/conf" % (gitdir, args.work_dir), shell=True)
+
+
+print("Using working dir " + args.work_dir)
+
+if not args.download_dir:
+    args.download_dir = args.work_dir + "\downloads"
+
+if not args.global_results:
+    args.global_results = args.work_dir
+
+timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+
+gitrev = subprocess.check_output("git rev-parse --short HEAD", shell=True).decode("utf-8").strip()
+build_dir = args.work_dir + "build-" + gitrev + "-" + timestamp
+results_tmpdir = args.work_dir + "results-" + gitrev + "-" + timestamp
+globalres_log = args.global_results + "/globalres.log"
+machine = "qemux86"
+
+os.makedirs(args.work_dir, exist_ok=True)
+
+# Run actual test script
+ret = subprocess.call(". ./oe-init-build-env %s >/dev/null; oe-build-perf-test --out-dir %s --globalres-file %s --lock-file %s/oe-build-perf.lock"
+ % (build_dir, results_tmpdir, globalres_log, args.work_dir), shell=True)
+
+if ret == 1:
+    print("ERROR: oe-build-perf-test script failed!")
+    sys.exit(1)
+
+if ret == 2:
+    print("ERROR: some tests failed!")
+
+if args.publish_dir:
+    subprocess.check_call("cp -r " + results_tmpdir + "/* " + args.publish_dir, shell=True)
+
+# Commit results to git
+if args.git_repo:
+    print("\nArchiving results in " + args.git_repo)
+
+    subprocess.check_call("oe-git-archive " \
+        "--git-dir " + args.git_repo + " " \
+        "--branch-name '{hostname}/{branch}/{machine}' " \
+        "--tag-name '{hostname}/{branch}/{machine}/{commit_count}-g{commit}/{tag_number}' " \
+        "--exclude 'buildstats.json' " \
+        "--notes 'buildstats/{branch_name}' " + results_tmpdir + "/buildstats.json " \
+        + archiveopts + " " + results_tmpdir, shell=True)
+
+    # Generate test reports
+    sanitized_branch = branch.replace("/", "_")
+    report_txt = os.uname()[1] + "_" + sanitized_branch + "_" + machine + ".txt"
+    report_html = os.uname()[1] + "_" + sanitized_branch + "_" + machine + ".html"
+
+    print("\nGenerating test report")
+    subprocess.check_call("oe-build-perf-report -r " + args.git_repo + " > " + report_txt, shell=True)
+    subprocess.check_call("oe-build-perf-report -r " + args.git_repo + " --html > " + report_html, shell=True)
+
+    filename = os.uname()[1] + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
+
+    subprocess.check_call("cp " + report_txt + " " + args.global_results + "/" + filename + ".txt", shell=True)
+    subprocess.check_call("cp " + report_html + " " + args.global_results + "/" + filename + ".html", shell=True)
+
+    if args.publish_dir:
+        subprocess.check_call("cp " + report_txt + " " + args.publish_dir + "/" + filename + ".txt", shell=True)
+        subprocess.check_call("cp " + report_html + " " + args.publish_dir + "/" + filename + ".html", shell=True)
+
+    # Send email report
+    if args.email_addr:
+        print("Emailing test report")
+
+        os_name = subprocess.check_output(". /etc/os-release; eval echo '$'PRETTY_NAME", shell=True).decode("utf-8").strip()
+        cmd = scriptsdir + "/oe-build-perf-report-email.py --to '" + args.email_addr + \
+              "' --subject 'Build Perf Test Report for " + os_name + "' --text " + \
+              report_txt + " --html " + report_html
+        try:
+            subprocess.check_call(cmd, shell=True)
+        except subprocess.CalledProcessError:
+            print("ERROR: Send email command %s failed" % cmd)
+
+if args.archive_dir:
+    print("\n\n-----------------\n")
+    print("Archiving results in " + args.archive_dir)
+    os.makedirs(args.archive_dir, exist_ok=True)
+    results_basename = os.path.basename(results_tmpdir)
+    results_dirname = os.path.dirname(results_tmpdir)
+    cmd = "tar -czf" + args.archive_dir + "/" + os.uname()[1] + "-" + results_basename + ".tar.gz -C " + results_dirname + " " + results_basename
+    subprocess.check_call(cmd, shell=True)
+
+subprocess.check_call("rm -rf %s" % build_dir, shell=True)
+subprocess.check_call("rm -rf %s" % results_tmpdir, shell=True)
+
+print("DONE")
