@@ -131,7 +131,7 @@ subprocess.check_call("cp -r %s/build/conf/auto.conf %s/conf" % (gitdir, args.wo
 print("Using working dir " + args.work_dir)
 
 if not args.download_dir:
-    args.download_dir = args.work_dir + "\downloads"
+    args.download_dir = args.work_dir + "/downloads"
 
 if not args.global_results:
     args.global_results = args.work_dir
@@ -139,8 +139,8 @@ if not args.global_results:
 timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
 gitrev = subprocess.check_output("git rev-parse --short HEAD", shell=True).decode("utf-8").strip()
-build_dir = args.work_dir + "build-" + gitrev + "-" + timestamp
-results_tmpdir = args.work_dir + "results-" + gitrev + "-" + timestamp
+build_dir = args.work_dir + "/build-" + gitrev + "-" + timestamp
+results_tmpdir = args.work_dir + "/results-" + gitrev + "-" + timestamp
 globalres_log = args.global_results + "/globalres.log"
 machine = "qemux86"
 
