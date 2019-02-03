@@ -147,7 +147,7 @@ machine = "qemux86"
 os.makedirs(args.work_dir, exist_ok=True)
 
 # Run actual test script
-ret = subprocess.call(". ./oe-init-build-env %s >/dev/null; oe-build-perf-test --out-dir %s --globalres-file %s --lock-file %s/oe-build-perf.lock"
+ret = subprocess.call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-test --out-dir %s --globalres-file %s --lock-file %s/oe-build-perf.lock"
  % (build_dir, results_tmpdir, globalres_log, args.work_dir), shell=True)
 
 if ret == 1:
@@ -164,7 +164,7 @@ if args.publish_dir:
 if args.git_repo:
     print("\nArchiving results in " + args.git_repo)
 
-    subprocess.check_call(". ./oe-init-build-env %s >/dev/null; oe-git-archive " % build_dir + \
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-git-archive " % build_dir + \
         "--git-dir " + args.git_repo + " " \
         "--branch-name '{hostname}/{branch}/{machine}' " \
         "--tag-name '{hostname}/{branch}/{machine}/{commit_count}-g{commit}/{tag_number}' " \
@@ -178,8 +178,8 @@ if args.git_repo:
     report_html = os.uname()[1] + "_" + sanitized_branch + "_" + machine + ".html"
 
     print("\nGenerating test report")
-    subprocess.check_call(". ./oe-init-build-env %s >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " > ../" + report_txt, shell=True)
-    subprocess.check_call(". ./oe-init-build-env %s >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " --html ../> " + report_html, shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " > ../" + report_txt, shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " --html > ../ " + report_html, shell=True)
 
     filename = os.uname()[1] + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
 
