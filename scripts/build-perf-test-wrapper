@@ -178,8 +178,8 @@ if args.git_repo:
     report_html = os.uname()[1] + "_" + sanitized_branch + "_" + machine + ".html"
 
     print("\nGenerating test report")
-    subprocess.check_call(". ./oe-init-build-env %s >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " > " + report_txt, shell=True)
-    subprocess.check_call(". ./oe-init-build-env %s >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " --html > " + report_html, shell=True)
+    subprocess.check_call(". ./oe-init-build-env %s >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " > ../" + report_txt, shell=True)
+    subprocess.check_call(". ./oe-init-build-env %s >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " --html ../> " + report_html, shell=True)
 
     filename = os.uname()[1] + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
 
