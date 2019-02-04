@@ -98,6 +98,7 @@
         },
         "buildperf" : {
             "MACHINE" : "qemux86",
+            "SSTATEDIR" : ["SSTATE_DIR ?= '${HELPERBUILDDIR}/sstate'"],
             "EXTRAPLAINCMDS" : [
                 "${SCRIPTSDIR}/build-perf-test-wrapper -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w /home/pokybuild/build-perf-test -p ${HELPERRESULTSDIR}"
             ],
