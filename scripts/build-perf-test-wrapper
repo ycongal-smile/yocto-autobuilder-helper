@@ -85,7 +85,9 @@ except OSError as e:
          pass
     sys.exit(1)
 
-print("Running on " + os.uname()[1])
+hostname = os.uname()[1]
+
+print("Running on " + hostname)
 
 try:
     gitdir = subprocess.check_output("git rev-parse --show-toplevel", shell=True).decode("utf-8").strip()
@@ -147,7 +149,7 @@ if ret == 2:
 
 if args.publish_dir:
     os.makedirs(args.publish_dir, exist_ok=True)
-    subprocess.check_call("cp -r " + results_tmpdir + "/* " + args.publish_dir, shell=True)
+    subprocess.check_call("cp -r %s/* %s" % (results_tmpdir, args.publish_dir), shell=True)
 
 # Commit results to git
 if git_repo:
@@ -164,21 +166,21 @@ if git_repo:
 
     # Generate test reports
     sanitized_branch = branch.replace("/", "_")
-    report_txt = os.uname()[1] + "_" + sanitized_branch + "_" + machine + ".txt"
-    report_html = os.uname()[1] + "_" + sanitized_branch + "_" + machine + ".html"
+    report_txt = hostname + "_" + sanitized_branch + "_" + machine + ".txt"
+    report_html = hostname + "_" + sanitized_branch + "_" + machine + ".html"
 
     print("\nGenerating test report")
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r " % build_dir + git_repo + " > ../" + report_txt, shell=True)
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r " % build_dir + git_repo + " --html > ../ " + report_html, shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s > ../%s" % (build_dir, git_repo, report_txt), shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s --html > ../%s " % (build_dir, git_repo, report_html), shell=True)
 
-    filename = os.uname()[1] + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
+    filename = hostname + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
 
-    subprocess.check_call("cp " + report_txt + " " + global_results + "/" + filename + ".txt", shell=True)
-    subprocess.check_call("cp " + report_html + " " + global_results + "/" + filename + ".html", shell=True)
+    subprocess.check_call("cp %s %s/%s.txt" % (report_txt, global_results, filename), shell=True)
+    subprocess.check_call("cp %s %s/%s.html" % (report_html, global_results, filename), shell=True)
 
     if args.publish_dir:
-        subprocess.check_call("cp " + report_txt + " " + args.publish_dir + "/" + filename + ".txt", shell=True)
-        subprocess.check_call("cp " + report_html + " " + args.publish_dir + "/" + filename + ".html", shell=True)
+        subprocess.check_call("cp %s %s/%s.txt" % (report_txt, args.publish_dir, filename), shell=True)
+        subprocess.check_call("cp %s %s/%s.html" % (report_html, args.publish_dir, filename), shell=True)
 
     # Send email report
     if args.email_addr:
@@ -199,7 +201,7 @@ if archive_dir:
     os.makedirs(archive_dir, exist_ok=True)
     results_basename = os.path.basename(results_tmpdir)
     results_dirname = os.path.dirname(results_tmpdir)
-    cmd = "tar -czf" + archive_dir + "/" + os.uname()[1] + "-" + results_basename + ".tar.gz -C " + results_dirname + " " + results_basename
+    cmd = "tar -czf %s/%s-%s.tar.gz -C %s %s" % (archive_dir, hostname, results_basename, results_dirname, results_basename)
     subprocess.check_call(cmd, shell=True)
 
 subprocess.check_call("rm -rf %s" % build_dir, shell=True)
