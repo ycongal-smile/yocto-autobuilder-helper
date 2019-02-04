@@ -25,21 +25,12 @@ import datetime
 
 parser = utils.ArgParser(description='Run a build performance test and process the results.')
 
-parser.add_argument('-a', '--archive-dir',
-                    action='store',
-                    help="Where to archive a results tarball")
-parser.add_argument('-C', '--git-repo',
-                    action='store',
-                    help="Commit results into this git repository")
 parser.add_argument('-d', '--download-dir',
                     action='store',
                     help="Directory to download sources into")
 parser.add_argument('-E', '--email-addr',
                     action='store',
                     help="Send an email report to this address")
-parser.add_argument('-g', '--global-results',
-                    action='store',
-                    help="Save a global results file in this directory")
 parser.add_argument('-P', '--push-remote',
                     action='store',
                     help="Push git changes to this remote repository")
@@ -58,22 +49,16 @@ args = parser.parse_args()
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig()
 
-if args.git_repo:
-    os.makedirs(args.git_repo, exist_ok=True)
-if args.download_dir:
-    os.makedirs(args.download_dir, exist_ok=True)
-if args.global_results:
-    os.makedirs(args.global_results, exist_ok=True)
-if args.publish_dir:
-    os.makedirs(args.publish_dir, exist_ok=True)
+git_repo = None
+archive_dir = None
+global_results = None
 archiveopts = ""
 if args.push_remote:
     archiveopts += "--push " + args.push_remote
 if args.results_dir:
-    args.archive_dir = args.results_dir + "/archive"
-    args.git_repo = args.results_dir + "/archive-repo"
-    args.global_results = args.results_dir
-    os.makedirs(args.results_dir, exist_ok=True)
+    archive_dir = args.results_dir + "/archive"
+    git_repo = args.results_dir + "/archive-repo"
+    global_results = args.results_dir
 
 if args.email_addr:
     try:
@@ -117,9 +102,9 @@ branch = branch[11:]
 
 if not args.work_dir:
     args.work_dir = gitdir + "/build-perf-test"
-if not args.archive_dir:
-    args.archive_dir = gitdir + "/archive-results"
-os.makedirs(args.archive_dir, exist_ok=True)
+if not archive_dir:
+    archive_dir = gitdir + "/archive-results"
+os.makedirs(archive_dir, exist_ok=True)
 
 # Ensure we start with a clean build buil directory
 subprocess.check_call("rm -rf %s/*" % args.work_dir, shell=True)
@@ -132,16 +117,19 @@ print("Using working dir " + args.work_dir)
 
 if not args.download_dir:
     args.download_dir = args.work_dir + "/downloads"
+os.makedirs(args.download_dir, exist_ok=True)
 
-if not args.global_results:
-    args.global_results = args.work_dir
+if not global_results:
+    global_results = args.work_dir
+os.makedirs(global_results, exist_ok=True)
+
 
 timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
 gitrev = subprocess.check_output("git rev-parse --short HEAD", shell=True).decode("utf-8").strip()
 build_dir = args.work_dir + "/build-" + gitrev + "-" + timestamp
 results_tmpdir = args.work_dir + "/results-" + gitrev + "-" + timestamp
-globalres_log = args.global_results + "/globalres.log"
+globalres_log = global_results + "/globalres.log"
 machine = "qemux86"
 
 os.makedirs(args.work_dir, exist_ok=True)
@@ -158,14 +146,16 @@ if ret == 2:
     print("ERROR: some tests failed!")
 
 if args.publish_dir:
+    os.makedirs(args.publish_dir, exist_ok=True)
     subprocess.check_call("cp -r " + results_tmpdir + "/* " + args.publish_dir, shell=True)
 
 # Commit results to git
-if args.git_repo:
-    print("\nArchiving results in " + args.git_repo)
+if git_repo:
+    print("\nArchiving results in " + git_repo)
 
+    os.makedirs(git_repo, exist_ok=True)
     subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-git-archive " % build_dir + \
-        "--git-dir " + args.git_repo + " " \
+        "--git-dir " + git_repo + " " \
         "--branch-name '{hostname}/{branch}/{machine}' " \
         "--tag-name '{hostname}/{branch}/{machine}/{commit_count}-g{commit}/{tag_number}' " \
         "--exclude 'buildstats.json' " \
@@ -178,13 +168,13 @@ if args.git_repo:
     report_html = os.uname()[1] + "_" + sanitized_branch + "_" + machine + ".html"
 
     print("\nGenerating test report")
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " > ../" + report_txt, shell=True)
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r " % build_dir + args.git_repo + " --html > ../ " + report_html, shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r " % build_dir + git_repo + " > ../" + report_txt, shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r " % build_dir + git_repo + " --html > ../ " + report_html, shell=True)
 
     filename = os.uname()[1] + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
 
-    subprocess.check_call("cp " + report_txt + " " + args.global_results + "/" + filename + ".txt", shell=True)
-    subprocess.check_call("cp " + report_html + " " + args.global_results + "/" + filename + ".html", shell=True)
+    subprocess.check_call("cp " + report_txt + " " + global_results + "/" + filename + ".txt", shell=True)
+    subprocess.check_call("cp " + report_html + " " + global_results + "/" + filename + ".html", shell=True)
 
     if args.publish_dir:
         subprocess.check_call("cp " + report_txt + " " + args.publish_dir + "/" + filename + ".txt", shell=True)
@@ -203,13 +193,13 @@ if args.git_repo:
         except subprocess.CalledProcessError:
             print("ERROR: Send email command %s failed" % cmd)
 
-if args.archive_dir:
+if archive_dir:
     print("\n\n-----------------\n")
-    print("Archiving results in " + args.archive_dir)
-    os.makedirs(args.archive_dir, exist_ok=True)
+    print("Archiving results in " + archive_dir)
+    os.makedirs(archive_dir, exist_ok=True)
     results_basename = os.path.basename(results_tmpdir)
     results_dirname = os.path.dirname(results_tmpdir)
-    cmd = "tar -czf" + args.archive_dir + "/" + os.uname()[1] + "-" + results_basename + ".tar.gz -C " + results_dirname + " " + results_basename
+    cmd = "tar -czf" + archive_dir + "/" + os.uname()[1] + "-" + results_basename + ".tar.gz -C " + results_dirname + " " + results_basename
     subprocess.check_call(cmd, shell=True)
 
 subprocess.check_call("rm -rf %s" % build_dir, shell=True)
