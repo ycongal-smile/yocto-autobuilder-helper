@@ -166,12 +166,12 @@ if git_repo:
 
     # Generate test reports
     sanitized_branch = branch.replace("/", "_")
-    report_txt = hostname + "_" + sanitized_branch + "_" + machine + ".txt"
-    report_html = hostname + "_" + sanitized_branch + "_" + machine + ".html"
+    report_txt = build_dir + "/" + hostname + "_" + sanitized_branch + "_" + machine + ".txt"
+    report_html = build_dir + "/" + hostname + "_" + sanitized_branch + "_" + machine + ".html"
 
     print("\nGenerating test report")
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s > ../%s" % (build_dir, git_repo, report_txt), shell=True)
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s --html > ../%s " % (build_dir, git_repo, report_html), shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s > %s" % (build_dir, git_repo, report_txt), shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s --html > %s " % (build_dir, git_repo, report_html), shell=True)
 
     filename = hostname + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
 
