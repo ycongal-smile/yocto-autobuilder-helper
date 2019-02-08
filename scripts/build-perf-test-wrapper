@@ -168,12 +168,20 @@ if git_repo:
     sanitized_branch = branch.replace("/", "_")
     report_txt = build_dir + "/" + hostname + "_" + sanitized_branch + "_" + machine + ".txt"
     report_html = build_dir + "/" + hostname + "_" + sanitized_branch + "_" + machine + ".html"
+    filename = hostname + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
 
     print("\nGenerating test report")
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s > %s" % (build_dir, git_repo, report_txt), shell=True)
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s --html > %s " % (build_dir, git_repo, report_html), shell=True)
+    open(report_txt, "w").close()
+    if args.publish_dir:
+        web_root = utils.getconfig('WEBPUBLISH_DIR', ourconfig)
+        web_url = utils.getconfig('WEBPUBLISH_URL', ourconfig)
+        url = args.publish_dir.replace(web_root, web_url) + "/" + filename + ".html"
 
-    filename = hostname + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
+        with open(report_txt, "w") as f:
+            f.write("HTML Report/Graphs are available at:\n    %s\n\n")
+
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s >> %s" % (build_dir, git_repo, report_txt), shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s --html > %s " % (build_dir, git_repo, report_html), shell=True)
 
     subprocess.check_call("cp %s %s/%s.txt" % (report_txt, global_results, filename), shell=True)
     subprocess.check_call("cp %s %s/%s.html" % (report_html, global_results, filename), shell=True)
