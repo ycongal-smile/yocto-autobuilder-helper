@@ -178,7 +178,7 @@ if git_repo:
         url = args.publish_dir.replace(web_root, web_url) + "/" + filename + ".html"
 
         with open(report_txt, "w") as f:
-            f.write("HTML Report/Graphs are available at:\n    %s\n\n")
+            f.write("HTML Report/Graphs are available at:\n    %s\n\n" % url)
 
     subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s >> %s" % (build_dir, git_repo, report_txt), shell=True)
     subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s --html > %s " % (build_dir, git_repo, report_html), shell=True)
