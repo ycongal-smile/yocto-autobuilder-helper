@@ -165,8 +165,8 @@ if args.publish_dir:
 def getcomparisionbranch(ourconfig, reponame, branchname):
     base = None
     basebranch = None
-    if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
-        base = getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
+    if (reponame + ":" + branchname) in utils.getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
+        base = utils.getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
     if base:
         baserepo, basebranch = base.split(":")
     return basebranch
