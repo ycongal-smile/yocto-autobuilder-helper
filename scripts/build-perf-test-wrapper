@@ -25,6 +25,12 @@ import datetime
 
 parser = utils.ArgParser(description='Run a build performance test and process the results.')
 
+parser.add_argument('-b', '--branch',
+                    action='store',
+                    help="Branch being tested")
+parser.add_argument('-R', '--repo',
+                    action='store',
+                    help="Repository name being tested")
 parser.add_argument('-d', '--download-dir',
                     action='store',
                     help="Directory to download sources into")
@@ -98,9 +104,11 @@ except subprocess.CalledProcessError:
 os.chdir(gitdir)
 
 # Determine name of the current branch
-branch = subprocess.check_output("git symbolic-ref HEAD 2> /dev/null", shell=True).decode("utf-8").strip()
-# Strip refs/heads/
-branch = branch[11:]
+branch = args.branch
+if not args.branch:
+    branch = subprocess.check_output("git symbolic-ref HEAD 2> /dev/null", shell=True).decode("utf-8").strip()
+    # Strip refs/heads/
+    branch = branch[11:]
 
 if not args.work_dir:
     args.work_dir = gitdir + "/build-perf-test"
@@ -151,6 +159,18 @@ if args.publish_dir:
     os.makedirs(args.publish_dir, exist_ok=True)
     subprocess.check_call("cp -r %s/* %s" % (results_tmpdir, args.publish_dir), shell=True)
 
+#
+# Figure out which branch we might need to compare against
+#
+def getcomparisionbranch(ourconfig, reponame, branchname):
+    base = None
+    basebranch = None
+    if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
+        base = getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
+    if base:
+        baserepo, basebranch = base.split(":")
+    return basebranch
+
 # Commit results to git
 if git_repo:
     print("\nArchiving results in " + git_repo)
@@ -170,6 +190,11 @@ if git_repo:
     report_html = build_dir + "/" + hostname + "_" + sanitized_branch + "_" + machine + ".html"
     filename = hostname + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
 
+    extraopts = " --branch %s --commit %s" % (branch, gitrev)
+    comparebranch = getcomparisionbranch(ourconfig, args.repo, args.branch)
+    if comparebranch:
+        extraopts = " --branch %s --branch2 %s --commit %s" % (comparebranch, branch, gitrev)
+
     print("\nGenerating test report")
     open(report_txt, "w").close()
     if args.publish_dir:
@@ -180,8 +205,8 @@ if git_repo:
         with open(report_txt, "w") as f:
             f.write("HTML Report/Graphs are available at:\n    %s\n\n" % url)
 
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s >> %s" % (build_dir, git_repo, report_txt), shell=True)
-    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s --html > %s " % (build_dir, git_repo, report_html), shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s %s >> %s" % (build_dir, git_repo, extraopts, report_txt), shell=True)
+    subprocess.check_call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-report -r %s %s --html > %s " % (build_dir, git_repo, extraopts, report_html), shell=True)
 
     subprocess.check_call("cp %s %s/%s.txt" % (report_txt, global_results, filename), shell=True)
     subprocess.check_call("cp %s %s/%s.html" % (report_html, global_results, filename), shell=True)

@@ -53,6 +53,8 @@ ourconfig = utils.loadconfig()
 ourconfig["HELPERBUILDDIR"] = args.builddir
 ourconfig["HELPERTARGET"] = args.target
 ourconfig["HELPERRESULTSDIR"] = (args.results_dir or "")
+ourconfig["HELPERREPONAME"] = args.reponame
+ourconfig["HELPERBRANCHNAME"] = args.branchname
 
 hp = utils.HeaderPrinter()
 
