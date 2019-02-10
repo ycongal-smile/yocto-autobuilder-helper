@@ -175,7 +175,7 @@ def getcomparisionbranch(ourconfig, reponame, branchname):
         base = utils.getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
         if base:
             baserepo, basebranch = base.split(":")
-        print("Comparing to %s\n" % (basebranch))
+            print("Comparing to %s\n" % (basebranch))
     return basebranch
 
 # Commit results to git
@@ -201,7 +201,7 @@ if git_repo:
     if args.repo and args.branch:
         comparebranch = getcomparisionbranch(ourconfig, args.repo, args.branch)
         if comparebranch:
-            extraopts = " --branch %s --branch2 %s --commit %s" % (comparebranch, branch, gitrevfull)
+            extraopts = extraopts + " --branch2 %s" % (comparebranch)
 
     print("\nGenerating test report")
     open(report_txt, "w").close()
