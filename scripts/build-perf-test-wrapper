@@ -137,6 +137,7 @@ os.makedirs(global_results, exist_ok=True)
 timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
 gitrev = subprocess.check_output("git rev-parse --short HEAD", shell=True).decode("utf-8").strip()
+gitrevfull = subprocess.check_output("git rev-parse HEAD", shell=True).decode("utf-8").strip()
 build_dir = args.work_dir + "/build-" + gitrev + "-" + timestamp
 results_tmpdir = args.work_dir + "/results-" + gitrev + "-" + timestamp
 globalres_log = global_results + "/globalres.log"
@@ -163,12 +164,18 @@ if args.publish_dir:
 # Figure out which branch we might need to compare against
 #
 def getcomparisionbranch(ourconfig, reponame, branchname):
+    print("Working off %s:%s\n" % (reponame, branchname))
     base = None
     basebranch = None
+    if "/" in reponame:
+        reponame = reponame.rsplit("/", 1)[1]
+    if reponame.endswith(".git"):
+        reponame = reponame[:-4]
     if (reponame + ":" + branchname) in utils.getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
         base = utils.getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
-    if base:
-        baserepo, basebranch = base.split(":")
+        if base:
+            baserepo, basebranch = base.split(":")
+        print("Comparing to %s\n" % (basebranch))
     return basebranch
 
 # Commit results to git
@@ -190,10 +197,11 @@ if git_repo:
     report_html = build_dir + "/" + hostname + "_" + sanitized_branch + "_" + machine + ".html"
     filename = hostname + "_" + sanitized_branch + "_" + timestamp + "_" + gitrev
 
-    extraopts = " --branch %s --commit %s" % (branch, gitrev)
-    comparebranch = getcomparisionbranch(ourconfig, args.repo, args.branch)
-    if comparebranch:
-        extraopts = " --branch %s --branch2 %s --commit %s" % (comparebranch, branch, gitrev)
+    extraopts = " --branch %s --commit %s" % (branch, gitrevfull)
+    if args.repo and args.branch:
+        comparebranch = getcomparisionbranch(ourconfig, args.repo, args.branch)
+        if comparebranch:
+            extraopts = " --branch %s --branch2 %s --commit %s" % (comparebranch, branch, gitrevfull)
 
     print("\nGenerating test report")
     open(report_txt, "w").close()
