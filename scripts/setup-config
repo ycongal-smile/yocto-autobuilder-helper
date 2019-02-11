@@ -88,7 +88,7 @@ if utils.getconfigvar("BUILDINFO", ourconfig, args.target, stepnum):
     infovars = utils.getconfiglist("BUILDINFOVARS", ourconfig, args.target, stepnum)
     variables.extend(infovars)
 
-extravars = utils.getconfiglist("extravars", ourconfig, args.target, stepnum)
+extravars = utils.getconfiglistfilter("extravars", ourconfig, args.target, stepnum)
 if extravars:
     variables.extend(extravars)
 

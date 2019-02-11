@@ -93,6 +93,31 @@ def getconfiglist(name, config, target, stepnum):
         ret.extend(config['defaults'][name])
     return expandresult(ret, config)
 
+# Return only unique configuration values (identified with '=' in them)
+def getconfiglistfilter(name, config, target, stepnum):
+    def merge(main, newvals):
+        have = []
+        for i in main:
+            a, b = i.split(" ", 1)
+            have.append(a)
+        for i in newvals:
+            if "=" in i:
+                a, b = i.split(" ", 1)
+                if a not in have:
+                    main.append(i)
+            else:
+                main.append(i)
+    ret = []
+    step = "step" + str(stepnum)
+    if target in config['overrides']:
+        if step in config['overrides'][target] and name in config['overrides'][target][step]:
+            merge(ret, config['overrides'][target][step][name])
+        if name in config['overrides'][target]:
+            merge(ret, config['overrides'][target][name])
+    if name in config['defaults']:
+        merge(ret, config['defaults'][name])
+    return expandresult(ret, config)
+
 #
 # Expand 'templates' with the configuration
 #
