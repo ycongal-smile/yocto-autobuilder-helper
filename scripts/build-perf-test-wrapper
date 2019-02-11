@@ -118,10 +118,6 @@ os.makedirs(archive_dir, exist_ok=True)
 
 # Ensure we start with a clean build buil directory
 subprocess.check_call("rm -rf %s/*" % args.work_dir, shell=True)
-os.makedirs(args.work_dir + "/conf", exist_ok=True)
-# copy in auto.conf
-subprocess.check_call("cp -r %s/build/conf/auto.conf %s/conf" % (gitdir, args.work_dir), shell=True)
-
 
 print("Using working dir " + args.work_dir)
 
@@ -144,6 +140,9 @@ globalres_log = global_results + "/globalres.log"
 machine = "qemux86"
 
 os.makedirs(args.work_dir, exist_ok=True)
+os.makedirs(build_dir + "/conf", exist_ok=True)
+# copy in auto.conf
+subprocess.check_call("cp -r %s/build/conf/auto.conf %s/conf" % (gitdir, build_dir), shell=True)
 
 # Run actual test script
 ret = subprocess.call("BDIR=%s . ./oe-init-build-env >/dev/null; oe-build-perf-test --out-dir %s --globalres-file %s --lock-file %s/oe-build-perf.lock"
