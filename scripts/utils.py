@@ -101,7 +101,8 @@ def getconfiglistfilter(name, config, target, stepnum):
             a, b = i.split(" ", 1)
             have.append(a)
         for i in newvals:
-            if "=" in i:
+            # Don't want to match +=
+            if " = " in i:
                 a, b = i.split(" ", 1)
                 if a not in have:
                     main.append(i)
