@@ -209,6 +209,8 @@ if git_repo:
         web_url = utils.getconfig('WEBPUBLISH_URL', ourconfig)
         url = args.publish_dir.replace(web_root, web_url) + "/" + filename + ".html"
 
+        print("Report URL is %s" % url)
+
         with open(report_txt, "w") as f:
             f.write("HTML Report/Graphs are available at:\n    %s\n\n" % url)
 
