@@ -47,7 +47,9 @@ trashdir = utils.getconfig("TRASH_DIR", ourconfig)
 
 for x in [clobberdir]:
     if os.path.exists(x):
-        trashdest = trashdir + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
-        mkdir(trashdest)
-        subprocess.check_call(['mv', x, trashdest])
-
+        if (os.stat(trashdir).st_dev == os.stat(x).st_dev):
+            trashdest = trashdir + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
+            mkdir(trashdest)
+            subprocess.check_call(['mv', x, trashdest])
+        else:
+            subprocess.check_call(['rm', "-rf", x])
