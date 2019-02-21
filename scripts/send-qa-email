@@ -23,6 +23,9 @@ parser.add_argument('sharedrepodir',
 parser.add_argument('-p', '--publish-dir',
                     action='store',
                     help="Where the artefacts were published")
+parser.add_argument('-R', '--results-dir',
+                    action='store',
+                    help="Where the test results were published")
 parser.add_argument('-r', '--release',
                     action='store',
                     help="The build/release 'name' for release purposes (optional)")
