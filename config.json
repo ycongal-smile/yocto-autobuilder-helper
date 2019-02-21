@@ -102,7 +102,7 @@
             "SSTATEDIR" : ["SSTATE_DIR ?= '${HELPERBUILDDIR}/sstate'"],
             "PACKAGE_CLASSES" : "package_rpm",
             "EXTRAPLAINCMDS" : [
-                "${SCRIPTSDIR}/build-perf-test-wrapper -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w /home/pokybuild/build-perf-test -p ${HELPERRESULTSDIR}/${HELPERTARGET} -R ${HELPERREPONAME} -b ${HELPERBRANCHNAME}"
+                "${SCRIPTSDIR}/build-perf-test-wrapper -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w /home/pokybuild/build-perf-test -p ${HELPERRESULTSDIR}/${HELPERTARGET} -R ${HELPERREPONAME} -b ${HELPERBRANCHNAME} --push git@git.yoctoproject.org:yocto-buildstats"
             ],
             "extravars" : [
                 "BB_NUMBER_THREADS = '24'",
