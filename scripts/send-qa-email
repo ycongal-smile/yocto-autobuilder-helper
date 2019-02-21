@@ -8,11 +8,12 @@ import os
 import sys
 import subprocess
 import errno
+import tempfile
 
 import utils
 
 
-parser = utils.ArgParser(description='Sends an email about the build to prompt QA to begin testing.')
+parser = utils.ArgParser(description='Process test results and optionally send an email about the build to prompt QA to begin testing.')
 
 parser.add_argument('send',
                     help="True to send email, otherwise the script will display a message and exit")
@@ -32,15 +33,48 @@ parser.add_argument('-r', '--release',
 
 args = parser.parse_args()
 
-if args.send.lower() != 'true' or not args.publish_dir or not args.release:
-    utils.printheader("Not sending QA email")
-    sys.exit(0)
-
 scriptsdir = os.path.dirname(os.path.realpath(__file__))
 ourconfig = utils.loadconfig()
 
 with open(args.repojson) as f:
     repos = json.load(f)
+
+resulttool = os.path.dirname(args.repojson) + "/build/scripts/resulttool"
+
+if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
+    # Need the finalised revisions (not 'HEAD')
+    targetrepodir = "%s/poky" % (args.sharedrepodir)
+    revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=targetrepodir).decode('utf-8').strip()
+    branch = repos['poky']['branch']
+    repo = repos['poky']['url']
+
+    extraopts = " --branch %s --commit %s" % (branch, revision)
+    comparebranch = utils.getcomparisonbranch(ourconfig, repo, branch)
+    if comparebranch:
+        extraopts = extraopts + " --branch2 %s" % (comparebranch)
+
+    report = subprocess.check_output([resulttool, "report", args.results_dir])
+    with open(args.results_dir + "/testresult-report.txt", "wb") as f:
+        f.write(report)
+
+    tempdir = tempfile.mkdtemp(prefix='sendqaemail.')
+    try:
+        subprocess.check_call(["git", "clone", "git@git.yoctoproject.org:yocto-testresults", tempdir])
+        subprocess.check_call([resulttool, "store", args.results_dir, tempdir])
+        subprocess.check_call(["git", "push"], cwd=tempdir)
+        subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
+
+        regreport = subprocess.check_output([resulttool, "regression-git", tempdir] + extraopts.split())
+        with open(args.results_dir + "/testresult-regressions-report.txt", "wb") as f:
+            f.write(report)
+
+    finally:
+        subprocess.check_call(["rm", "-rf",  tempdir])
+        pass
+
+if args.send.lower() != 'true' or not args.publish_dir or not args.release:
+    utils.printheader("Not sending QA email")
+    sys.exit(0)
 
 buildhashes = ""
 for repo in sorted(repos.keys()):
