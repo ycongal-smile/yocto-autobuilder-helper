@@ -23,6 +23,8 @@ import subprocess
 import sys
 import datetime
 
+import utils
+
 parser = utils.ArgParser(description='Run a build performance test and process the results.')
 
 parser.add_argument('-b', '--branch',
@@ -159,24 +161,6 @@ if args.publish_dir:
     os.makedirs(args.publish_dir, exist_ok=True)
     subprocess.check_call("cp -r %s/* %s" % (results_tmpdir, args.publish_dir), shell=True)
 
-#
-# Figure out which branch we might need to compare against
-#
-def getcomparisionbranch(ourconfig, reponame, branchname):
-    print("Working off %s:%s\n" % (reponame, branchname))
-    base = None
-    basebranch = None
-    if "/" in reponame:
-        reponame = reponame.rsplit("/", 1)[1]
-    if reponame.endswith(".git"):
-        reponame = reponame[:-4]
-    if (reponame + ":" + branchname) in utils.getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
-        base = utils.getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
-        if base:
-            baserepo, basebranch = base.split(":")
-            print("Comparing to %s\n" % (basebranch))
-    return basebranch
-
 # Commit results to git
 if git_repo:
     print("\nArchiving results in " + git_repo)
@@ -198,7 +182,7 @@ if git_repo:
 
     extraopts = " --branch %s --commit %s" % (branch, gitrevfull)
     if args.repo and args.branch:
-        comparebranch = getcomparisionbranch(ourconfig, args.repo, args.branch)
+        comparebranch = utils.getcomparisonbranch(ourconfig, args.repo, args.branch)
         if comparebranch:
             extraopts = extraopts + " --branch2 %s" % (comparebranch)
 

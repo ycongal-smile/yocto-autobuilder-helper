@@ -344,3 +344,21 @@ class ArgParser(argparse.ArgumentParser):
         sys.stderr.write('error: %s\n' % message)
         self.print_help()
         sys.exit(2)
+
+#
+# Figure out which branch we might need to compare against
+#
+def getcomparisonbranch(ourconfig, reponame, branchname):
+    print("Working off %s:%s\n" % (reponame, branchname))
+    base = None
+    basebranch = None
+    if "/" in reponame:
+        reponame = reponame.rsplit("/", 1)[1]
+    if reponame.endswith(".git"):
+        reponame = reponame[:-4]
+    if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
+        base = getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
+        if base:
+            baserepo, basebranch = base.split(":")
+            print("Comparing to %s\n" % (basebranch))
+    return basebranch
