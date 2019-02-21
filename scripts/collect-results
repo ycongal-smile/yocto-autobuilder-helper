@@ -9,3 +9,8 @@ if [ -e $RESFILE ]; then
     mkdir -p $DEST/$target
     cp $WORKDIR/tmp/log/oeqa/testresults.json  $DEST/$target/
 fi
+
+if [ -e $WORKDIR/buildhistory ]; then
+    mkdir -p $DEST/$target
+    $WORKDIR/../scripts/buildhistory-diff -p $WORKDIR/buildhistory > $DEST/$target/buildhistory.txt
+fi
