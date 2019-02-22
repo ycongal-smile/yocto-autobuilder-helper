@@ -208,7 +208,7 @@ def getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname):
                 base = getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
             if base:
                 baserepo, basebranch = base.split(":")
-                bh_path = os.path.join(getconfig("BUILD_HISTORY_DIR", ourconfig), reponame, branchname, target)
+                bh_path = getconfig("BUILD_HISTORY_DIR", ourconfig)
                 if not os.path.isabs(bh_path):
                     bh_path = os.path.join(builddir, bh_path)
                 remoterepo = getconfig("BUILD_HISTORY_REPO", ourconfig)
