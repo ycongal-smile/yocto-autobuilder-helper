@@ -28,3 +28,4 @@ else
     git add README
     git commit -s -m 'Initializing Buildhistory'
 fi
+git tag ab-fetchrev

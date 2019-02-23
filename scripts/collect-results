@@ -12,5 +12,6 @@ fi
 
 if [ -e $WORKDIR/buildhistory ]; then
     mkdir -p $DEST/$target
-    $WORKDIR/../scripts/buildhistory-diff -p $WORKDIR/buildhistory > $DEST/$target/buildhistory.txt
+    # ab-fetchrev tag set in buildhistory-init
+    $WORKDIR/../scripts/buildhistory-diff -p $WORKDIR/buildhistory ab-fetchrev > $DEST/$target/buildhistory.txt
 fi
