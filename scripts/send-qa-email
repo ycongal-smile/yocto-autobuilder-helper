@@ -66,7 +66,7 @@ if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
 
         regreport = subprocess.check_output([resulttool, "regression-git", tempdir] + extraopts.split())
         with open(args.results_dir + "/testresult-regressions-report.txt", "wb") as f:
-            f.write(report)
+            f.write(regreport)
 
     finally:
         subprocess.check_call(["rm", "-rf",  tempdir])
