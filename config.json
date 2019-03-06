@@ -123,11 +123,11 @@
                 "EXTRACMDS" : ["bitbake-selftest"]
             },
             "step2" : {
-                "EXTRACMDS" : ["if [ `which oe-pylint` ]; then mkdir -p ${HELPERRESULTSDIR}/${HELPERTARGET}; oe-pylint > ${HELPERRESULTSDIR}/${HELPERTARGET}/pylint.log; fi"]
-            },
-            "step3" : {
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg buildoptions.SourceMirroring.test_yocto_source_mirror -j 15"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
+            },
+            "step3" : {
+                "EXTRACMDS" : ["if [ `which oe-pylint` ]; then mkdir -p ${HELPERRESULTSDIR}/${HELPERTARGET}; oe-pylint > ${HELPERRESULTSDIR}/${HELPERTARGET}/pylint.log; fi"]
             }
         },
         "trigger-build" : {
