@@ -33,10 +33,12 @@ case "$target" in
         mkdir -p $DEST/buildtools
         mkdir -p $DEST/toolchain/i686
         mkdir -p $DEST/toolchain/x86_64
+        mkdir -p $DEST/toolchain/aarch64
         md5sums $TMPDIR/deploy/sdk
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/*buildtools* $DEST/buildtools
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/i686-nativesdk-libc* $DEST/toolchain/i686
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/x86_64-nativesdk-libc* $DEST/toolchain/x86_64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/aarch64-nativesdk-libc* $DEST/toolchain/aarch64
         ;;
     "qemuarm64")
         mkdir -p $DEST/machines/qemu/qemuarm64
