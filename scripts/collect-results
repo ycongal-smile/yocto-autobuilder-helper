@@ -11,7 +11,9 @@ if [ -e $RESFILE ]; then
 fi
 
 if [ -e $WORKDIR/buildhistory ]; then
-    mkdir -p $DEST/$target
     # ab-fetchrev tag set in buildhistory-init
-    $WORKDIR/../scripts/buildhistory-diff -p $WORKDIR/buildhistory ab-fetchrev > $DEST/$target/buildhistory.txt
+    if [ $(git -C $WORKDIR/buildhistory tag -l "ab-fetchrev") ]; then
+        mkdir -p $DEST/$target
+        $WORKDIR/../scripts/buildhistory-diff -p $WORKDIR/buildhistory ab-fetchrev > $DEST/$target/buildhistory.txt
+    fi
 fi
