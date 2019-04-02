@@ -6,7 +6,7 @@
     "build-history-targets" : ["qemuarm64", "qemuarm", "qemuarm-lsb", "qemumips64", "qemumips", "qemumips-lsb", "qemuppc", "qemuppc-lsb", "qemux86-64", "qemux86-64-lsb", "qemux86", "qemux86-lsb"],
     "BUILD_HISTORY_DIR" : "buildhistory",
     "BUILD_HISTORY_REPO" : "ssh://git@push.yoctoproject.org/poky-buildhistory",
-    "BUILD_HISTORY_DIRECTPUSH" : ["poky:morty", "poky:pyro", "poky:rocko", "poky:sumo", "poky:thud", "poky:master"],
+    "BUILD_HISTORY_DIRECTPUSH" : ["poky:morty", "poky:pyro", "poky:rocko", "poky:sumo", "poky:thud", "poky:warrior", "poky:master"],
     "BUILD_HISTORY_FORKPUSH" : {"poky-contrib:ross/mut" : "poky:master", "poky:master-next" : "poky:master"},
 
     "REPO_STASH_DIR" : "${BASE_HOMEDIR}/git/mirror",
