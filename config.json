@@ -313,7 +313,7 @@
         },
         "qemux86-64-lsb" : {
             "MACHINE" : "qemux86-64",
-            "TEMPLATE" : "lsb-hw"
+            "TEMPLATE" : "lsb-qemu"
         },
         "genericx86-64" : {
             "MACHINE" : "genericx86-64",
