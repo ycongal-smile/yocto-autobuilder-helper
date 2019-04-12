@@ -196,7 +196,7 @@ def loadconfig():
 #
 def getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname, stepnum):
     if contains(["BUILD_HISTORY_DIR", "BUILD_HISTORY_REPO"], ourconfig):
-        if utils.getconfigvar("BUILDHISTORY", ourconfig, target, stepnum):
+        if getconfigvar("BUILDHISTORY", ourconfig, target, stepnum):
             base = None
             if "/" in reponame:
                 reponame = reponame.rsplit("/", 1)[1]
