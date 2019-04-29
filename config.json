@@ -98,6 +98,15 @@
                 "TEST_SUITES = 'ping ssh ptest'"
             ]
         },
+        "ltp-qemu" : {
+            "BUILDINFO" : true,
+            "BBTARGETS" : "core-image-sato",
+            "SANITYTARGETS" : "core-image-sato:do_testimage",
+            "extravars" : [
+                "IMAGE_INSTALL_append = ' ltp'",
+                "TEST_SUITES = 'ping ssh ltp ltp_compliance'"
+            ]
+        },
         "arch-hw" : {
             "BUILDINFO" : true,
             "step1" : {
@@ -217,6 +226,10 @@
         "qemuarm64-ptest-fast" : {
             "MACHINE" : "qemuarm64",
             "TEMPLATE" : "ptest-qemu-fast"
+        },
+        "qemuarm64-ptest" : {
+            "MACHINE" : "qemuarm64",
+            "TEMPLATE" : "ltp-qemu"
         },
        "bringup" : {
             "BUILDINFO" : true,
@@ -391,6 +404,10 @@
         "qemux86-64-ptest-fast" : {
             "MACHINE" : "qemux86-64",
             "TEMPLATE" : "ptest-qemu-fast"
+        },
+        "qemux86-64-ltp" : {
+            "MACHINE" : "qemux86-64",
+            "TEMPLATE" : "ltp-qemu"
         },
         "multilib" : {
             "MACHINE" : "qemux86-64",
