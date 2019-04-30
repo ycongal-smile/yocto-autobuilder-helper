@@ -106,7 +106,8 @@
                 "IMAGE_INSTALL_append = ' ltp'",
                 "TEST_SUITES = 'ping ssh ltp ltp_compliance'",
                 "IMAGE_OVERHEAD_FACTOR = '1.0'",
-                "IMAGE_ROOTFS_EXTRA_SPACE = '1324288'"
+                "IMAGE_ROOTFS_EXTRA_SPACE = '1324288'",
+                "QB_MEM = '-m 1024'"
             ]
         },
         "arch-hw" : {
