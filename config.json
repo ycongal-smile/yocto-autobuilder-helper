@@ -230,7 +230,7 @@
             "MACHINE" : "qemuarm64",
             "TEMPLATE" : "ptest-qemu-fast"
         },
-        "qemuarm64-ptest" : {
+        "qemuarm64-ltp" : {
             "MACHINE" : "qemuarm64",
             "TEMPLATE" : "ltp-qemu"
         },
