@@ -202,6 +202,16 @@
             "MACHINE" : "qemuarm",
             "TEMPLATE" : "arch-qemu"
         },
+        "qemuarm-armhost" : {
+            "MACHINE" : "qemuarm",
+            "TEMPLATE" : "arch-qemu",
+            "step1" : {
+                "SDKMACHINE" : "x86_64"
+            },
+            "step2" : {
+                "SDKMACHINE" : "aarch64"
+            }
+        },
         "qemuarm-lsb" : {
             "MACHINE" : "qemuarm",
             "TEMPLATE" : "lsb-qemu"
@@ -221,6 +231,16 @@
         "qemuarm64" : {
             "MACHINE" : "qemuarm64",
             "TEMPLATE" : "arch-qemu"
+        },
+        "qemuarm64-armhost" : {
+            "MACHINE" : "qemuarm64",
+            "TEMPLATE" : "arch-qemu",
+            "step1" : {
+                "SDKMACHINE" : "x86_64"
+            },
+            "step2" : {
+                "SDKMACHINE" : "aarch64"
+            }
         },
         "qemuarm64-ptest" : {
             "MACHINE" : "qemuarm64",
