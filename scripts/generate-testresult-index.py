@@ -93,7 +93,10 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
     if os.path.exists(buildpath + "/testresult-report.txt"):
         testreport = reldir + "testresult-report.txt"
     elif btype.startswith("buildperf-"):
-        testreport = reldir + btype + "/" + os.path.basename(glob.glob(buildpath + "/" + btype + "/*.html")[0])
+        try:
+            testreport = reldir + btype + "/" + os.path.basename(glob.glob(buildpath + "/" + btype + "/*.html")[0])
+        except IndexError:
+            pass
 
     buildhistory = []
     if os.path.exists(buildpath + "/qemux86-64/buildhistory.txt"):
