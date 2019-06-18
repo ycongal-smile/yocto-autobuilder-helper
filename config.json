@@ -607,7 +607,8 @@
             "MACHINE" : "qemux86",
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline",
             "extravars" : [
-                "INCOMPATIBLE_LICENSE = '*GPLv3'"
+                "INCOMPATIBLE_LICENSE = '*GPLv3'",
+                "WARN_QA_remove = 'incompatible-license'"
             ],
             "EXTRACMDS" : [
                 "../../yocto-autobuilder-helper/scripts/check-gplv3"
