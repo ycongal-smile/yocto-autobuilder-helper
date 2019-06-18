@@ -24,7 +24,6 @@
         "DISTRO" : "poky",
         "SDKMACHINE" : "i686",
         "PACKAGE_CLASSES" : "package_rpm package_deb package_ipk",
-        "PRSERV" : "PRSERV_HOST = 'localhost:0'",
         "DLDIR" : "DL_DIR = '${BASE_SHAREDDIR}/current_sources'",
         "SSTATEDIR" : ["SSTATE_DIR ?= '${BASE_SHAREDDIR}/pub/sstate'"],
         "SSTATEDIR_RELEASE" : ["SSTATE_MIRRORS += 'file://.* file://${BASE_SHAREDDIR}/pub/sstate/PATH'", "SSTATE_DIR ?= '${BASE_PUBLISHDIR}/sstate/@RELEASENUM@'"],
@@ -67,7 +66,6 @@
                 "SANITYTARGETS" : "core-image-sato:do_testsdk core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
             },
             "step3" : {
-                "PRSERV" : false,
                 "BUILDHISTORY" : false,
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest -r runqemu meta_ide -j 15"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
@@ -144,7 +142,6 @@
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "PACKAGE_CLASSES" : "package_rpm",
-            "PRSERV" : false,
             "extravars" : [
                 "RPM_GPG_SIGN_CHUNK = '1'"
             ],
@@ -162,7 +159,6 @@
         "trigger-build" : {
             "SDKMACHINE" : "x86_64",
             "MACHINE" : "qemux86",
-            "PRSERV" : false,
             "step1" : {
                 "BBTARGETS" : "universe -c fetch -k",
                 "extravars" : [
@@ -281,7 +277,6 @@
                 "MACHINE" : "qemux86-64",
                 "SDKMACHINE" : "x86_64",
                 "PACKAGE_CLASSES" : "package_rpm",
-                "PRSERV" : false,
                 "extravars" : [
                     "RPM_GPG_SIGN_CHUNK = '1'"
                 ],
@@ -650,7 +645,6 @@
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "universe:do_checkuri",
-            "PRSERV" : false,
             "extravars" : [
                 "SOURCE_MIRROR_FETCH = '1'",
                 "BB_NUMBER_THREADS = '1'",
