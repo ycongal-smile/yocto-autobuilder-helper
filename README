@@ -25,3 +25,8 @@ would also allow customisation.
 Authors: 
   Richard Purdie <richard.purdie@linuxfoundation.org>
   Joshua Lock <joshua.g.lock@intel.com>
+
+Contributions:
+
+Patches for this code should be sent to the yocto@yoctoproject.org mailing list
+with [yocto-autobuilder-helper] in the subject.
