@@ -43,9 +43,9 @@ with open(args.repojson) as f:
     repos = json.load(f)
 
 targetsubdir = args.abworkdir + "/repos"
-
+needrepos_baseddirs = [r.split('/')[0] for r in needrepos]
 for repo in sorted(repos.keys()):
-    if repo not in needrepos:
+    if repo not in needrepos_baseddirs:
         continue
     targetrepodir = "%s/%s" % (targetsubdir, repo)
     if args.cache_dir:
