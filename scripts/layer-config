@@ -24,9 +24,7 @@ args = parser.parse_args()
 ourconfig = utils.loadconfig()
 
 def bitbakecmd(targetdir, cmd):
-    ret = subprocess.call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=targetdir)
-    if ret:
-        utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (cmd, ret))
+    subprocess.check_call(". ./oe-init-build-env; %s" % cmd, shell=True, cwd=targetdir)
 
 needrepos = utils.getconfigvar("NEEDREPOS", ourconfig, args.target, None)
 
@@ -51,5 +49,8 @@ if callinit:
 for repo in needrepos:
     if repo in repos and "no-layer-add" in repos[repo] and repos[repo]["no-layer-add"]:
         continue
-    bitbakecmd(args.abworkdir, "bitbake-layers add-layer %s" % (args.abworkdir + "/" + repo))
-
+    try:
+        bitbakecmd(args.abworkdir, "bitbake-layers add-layer %s" % (args.abworkdir + "/" + repo))
+    except subprocess.CalledProcessError as e:
+        utils.printheader("ERROR: Command %s failed with exit code %d, see errors above." % (e.cmd, e.returncode))
+        sys.exit(e.returncode)
