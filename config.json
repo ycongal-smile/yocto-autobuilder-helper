@@ -71,13 +71,13 @@
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
         },
-        "lsb-qemu" : {
-            "DISTRO" : "poky-lsb",
+        "altcfg-qemu" : {
+            "DISTRO" : "poky-altcfg",
             "BUILDINFO" : true,
             "BUILDHISTORY" : true,
             "step1" : {
-                "BBTARGETS" : "core-image-lsb core-image-lsb-dev core-image-lsb-sdk",
-                "SANITYTARGETS" : "core-image-lsb:do_testimage core-image-lsb-sdk:do_testimage"
+                "BBTARGETS" : "core-image-full-cmdline core-image-sato core-image-sato-sdk",
+                "SANITYTARGETS" : "core-image-full-cmdlin:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
             }
         },
         "ptest-qemu" : {
@@ -115,11 +115,11 @@
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             }
         },
-        "lsb-hw" : {
-            "DISTRO" : "poky-lsb",
+        "altcfg-hw" : {
+            "DISTRO" : "poky-altcfg",
             "BUILDINFO" : true,
             "step1" : {
-                "BBTARGETS" : "core-image-lsb core-image-lsb-sdk"
+                "BBTARGETS" : "core-image-full-cmdline core-image-sato core-image-sato-sdk"
             }
         },
         "buildperf" : {
@@ -209,7 +209,7 @@
         },
         "qemuarm-lsb" : {
             "MACHINE" : "qemuarm",
-            "TEMPLATE" : "lsb-qemu"
+            "TEMPLATE" : "altcfg-qemu"
         },
         "beaglebone" : {
             "MACHINE" : "beaglebone-yocto",
@@ -221,7 +221,7 @@
         },
         "beaglebone-lsb" : {
             "MACHINE" : "beaglebone-yocto",
-            "TEMPLATE" : "lsb-hw"
+            "TEMPLATE" : "altcfg-hw"
         },
         "qemuarm64" : {
             "MACHINE" : "qemuarm64",
@@ -290,7 +290,7 @@
         },
         "qemumips-lsb" : {
             "MACHINE" : "qemumips",
-            "TEMPLATE" : "lsb-qemu"
+            "TEMPLATE" : "altcfg-qemu"
         },
         "edgerouter" : {
             "MACHINE" : "edgerouter",
@@ -298,7 +298,7 @@
         },
         "edgerouter-lsb" : {
             "MACHINE" : "edgerouter",
-            "TEMPLATE" : "lsb-hw"
+            "TEMPLATE" : "altcfg-hw"
         },
         "qemumips64" : {
             "MACHINE" : "qemumips64",
@@ -310,7 +310,7 @@
         },
         "qemuppc-lsb" : {
             "MACHINE" : "qemuppc",
-            "TEMPLATE" : "lsb-qemu"
+            "TEMPLATE" : "altcfg-qemu"
         },
         "mpc8315e-rdb" : {
             "MACHINE" : "mpc8315e-rdb",
@@ -318,7 +318,7 @@
         },
         "mpc8315e-rdb-lsb" : {
             "MACHINE" : "mpc8315e-rdb",
-            "TEMPLATE" : "lsb-hw"
+            "TEMPLATE" : "altcfg-hw"
         },
         "qemux86" : {
             "MACHINE" : "qemux86",
@@ -331,7 +331,7 @@
         },
         "qemux86-lsb" : {
             "MACHINE" : "qemux86",
-            "TEMPLATE" : "lsb-qemu"
+            "TEMPLATE" : "altcfg-qemu"
         },
         "genericx86" : {
             "MACHINE" : "genericx86",
@@ -344,7 +344,7 @@
         },
         "genericx86-lsb" : {
             "MACHINE" : "genericx86",
-            "TEMPLATE" : "lsb-hw"
+            "TEMPLATE" : "altcfg-hw"
         },
         "qemux86-64" : {
             "MACHINE" : "qemux86-64",
@@ -357,7 +357,7 @@
         },
         "qemux86-64-lsb" : {
             "MACHINE" : "qemux86-64",
-            "TEMPLATE" : "lsb-qemu"
+            "TEMPLATE" : "altcfg-qemu"
         },
         "genericx86-64" : {
             "MACHINE" : "genericx86-64",
@@ -370,7 +370,7 @@
         },
         "genericx86-64-lsb" : {
             "MACHINE" : "genericx86-64",
-            "TEMPLATE" : "lsb-hw"
+            "TEMPLATE" : "altcfg-hw"
         },
         "qemux86-world" : {
             "MACHINE" : "qemux86",
@@ -385,7 +385,7 @@
         "qemux86-world-lsb" : {
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "x86_64",
-            "DISTRO" : "poky-lsb",
+            "DISTRO" : "poky-altcfg",
             "BBTARGETS" : "world",
             "extravars" : [
                 "require conf/multilib.conf",
