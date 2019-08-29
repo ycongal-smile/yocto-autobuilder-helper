@@ -77,7 +77,7 @@
             "BUILDHISTORY" : true,
             "step1" : {
                 "BBTARGETS" : "core-image-full-cmdline core-image-sato core-image-sato-sdk",
-                "SANITYTARGETS" : "core-image-full-cmdlin:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+                "SANITYTARGETS" : "core-image-full-cmdline:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
             }
         },
         "ptest-qemu" : {
