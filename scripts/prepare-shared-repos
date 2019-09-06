@@ -8,6 +8,7 @@ import os
 import sys
 import subprocess
 import errno
+import tempfile
 
 import utils
 
@@ -31,8 +32,11 @@ with open(args.repojson) as f:
 
 stashdir = utils.getconfig("REPO_STASH_DIR", ourconfig)
 
-for repo in sorted(repos.keys()):
-    utils.printheader("Intially fetching repo %s" % repo)
-    utils.fetchgitrepo(args.sharedsrcdir, repo, repos[repo], stashdir)
-    if args.publish_dir:
-        utils.publishrepo(args.sharedsrcdir, repo, args.publish_dir)
+with tempfile.TemporaryDirectory(prefix="shared-repo-temp-", dir="/tmp") as tempdir:
+    for repo in sorted(repos.keys()):
+        utils.printheader("Intially fetching repo %s" % repo)
+        utils.fetchgitrepo(tempdir, repo, repos[repo], stashdir)
+        if args.publish_dir:
+            utils.publishrepo(tempdir, repo, args.publish_dir)
+
+    subprocess.check_call(["rsync", "-a", tempdir + "/*", args.sharedsrcdir])
