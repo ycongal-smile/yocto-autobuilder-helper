@@ -36,6 +36,9 @@ parser.add_argument('-r', '--results-dir',
 parser.add_argument('-u', '--build-url',
                     action='store',
                     help="URL back to this build (for the error reporting system)")
+parser.add_argument('--build-type',
+                    action='store',
+                    help="the type of build being triggered (full or quick)")
 parser.add_argument('-t', '--test',
                     action='store_true',
                     default=False,
