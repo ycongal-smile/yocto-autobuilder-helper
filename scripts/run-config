@@ -38,6 +38,7 @@ parser.add_argument('-u', '--build-url',
                     help="URL back to this build (for the error reporting system)")
 parser.add_argument('--build-type',
                     action='store',
+                    default="quick",
                     help="the type of build being triggered (full or quick)")
 parser.add_argument('-t', '--test',
                     action='store_true',
@@ -62,6 +63,15 @@ ourconfig["HELPERBRANCHNAME"] = args.branchname
 hp = utils.HeaderPrinter()
 
 testmode = args.test
+
+# toolchain tests are run in system mode for x86, user mode for the other 
+# arches due to speed
+# toolchain tests only run on full builds
+if args.build_type == "quick":
+    ourconfig["HELPERSTMACHTARGS"] = "-t machine"
+elif args.build_type == "full":
+    if args.target == "qemux86" or args.target == "qemux86-64":
+        ourconfig["HELPERSTMACHTARGS"] = "-t machine -t toolchain-system"
 
 # Find out the number of steps this target has
 maxsteps = 1
