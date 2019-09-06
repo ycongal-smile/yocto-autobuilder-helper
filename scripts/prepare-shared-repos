@@ -39,4 +39,4 @@ with tempfile.TemporaryDirectory(prefix="shared-repo-temp-", dir="/tmp") as temp
         if args.publish_dir:
             utils.publishrepo(tempdir, repo, args.publish_dir)
 
-    subprocess.check_call(["rsync", "-a", tempdir + "/*", args.sharedsrcdir], shell=True)
+    subprocess.check_call("rsync -a " + tempdir + "/* " + args.sharedsrcdir, shell=True)
