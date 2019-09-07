@@ -68,10 +68,12 @@ testmode = args.test
 # arches due to speed
 # toolchain tests only run on full builds
 if args.build_type == "quick":
-    ourconfig["HELPERSTMACHTARGS"] = "-t machine"
+    ourconfig["HELPERSTMACHTARGS"] = "-a -t machine"
 elif args.build_type == "full":
     if args.target == "qemux86" or args.target == "qemux86-64":
-        ourconfig["HELPERSTMACHTARGS"] = "-t machine -t toolchain-system"
+        ourconfig["HELPERSTMACHTARGS"] = "-a -t machine -t toolchain-system"
+    else:
+        ourconfig["HELPERSTMACHTARGS"] = "-a -t machine -t toolchain-user"
 
 # Find out the number of steps this target has
 maxsteps = 1
