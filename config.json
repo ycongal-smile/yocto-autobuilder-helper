@@ -759,7 +759,7 @@
                 ]
             },
             "step3" : {
-                "BBTARGETS" : "core-image-sato:do_populate_sdk",
+                "BBTARGETS" : "world",
                 "extravars" : [
                     "DISTRO_FEATURES_append = ' api-documentation'"
                 ]
