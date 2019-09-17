@@ -380,6 +380,12 @@
                 ]
             }
         },
+        "meta-intel" : {
+            "NEEDREPOS" : ["poky", "meta-intel"],
+            "ADDLAYER" : ["${BUILDDIR}/../meta-intel"],
+            "MACHINE" : "intel-skylake-64",
+            "TEMPLATE" : "arch-hw-qemu"
+        },
         "genericx86-64-lsb" : {
             "MACHINE" : "genericx86-64",
             "TEMPLATE" : "altcfg-hw"
