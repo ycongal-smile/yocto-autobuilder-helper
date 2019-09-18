@@ -383,7 +383,7 @@
         "meta-intel" : {
             "NEEDREPOS" : ["poky", "meta-intel"],
             "ADDLAYER" : ["${BUILDDIR}/../meta-intel"],
-            "MACHINE" : "intel-skylake-64",
+            "MACHINE" : "intel-corei7-64",
             "TEMPLATE" : "arch-hw-qemu"
         },
         "genericx86-64-lsb" : {
