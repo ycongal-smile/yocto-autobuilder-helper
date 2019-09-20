@@ -761,7 +761,9 @@
             "step3" : {
                 "BBTARGETS" : "world",
                 "extravars" : [
-                    "DISTRO_FEATURES_append = ' api-documentation'"
+                    "DISTRO_FEATURES_append = ' api-documentation'",
+                    "EXCLUDE_FROM_WORLD_pn-webkitgtk = '1'",
+                    "EXCLUDE_FROM_WORLD_pn-epiphany = '1'"
                 ]
             },
             "step4" : {
