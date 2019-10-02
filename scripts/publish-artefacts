@@ -60,17 +60,17 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*beaglebone-yocto* $DEST/machines/beaglebone-yocto
         ;;
     "qemuarm-alt")
-        mkdir -p $DEST/machines/qemu/qemuarm-lsb
+        mkdir -p $DEST/machines/qemu/qemuarm-alt
         md5sums $TMPDIR/deploy/images/qemuarm
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*qemuarm* $DEST/machines/qemu/qemuarm-lsb
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*Image* $DEST/machines/qemu/qemuarm-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*qemuarm* $DEST/machines/qemu/qemuarm-alt
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*Image* $DEST/machines/qemu/qemuarm-alt
         ;;
     "beaglebone-alt")
-        mkdir -p $DEST/machines/beaglebone-yocto-lsb
+        mkdir -p $DEST/machines/beaglebone-yocto-alt
         md5sums $TMPDIR/deploy/images/beaglebone-yocto
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*Image* $DEST/machines/beaglebone-yocto-lsb
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*u-boot* $DEST/machines/beaglebone-yocto-lsb
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*beaglebone-yocto* $DEST/machines/beaglebone-yocto-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*Image* $DEST/machines/beaglebone-yocto-alt
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*u-boot* $DEST/machines/beaglebone-yocto-alt
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*beaglebone-yocto* $DEST/machines/beaglebone-yocto-alt
         ;;
     "qemumips64")
         mkdir -p $DEST/machines/qemu/qemumips64
@@ -88,14 +88,14 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/edgerouter/*edgerouter* $DEST/machines/edgerouter
         ;;
     "qemumips-alt")
-        mkdir -p $DEST/machines/qemu/qemumips-lsb
+        mkdir -p $DEST/machines/qemu/qemumips-alt
         md5sums $TMPDIR/deploy/images/qemumips
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemumips/*qemumips* $DEST/machines/qemu/qemumips-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemumips/*qemumips* $DEST/machines/qemu/qemumips-alt
         ;;
     "edgerouter-alt")
-        mkdir -p $DEST/machines/edgerouter-lsb
+        mkdir -p $DEST/machines/edgerouter-alt
         md5sums $TMPDIR/deploy/images/edgerouter
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/edgerouter/*edgerouter* $DEST/machines/edgerouter-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/edgerouter/*edgerouter* $DEST/machines/edgerouter-alt
         ;;
     "qemuppc")
         mkdir -p $DEST/machines/qemu/qemuppc
@@ -108,14 +108,14 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/mpc8315e-rdb/*mpc8315* $DEST/machines/mpc8315e-rdb
         ;;
     "qemuppc-alt")
-        mkdir -p $DEST/machines/qemu/qemuppc-lsb
+        mkdir -p $DEST/machines/qemu/qemuppc-alt
         md5sums $TMPDIR/deploy/images/qemuppc
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuppc/*qemuppc* $DEST/machines/qemu/qemuppc-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuppc/*qemuppc* $DEST/machines/qemu/qemuppc-alt
         ;;
     "mpc8315e-rdb-alt")
-        mkdir -p $DEST/machines/mpc8315e-rdb-lsb
+        mkdir -p $DEST/machines/mpc8315e-rdb-alt
         md5sums $TMPDIR/deploy/images/mpc8315e-rdb
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/mpc8315e-rdb/*mpc8315* $DEST/machines/mpc8315e-rdb-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/mpc8315e-rdb/*mpc8315* $DEST/machines/mpc8315e-rdb-alt
         ;;
     "wic")
         mkdir -p $DEST/machines/qemu/qemux86
@@ -146,14 +146,14 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86-64/*genericx86-64* $DEST/machines/genericx86-64
         ;;
     "qemux86-64-alt")
-        mkdir -p $DEST/machines/qemu/qemux86-64-lsb
+        mkdir -p $DEST/machines/qemu/qemux86-64-alt
         md5sums $TMPDIR/deploy/images/qemux86-64
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64-alt
         ;;
     "genericx86-64-alt")
-        mkdir -p $DEST/machines/genericx86-64-lsb
+        mkdir -p $DEST/machines/genericx86-64-alt
         md5sums $TMPDIR/deploy/images/genericx86-64
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86-64/*genericx86-64* $DEST/machines/genericx86-64-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86-64/*genericx86-64* $DEST/machines/genericx86-64-alt
         ;;
     "nightly-x86-64-bsp")
         rm -rf $DEST/$target/images/intel-corei7-64/*
@@ -174,14 +174,14 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86/*genericx86* $DEST/machines/genericx86
         ;;
     "qemux86-alt")
-        mkdir -p $DEST/machines/qemu/qemux86-lsb
+        mkdir -p $DEST/machines/qemu/qemux86-alt
         md5sums $TMPDIR/deploy/images/qemux86
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemux86-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemux86-alt
         ;;
     "genericx86-alt")
-        mkdir -p $DEST/machines/genericx86-lsb
+        mkdir -p $DEST/machines/genericx86-alt
         md5sums $TMPDIR/deploy/images/genericx86
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86/*genericx86* $DEST/machines/genericx86-lsb
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86/*genericx86* $DEST/machines/genericx86-alt
         ;;
     "poky-tiny")
         mkdir -p $DEST/machines/qemu/qemu-tiny
