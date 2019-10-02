@@ -219,7 +219,7 @@
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-sato:do_testsdk  core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
             }
         },
-        "qemuarm-lsb" : {
+        "qemuarm-alt" : {
             "MACHINE" : "qemuarm",
             "TEMPLATE" : "altcfg-qemu"
         },
@@ -231,7 +231,7 @@
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk"
             }
         },
-        "beaglebone-lsb" : {
+        "beaglebone-alt" : {
             "MACHINE" : "beaglebone-yocto",
             "TEMPLATE" : "altcfg-hw"
         },
@@ -300,7 +300,7 @@
             "MACHINE" : "qemumips",
             "TEMPLATE" : "arch-qemu"
         },
-        "qemumips-lsb" : {
+        "qemumips-alt" : {
             "MACHINE" : "qemumips",
             "TEMPLATE" : "altcfg-qemu"
         },
@@ -308,7 +308,7 @@
             "MACHINE" : "edgerouter",
             "TEMPLATE" : "arch-hw"
         },
-        "edgerouter-lsb" : {
+        "edgerouter-alt" : {
             "MACHINE" : "edgerouter",
             "TEMPLATE" : "altcfg-hw"
         },
@@ -320,7 +320,7 @@
             "MACHINE" : "qemuppc",
             "TEMPLATE" : "arch-qemu"
         },
-        "qemuppc-lsb" : {
+        "qemuppc-alt" : {
             "MACHINE" : "qemuppc",
             "TEMPLATE" : "altcfg-qemu"
         },
@@ -328,7 +328,7 @@
             "MACHINE" : "mpc8315e-rdb",
             "TEMPLATE" : "arch-hw"
         },
-        "mpc8315e-rdb-lsb" : {
+        "mpc8315e-rdb-alt" : {
             "MACHINE" : "mpc8315e-rdb",
             "TEMPLATE" : "altcfg-hw"
         },
@@ -341,7 +341,7 @@
                 ]
             }
         },
-        "qemux86-lsb" : {
+        "qemux86-alt" : {
             "MACHINE" : "qemux86",
             "TEMPLATE" : "altcfg-qemu"
         },
@@ -354,7 +354,7 @@
                 ]
             }
         },
-        "genericx86-lsb" : {
+        "genericx86-alt" : {
             "MACHINE" : "genericx86",
             "TEMPLATE" : "altcfg-hw"
         },
@@ -367,7 +367,7 @@
                 ]
             }
         },
-        "qemux86-64-lsb" : {
+        "qemux86-64-alt" : {
             "MACHINE" : "qemux86-64",
             "TEMPLATE" : "altcfg-qemu"
         },
@@ -386,7 +386,7 @@
             "MACHINE" : "intel-corei7-64",
             "TEMPLATE" : "arch-hw-qemu"
         },
-        "genericx86-64-lsb" : {
+        "genericx86-64-alt" : {
             "MACHINE" : "genericx86-64",
             "TEMPLATE" : "altcfg-hw"
         },
@@ -400,7 +400,7 @@
                 "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'"
             ]
         },
-        "qemux86-world-lsb" : {
+        "qemux86-world-alt" : {
             "MACHINE" : "qemux86",
             "SDKMACHINE" : "x86_64",
             "DISTRO" : "poky-altcfg",

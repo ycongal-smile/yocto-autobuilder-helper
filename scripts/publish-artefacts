@@ -59,13 +59,13 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*u-boot* $DEST/machines/beaglebone-yocto
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*beaglebone-yocto* $DEST/machines/beaglebone-yocto
         ;;
-    "qemuarm-lsb")
+    "qemuarm-alt")
         mkdir -p $DEST/machines/qemu/qemuarm-lsb
         md5sums $TMPDIR/deploy/images/qemuarm
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*qemuarm* $DEST/machines/qemu/qemuarm-lsb
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*Image* $DEST/machines/qemu/qemuarm-lsb
         ;;
-    "beaglebone-lsb")
+    "beaglebone-alt")
         mkdir -p $DEST/machines/beaglebone-yocto-lsb
         md5sums $TMPDIR/deploy/images/beaglebone-yocto
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*Image* $DEST/machines/beaglebone-yocto-lsb
@@ -87,12 +87,12 @@ case "$target" in
         md5sums $TMPDIR/deploy/images/edgerouter
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/edgerouter/*edgerouter* $DEST/machines/edgerouter
         ;;
-    "qemumips-lsb")
+    "qemumips-alt")
         mkdir -p $DEST/machines/qemu/qemumips-lsb
         md5sums $TMPDIR/deploy/images/qemumips
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemumips/*qemumips* $DEST/machines/qemu/qemumips-lsb
         ;;
-    "edgerouter-lsb")
+    "edgerouter-alt")
         mkdir -p $DEST/machines/edgerouter-lsb
         md5sums $TMPDIR/deploy/images/edgerouter
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/edgerouter/*edgerouter* $DEST/machines/edgerouter-lsb
@@ -107,12 +107,12 @@ case "$target" in
         md5sums $TMPDIR/deploy/images/mpc8315e-rdb
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/mpc8315e-rdb/*mpc8315* $DEST/machines/mpc8315e-rdb
         ;;
-    "qemuppc-lsb")
+    "qemuppc-alt")
         mkdir -p $DEST/machines/qemu/qemuppc-lsb
         md5sums $TMPDIR/deploy/images/qemuppc
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuppc/*qemuppc* $DEST/machines/qemu/qemuppc-lsb
         ;;
-    "mpc8315e-rdb-lsb")
+    "mpc8315e-rdb-alt")
         mkdir -p $DEST/machines/mpc8315e-rdb-lsb
         md5sums $TMPDIR/deploy/images/mpc8315e-rdb
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/mpc8315e-rdb/*mpc8315* $DEST/machines/mpc8315e-rdb-lsb
@@ -145,12 +145,12 @@ case "$target" in
         md5sums $TMPDIR/deploy/images/genericx86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86-64/*genericx86-64* $DEST/machines/genericx86-64
         ;;
-    "qemux86-64-lsb")
+    "qemux86-64-alt")
         mkdir -p $DEST/machines/qemu/qemux86-64-lsb
         md5sums $TMPDIR/deploy/images/qemux86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64-lsb
         ;;
-    "genericx86-64-lsb")
+    "genericx86-64-alt")
         mkdir -p $DEST/machines/genericx86-64-lsb
         md5sums $TMPDIR/deploy/images/genericx86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86-64/*genericx86-64* $DEST/machines/genericx86-64-lsb
@@ -173,12 +173,12 @@ case "$target" in
         md5sums $TMPDIR/deploy/images/genericx86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86/*genericx86* $DEST/machines/genericx86
         ;;
-    "qemux86-lsb")
+    "qemux86-alt")
         mkdir -p $DEST/machines/qemu/qemux86-lsb
         md5sums $TMPDIR/deploy/images/qemux86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemux86-lsb
         ;;
-    "genericx86-lsb")
+    "genericx86-alt")
         mkdir -p $DEST/machines/genericx86-lsb
         md5sums $TMPDIR/deploy/images/genericx86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86/*genericx86* $DEST/machines/genericx86-lsb
