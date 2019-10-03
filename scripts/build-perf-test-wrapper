@@ -232,5 +232,7 @@ if archive_dir:
 
 subprocess.check_call("rm -rf %s" % build_dir, shell=True)
 subprocess.check_call("rm -rf %s" % results_tmpdir, shell=True)
+subprocess.check_call("rm -rf ../yocto-autobuilder-helper", shell=True)
+subprocess.check_call("rm -rf *", shell=True)
 
 print("DONE")
