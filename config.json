@@ -16,8 +16,8 @@
     "WEBPUBLISH_DIR" : "${BASE_SHAREDDIR}/",
     "WEBPUBLISH_URL" : "https://autobuilder.yocto.io/",
 
-    "BUILDPERF_STATEDIR" : "/home/pokybuild/buildperf",
-    "BUILDPERF_RESULTSDIR" : "/home/pokybuild/buildperf-results",
+    "BUILDPERF_STATEDIR" : "${BASE_HOMEDIR}/buildperf",
+    "BUILDPERF_RESULTSDIR" : "${BASE_HOMEDIR}/buildperf-results",
 
     "defaults" : {
         "NEEDREPOS" : ["poky"],
@@ -141,7 +141,7 @@
             "SSTATEDIR_RELEASE" : ["SSTATE_DIR ?= '${HELPERBUILDDIR}/sstate'"],
             "PACKAGE_CLASSES" : "package_rpm",
             "EXTRAPLAINCMDS" : [
-                "${SCRIPTSDIR}/build-perf-test-wrapper -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w /home/pokybuild/build-perf-test -p ${HELPERRESULTSDIR}/${HELPERTARGET} -R ${HELPERREPONAME} -b ${HELPERBRANCHNAME} --push git@push.yoctoproject.org:yocto-buildstats"
+                "${SCRIPTSDIR}/build-perf-test-wrapper -r ${BUILDPERF_RESULTSDIR} -E yocto-perf@yoctoproject.org -d ${BUILDPERF_STATEDIR}/downloads -w ${BASE_HOMEDIR}/build-perf-test -p ${HELPERRESULTSDIR}/${HELPERTARGET} -R ${HELPERREPONAME} -b ${HELPERBRANCHNAME} --push git@push.yoctoproject.org:yocto-buildstats"
             ],
             "extravars" : [
                 "BB_NUMBER_THREADS = '24'",
