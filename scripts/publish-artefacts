@@ -46,6 +46,11 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*qemuarm64* $DEST/machines/qemu/qemuarm64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*Image* $DEST/machines/qemu/qemuarm64
         ;;
+    "qemuarm64-ptest")
+        mkdir -p $DEST/machines/qemu/qemuarm64
+        md5sums $TMPDIR/deploy/images/qemuarm64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*qemuarm64* $DEST/machines/qemu/qemuarm64
+        ;;
     "qemuarm")
         mkdir -p $DEST/machines/qemu/qemuarm
         md5sums $TMPDIR/deploy/images/qemuarm
@@ -136,6 +141,11 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/genericx86-64/*/*/*.direct.md5sum $DEST/machines/genericx86-64
         ;;
     "qemux86-64")
+        mkdir -p $DEST/machines/qemu/qemux86-64
+        md5sums $TMPDIR/deploy/images/qemux86-64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64
+        ;;
+    "qemux86-64-ptest")
         mkdir -p $DEST/machines/qemu/qemux86-64
         md5sums $TMPDIR/deploy/images/qemux86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64
