@@ -347,11 +347,10 @@ class ArgParser(argparse.ArgumentParser):
 
 #
 # Figure out which branch we might need to compare against
+# Also return whether this is a forked branch or not.
 #
 def getcomparisonbranch(ourconfig, reponame, branchname):
     print("Working off %s:%s\n" % (reponame, branchname))
-    base = None
-    basebranch = None
     if "/" in reponame:
         reponame = reponame.rsplit("/", 1)[1]
     if reponame.endswith(".git"):
@@ -361,4 +360,7 @@ def getcomparisonbranch(ourconfig, reponame, branchname):
         if base:
             baserepo, basebranch = base.split(":")
             print("Comparing to %s\n" % (basebranch))
-    return basebranch
+            return branchname, basebranch
+    if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_DIRECTPUSH", ourconfig):
+        return branchname, None
+    return None, None

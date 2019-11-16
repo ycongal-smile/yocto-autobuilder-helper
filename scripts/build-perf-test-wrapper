@@ -182,7 +182,7 @@ if git_repo:
 
     extraopts = " --branch %s --commit %s" % (branch, gitrevfull)
     if args.repo and args.branch:
-        comparebranch = utils.getcomparisonbranch(ourconfig, args.repo, args.branch)
+        basebranch, comparebranch = utils.getcomparisonbranch(ourconfig, args.repo, args.branch)
         if comparebranch:
             extraopts = extraopts + " --branch2 %s" % (comparebranch)
 

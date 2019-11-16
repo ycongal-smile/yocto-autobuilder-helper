@@ -48,8 +48,10 @@ if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
     branch = repos['poky']['branch']
     repo = repos['poky']['url']
 
-    extraopts = " --branch %s --commit %s" % (branch, revision)
-    comparebranch = utils.getcomparisonbranch(ourconfig, repo, branch)
+    extraopts = None
+    basebranch, comparebranch = utils.getcomparisonbranch(ourconfig, repo, branch)
+    if basebranch:
+        extraopts = " --branch %s --commit %s" % (branch, revision)
     if comparebranch:
         extraopts = extraopts + " --branch2 %s" % (comparebranch)
 
@@ -60,13 +62,25 @@ if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
     tempdir = tempfile.mkdtemp(prefix='sendqaemail.')
     try:
         subprocess.check_call(["git", "clone", "git@git.yoctoproject.org:yocto-testresults", tempdir])
+
+        # If the base comparision branch isn't present regression comparision won't work
+        # at least until we can tell the tool to ignore internal branch information
+        if basebranch:
+            try:
+                subprocess.check_call(["git", "rev-parse", "--verify", basebranch], cwd=tempdir)
+            except subprocess.CalledProcessError:
+                # Doesn't exist so base it off master
+                subprocess.check_call(["git", "branch", "master", basebranch], cwd=tempdir)
+                extraopts = None
+
         subprocess.check_call([resulttool, "store", args.results_dir, tempdir])
         subprocess.check_call(["git", "push", "--all"], cwd=tempdir)
         subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
 
-        regreport = subprocess.check_output([resulttool, "regression-git", tempdir] + extraopts.split())
-        with open(args.results_dir + "/testresult-regressions-report.txt", "wb") as f:
-            f.write(regreport)
+        if extraopts:
+            regreport = subprocess.check_output([resulttool, "regression-git", tempdir] + extraopts.split())
+            with open(args.results_dir + "/testresult-regressions-report.txt", "wb") as f:
+                f.write(regreport)
 
     finally:
         subprocess.check_call(["rm", "-rf",  tempdir])
