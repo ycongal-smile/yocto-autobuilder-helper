@@ -192,7 +192,8 @@
             "DISTRO" : "None",
             "extravars" : [
                 "INHERIT += 'uninative'",
-                "require conf/distro/include/yocto-uninative.inc"
+                "require conf/distro/include/yocto-uninative.inc",
+                "BB_SIGNATURE_HANDLER = 'OEEquivHash'"
             ],
             "step1" : {
                 "BBTARGETS" : "core-image-sato",
