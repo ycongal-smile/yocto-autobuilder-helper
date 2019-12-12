@@ -8,6 +8,10 @@ ERRORLINK=$2
 shift
 shift
 
+if [ ! -e $BUILDDIR ]; then
+    exit 0
+fi
+
 cd $BUILDDIR/../
 
 if [ -d $BUILDDIR/tmp/log/error-report/ ]; then
