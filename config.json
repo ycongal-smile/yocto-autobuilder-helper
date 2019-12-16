@@ -387,7 +387,7 @@
             "NEEDREPOS" : ["poky", "meta-intel"],
             "ADDLAYER" : ["${BUILDDIR}/../meta-intel"],
             "MACHINE" : "intel-corei7-64",
-            "TEMPLATE" : "arch-hw-qemu"
+            "TEMPLATE" : "arch-hw"
         },
         "genericx86-64-alt" : {
             "MACHINE" : "genericx86-64",
