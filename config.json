@@ -327,14 +327,6 @@
             "MACHINE" : "qemuppc",
             "TEMPLATE" : "altcfg-qemu"
         },
-        "mpc8315e-rdb" : {
-            "MACHINE" : "mpc8315e-rdb",
-            "TEMPLATE" : "arch-hw"
-        },
-        "mpc8315e-rdb-alt" : {
-            "MACHINE" : "mpc8315e-rdb",
-            "TEMPLATE" : "altcfg-hw"
-        },
         "qemux86" : {
             "MACHINE" : "qemux86",
             "TEMPLATE" : "arch-qemu",
