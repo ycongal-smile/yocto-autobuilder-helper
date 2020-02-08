@@ -70,7 +70,10 @@ if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
                 subprocess.check_call(["git", "rev-parse", "--verify", basebranch], cwd=tempdir)
             except subprocess.CalledProcessError:
                 # Doesn't exist so base it off master
-                subprocess.check_call(["git", "branch", "master", basebranch], cwd=tempdir)
+                # some older hosts don't have git branch old new
+                subprocess.check_call(["git", "checkout", "master"], cwd=tempdir)
+                subprocess.check_call(["git", "branch", basebranch], cwd=tempdir)
+                subprocess.check_call(["git", "checkout", basebranch], cwd=tempdir)
                 extraopts = None
 
         subprocess.check_call([resulttool, "store", args.results_dir, tempdir])
