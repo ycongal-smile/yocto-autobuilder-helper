@@ -77,8 +77,12 @@ if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
                 extraopts = None
 
         subprocess.check_call([resulttool, "store", args.results_dir, tempdir])
-        subprocess.check_call(["git", "push", "--all"], cwd=tempdir)
-        subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
+        if basebranch:
+            subprocess.check_call(["git", "push", "--all", "--force"], cwd=tempdir)
+            subprocess.check_call(["git", "push", "--tags", "--force"], cwd=tempdir)
+        else:
+            subprocess.check_call(["git", "push", "--all"], cwd=tempdir)
+            subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
 
         if extraopts:
             regreport = subprocess.check_output([resulttool, "regression-git", tempdir] + extraopts.split())
