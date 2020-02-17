@@ -178,12 +178,17 @@
                 "extravars" : [
                     "SOURCE_MIRROR_FETCH = '1'"
                 ]
-            },
-            "step2" : {
+            }
+        },
+        "trigger-build-posttrigger" : {
+            "SDKMACHINE" : "x86_64",
+            "MACHINE" : "qemux86",
+            "step1" : {
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest -r buildoptions.SourceMirroring.test_yocto_source_mirror"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
         }
+
     },
     "overrides" : {
         "qemuarm-oecore" : {
@@ -878,8 +883,14 @@
         "a-quick" : {
             "TEMPLATE" : "trigger-build"
         },
+        "a-quick-posttrigger" : {
+            "TEMPLATE" : "trigger-build-posttrigger"
+        },
         "a-full" : {
             "TEMPLATE" : "trigger-build"
+        },
+        "a-full-posttrigger" : {
+            "TEMPLATE" : "trigger-build-posttrigger"
         }
     },
     "repo-defaults" : {
