@@ -401,6 +401,7 @@
             "DISTRO" : "poky-altcfg",
             "BBTARGETS" : "world",
             "extravars" : [
+                "DISTRO_FEATURES_append = ' api-documentation'",
                 "require conf/multilib.conf",
                 "MULTILIBS = 'multilib:lib32'",
                 "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'",
@@ -757,30 +758,22 @@
                 ]
             },
             "step3" : {
-                "BBTARGETS" : "world",
-                "extravars" : [
-                    "DISTRO_FEATURES_append = ' api-documentation'",
-                    "EXCLUDE_FROM_WORLD_pn-webkitgtk = '1'",
-                    "EXCLUDE_FROM_WORLD_pn-epiphany = '1'"
-                ]
-            },
-            "step4" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext",
                 "extravars" : [
                     "SDK_EXT_TYPE = 'full'"
                 ]
             },
-            "step5" : {
+            "step4" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato core-image-sato:do_populate_sdk_ext"
             },
-            "step6" : {
+            "step5" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato -S none",
                 "EXTRACMDS" : ["rm -rf ${BUILDDIR}/../build/tmp"]
             },
-            "step7" : {
+            "step6" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato",
                 "extravars" : [
