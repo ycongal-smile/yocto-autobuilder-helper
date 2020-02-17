@@ -771,7 +771,7 @@
             "step5" : {
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato -S none",
-                "EXTRACMDS" : ["rm -rf ${BUILDDIR}/../build/tmp"]
+                "EXTRACMDS" : ["${SCRIPTSDIR}/../janitor/clobberdir ${BUILDDIR}/../build/tmp"]
             },
             "step6" : {
                 "SDKMACHINE" : "x86_64",
