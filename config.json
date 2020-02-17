@@ -391,7 +391,7 @@
             "TEMPLATE" : "altcfg-hw"
         },
         "qemux86-world" : {
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "world",
             "extravars" : [
@@ -401,7 +401,7 @@
             ]
         },
         "qemux86-world-alt" : {
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "DISTRO" : "poky-altcfg",
             "BBTARGETS" : "world",
