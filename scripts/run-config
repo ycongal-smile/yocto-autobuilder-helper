@@ -128,6 +128,14 @@ def bitbakecmd(builddir, cmd, report, stepnum, logsuffix, oeenv=True):
     print("Running '%s' with output to %s" % (cmd, log))
     flush()
 
+    autoconf = builddir + "/conf/auto.conf"
+    if os.path.exists(autoconf):
+        with open(autoconf, "r") as inf, open(log, "a") as outf:
+            outf.write("auto.conf settings:\n")
+            for line in inf.readlines():
+                outf.write(line)
+            outf.write("\n")
+
     with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'ab') as f:
         for line in p.stdout:
             if not args.quietlogging:
