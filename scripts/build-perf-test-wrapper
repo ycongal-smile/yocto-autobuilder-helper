@@ -185,6 +185,9 @@ if git_repo:
         basebranch, comparebranch = utils.getcomparisonbranch(ourconfig, args.repo, args.branch)
         if comparebranch:
             extraopts = extraopts + " --branch2 %s" % (comparebranch)
+        else:
+            print("No comparision branch found, comparing to master")
+            extraopts = extraopts + " --branch2 master"
 
     print("\nGenerating test report")
     open(report_txt, "w").close()

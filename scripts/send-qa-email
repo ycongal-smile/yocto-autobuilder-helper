@@ -54,6 +54,9 @@ if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
         extraopts = " --branch %s --commit %s" % (branch, revision)
     if comparebranch:
         extraopts = extraopts + " --branch2 %s" % (comparebranch)
+    elif basebranch:
+        print("No comparision branch found, comparing to master")
+        extraopts = extraopts + " --branch2 master"
 
     report = subprocess.check_output([resulttool, "report", args.results_dir])
     with open(args.results_dir + "/testresult-report.txt", "wb") as f:
