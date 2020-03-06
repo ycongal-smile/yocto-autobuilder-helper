@@ -8,6 +8,8 @@
     "BUILD_HISTORY_DIRECTPUSH" : ["poky:morty", "poky:pyro", "poky:rocko", "poky:sumo", "poky:thud", "poky:warrior", "poky:zeus", "poky:master"],
     "BUILD_HISTORY_FORKPUSH" : {"poky-contrib:ross/mut" : "poky:master", "poky:master-next" : "poky:master"},
 
+    "BUILDTOOLS_URL" : "http://downloads.yoctoproject.org/releases/yocto/milestones/yocto-3.1_M2/buildtools/x86_64-buildtools-extended-nativesdk-standalone-3.0%2Bsnapshot-20200122.sh",
+
     "REPO_STASH_DIR" : "${BASE_HOMEDIR}/git/mirror",
     "TRASH_DIR" : "${BASE_HOMEDIR}/git/trash",
 
@@ -957,5 +959,8 @@
             "no-layer-add" : true
         }
 
+    },
+    "buildtools" : {
+        "centos7*" : "${BUILDTOOLS_URL}"
     }
 }
