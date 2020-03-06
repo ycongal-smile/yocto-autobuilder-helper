@@ -8,6 +8,8 @@ import os
 import sys
 import subprocess
 import errno
+import fnmatch
+import glob
 
 import utils
 
@@ -91,6 +93,34 @@ if args.target in ourconfig['overrides']:
             maxsteps = n
 
 hp.printheader("Target task %s has %d steps" % (args.target, maxsteps))
+
+bttarball = None
+if "buildtools" in ourconfig and args.workername:
+    btcfg = utils.getconfig("buildtools", ourconfig)
+    for entry in btcfg:
+        if fnmatch.fnmatch(args.workername, entry):
+            bttarball = btcfg[entry]
+            break
+
+btenv = None
+if bttarball:
+    btdir = args.builddir + "../buildtools"
+    if not os.path.exists(btdir):
+        btdlpath = utils.getconfig("BASE_SHAREDDIR", ourconfig) + "/buildtools/" + os.path.basename(bttarball)
+        if not os.path.exists(btdlpath):
+            os.makedirs(os.path.dirname(btdlpath), exist_ok=True)
+            subprocess.check_call(["wget", "-O", btdlpath, bttarball])
+            os.chmod(btdlpath, 0o775)
+        subprocess.check_call(["bash", btdlpath, "-d", btdir, "-y"])
+    btenv = glob.glob(btdir + "/environment-setup*")
+    # We either parse or wrap all our execution calls, rock and a hard place :(
+    with open(btenv[0], "r") as f:
+        for line in f.readlines():
+            if line.startswith("export "):
+                line = line.split(" ", 1)[1].split("=", 1)
+                if "$PATH" in line[1]:
+                    line[1] = line[1].replace("$PATH", os.environ["PATH"])
+                os.environ[line[0]] = line[1]
 
 finalret = 0
 
