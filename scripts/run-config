@@ -10,6 +10,7 @@ import subprocess
 import errno
 import fnmatch
 import glob
+import fcntl
 
 import utils
 
@@ -107,10 +108,15 @@ if bttarball:
     btdir = args.builddir + "/../buildtools"
     if not os.path.exists(btdir):
         btdlpath = utils.getconfig("BASE_SHAREDDIR", ourconfig) + "/buildtools/" + os.path.basename(bttarball)
-        if not os.path.exists(btdlpath):
+        btlock = btdlpath + ".lock"
+        if not os.path.exists(os.path.dirname(btdlpath)):
             os.makedirs(os.path.dirname(btdlpath), exist_ok=True)
-            subprocess.check_call(["wget", "-O", btdlpath, bttarball])
-            os.chmod(btdlpath, 0o775)
+        with open(btlock, 'a+') as lf:
+            fileno = lf.fileno()
+            fcntl.flock(fileno, fcntl.LOCK_EX)
+            if not os.path.exists(btdlpath):
+                subprocess.check_call(["wget", "-O", btdlpath, bttarball])
+                os.chmod(btdlpath, 0o775)
         subprocess.check_call(["bash", btdlpath, "-d", btdir, "-y"])
     btenv = glob.glob(btdir + "/environment-setup*")
     # We either parse or wrap all our execution calls, rock and a hard place :(
