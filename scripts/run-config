@@ -123,9 +123,11 @@ if bttarball:
     with open(btenv[0], "r") as f:
         for line in f.readlines():
             if line.startswith("export "):
-                line = line.split(" ", 1)[1].split("=", 1)
+                line = line.strip().split(" ", 1)[1].split("=", 1)
                 if "$PATH" in line[1]:
                     line[1] = line[1].replace("$PATH", os.environ["PATH"])
+                if line[1].startswith(("'", '"')):
+                    line[1] = line[1][1:-1]
                 os.environ[line[0]] = line[1]
 
 logconfig = args.builddir + "../bitbake/contrib/autobuilderlog.json"
