@@ -138,7 +138,7 @@ if bttarball:
                     line[1] = line[1][1:-1]
                 os.environ[line[0]] = line[1]
 
-logconfig = args.builddir + "../bitbake/contrib/autobuilderlog.json"
+logconfig = args.builddir + "/../bitbake/contrib/autobuilderlog.json"
 print("Using BB_LOGCONFIG=%s" % logconfig)
 os.environ["BB_LOGCONFIG"] = logconfig
 
