@@ -122,6 +122,7 @@ if bttarball:
                         else:
                             subprocess.check_call(["wget", "-O", btdlpath, bttarball])
                         os.chmod(btdlpath, 0o775)
+                break
             except OSError:
                 # We raced with someone else, try again
                 pass
