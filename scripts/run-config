@@ -111,15 +111,20 @@ if bttarball:
         btlock = btdlpath + ".lock"
         if not os.path.exists(os.path.dirname(btdlpath)):
             os.makedirs(os.path.dirname(btdlpath), exist_ok=True)
-        with open(btlock, 'a+') as lf:
-            fileno = lf.fileno()
-            fcntl.flock(fileno, fcntl.LOCK_EX)
-            if not os.path.exists(btdlpath):
-                if bttarball.startswith("/"):
-                    subprocess.check_call(["cp", bttarball, btdlpath])
-                else:
-                    subprocess.check_call(["wget", "-O", btdlpath, bttarball])
-                os.chmod(btdlpath, 0o775)
+        while True:
+            try:
+                with open(btlock, 'a+') as lf:
+                    fileno = lf.fileno()
+                    fcntl.flock(fileno, fcntl.LOCK_EX)
+                    if not os.path.exists(btdlpath):
+                        if bttarball.startswith("/"):
+                            subprocess.check_call(["cp", bttarball, btdlpath])
+                        else:
+                            subprocess.check_call(["wget", "-O", btdlpath, bttarball])
+                        os.chmod(btdlpath, 0o775)
+            except OSError:
+                # We raced with someone else, try again
+                pass
         subprocess.check_call(["bash", btdlpath, "-d", btdir, "-y"])
     btenv = glob.glob(btdir + "/environment-setup*")
     # We either parse or wrap all our execution calls, rock and a hard place :(
