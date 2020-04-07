@@ -105,7 +105,7 @@ if "buildtools" in ourconfig and args.workername:
 
 btenv = None
 if bttarball:
-    btdir = args.builddir + "/../buildtools"
+    btdir = os.path.abspath(args.builddir + "/../buildtools")
     if not os.path.exists(btdir):
         btdlpath = utils.getconfig("BASE_SHAREDDIR", ourconfig) + "/buildtools/" + os.path.basename(bttarball)
         btlock = btdlpath + ".lock"
