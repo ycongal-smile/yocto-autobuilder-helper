@@ -28,7 +28,10 @@ parser.add_argument('-c', '--cache-dir',
 parser.add_argument('-p', '--publish-dir',
                     action='store',
                     help="Where to publish artefacts to (optional)")
-
+parser.add_argument('--workername',
+                    action='store',
+                    default=None,
+                    help="the name of the worker the build is running on")
 
 args = parser.parse_args()
 
