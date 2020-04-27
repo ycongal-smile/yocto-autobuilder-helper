@@ -61,6 +61,8 @@ for repo in sorted(repos.keys()):
         if args.publish_dir:
             utils.publishrepo(targetsubdir, repo, args.publish_dir)
 
+utils.setup_buildtools_tarball(ourconfig, args.workername, args.abworkdir + "/buildtools")
+
 try:
     subprocess.check_call([scriptsdir + "/layer-config", args.abworkdir, args.target])
 except subprocess.CalledProcessError as e:

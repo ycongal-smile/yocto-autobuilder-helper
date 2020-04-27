@@ -8,6 +8,9 @@ import codecs
 import sys
 import re
 import argparse
+import fnmatch
+import glob
+import fcntl
 
 #
 # Check if config contains all the listed params
@@ -364,3 +367,50 @@ def getcomparisonbranch(ourconfig, reponame, branchname):
     if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_DIRECTPUSH", ourconfig):
         return branchname, None
     return None, None
+
+def setup_buildtools_tarball(ourconfig, workername, btdir):
+    bttarball = None
+    if "buildtools" in ourconfig and workername:
+        btcfg = getconfig("buildtools", ourconfig)
+        for entry in btcfg:
+            if fnmatch.fnmatch(workername, entry):
+                bttarball = btcfg[entry]
+                break
+
+    btenv = None
+    if bttarball:
+        btdir = os.path.abspath(btdir)
+        if not os.path.exists(btdir):
+            btdlpath = getconfig("BASE_SHAREDDIR", ourconfig) + "/buildtools/" + os.path.basename(bttarball)
+            print("Extracting buildtools %s" % bttarball)
+            btlock = btdlpath + ".lock"
+            if not os.path.exists(os.path.dirname(btdlpath)):
+                os.makedirs(os.path.dirname(btdlpath), exist_ok=True)
+            while True:
+                try:
+                    with open(btlock, 'a+') as lf:
+                        fileno = lf.fileno()
+                        fcntl.flock(fileno, fcntl.LOCK_EX)
+                        if not os.path.exists(btdlpath):
+                            if bttarball.startswith("/"):
+                                subprocess.check_call(["cp", bttarball, btdlpath])
+                            else:
+                                subprocess.check_call(["wget", "-O", btdlpath, bttarball])
+                            os.chmod(btdlpath, 0o775)
+                    break
+                except OSError:
+                    # We raced with someone else, try again
+                    pass
+            subprocess.check_call(["bash", btdlpath, "-d", btdir, "-y"])
+        btenv = glob.glob(btdir + "/environment-setup*")
+        print("Using buildtools %s" % btenv)
+        # We either parse or wrap all our execution calls, rock and a hard place :(
+        with open(btenv[0], "r") as f:
+            for line in f.readlines():
+                if line.startswith("export "):
+                    line = line.strip().split(" ", 1)[1].split("=", 1)
+                    if "$PATH" in line[1]:
+                        line[1] = line[1].replace("$PATH", os.environ["PATH"])
+                    if line[1].startswith(("'", '"')):
+                        line[1] = line[1][1:-1]
+                    os.environ[line[0]] = line[1]
