@@ -108,6 +108,7 @@ if bttarball:
     btdir = os.path.abspath(args.builddir + "/../buildtools")
     if not os.path.exists(btdir):
         btdlpath = utils.getconfig("BASE_SHAREDDIR", ourconfig) + "/buildtools/" + os.path.basename(bttarball)
+        print("Extracting buildtools %s" % bttarball)
         btlock = btdlpath + ".lock"
         if not os.path.exists(os.path.dirname(btdlpath)):
             os.makedirs(os.path.dirname(btdlpath), exist_ok=True)
@@ -128,6 +129,7 @@ if bttarball:
                 pass
         subprocess.check_call(["bash", btdlpath, "-d", btdir, "-y"])
     btenv = glob.glob(btdir + "/environment-setup*")
+    print("Using buildtools %s" % btenv)
     # We either parse or wrap all our execution calls, rock and a hard place :(
     with open(btenv[0], "r") as f:
         for line in f.readlines():
