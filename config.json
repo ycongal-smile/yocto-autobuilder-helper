@@ -965,6 +965,7 @@
     "buildtools" : {
         "debian8*" : "${BUILDTOOLS_URL}",
         "centos7*" : "${BUILDTOOLS_URL}",
-        "perf-centos7*" : "${BUILDTOOLS_URL}"
+        "perf-centos7*" : "${BUILDTOOLS_URL}",
+        "perf-ubuntu1604*" : "${BUILDTOOLS_URL}"
     }
 }
