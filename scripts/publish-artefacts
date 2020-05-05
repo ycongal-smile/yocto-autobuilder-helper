@@ -3,11 +3,11 @@ WORKDIR=$1
 DEST=$2
 target=$3
 
-md5sums(){
+sha256sums(){
     dest=$1
-    for x in `find $dest -maxdepth 5 -type f`; do 
-        if [ ${x##*.} != md5sum ]; then 
-            md5sum $x >> $x.md5sum
+    for x in `find $dest -maxdepth 5 -type f`; do
+        if [ ${x##*.} != sha256sum ]; then
+            sha256sum $x >> $x.sha256sum
         fi
     done
 }
@@ -18,7 +18,7 @@ case "$target" in
     "qemuarm"|"qemuarm64"|"qemumips64"|"qemumips"|"qemuppc"|"qemux86"|"qemux86-64"|"edgerouter"|"genericx86"|"genericx86-64"|"beaglebone")
         mkdir -p $DEST/toolchain/i686
         mkdir -p $DEST/toolchain/x86_64
-        md5sums $TMPDIR/deploy/sdk
+        sha256sums $TMPDIR/deploy/sdk
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/poky-*i686-core-image* $DEST/toolchain/i686
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/poky-*x86_64-core-image* $DEST/toolchain/x86_64
         ;;
@@ -34,7 +34,7 @@ case "$target" in
         mkdir -p $DEST/toolchain/i686
         mkdir -p $DEST/toolchain/x86_64
         mkdir -p $DEST/toolchain/aarch64
-        md5sums $TMPDIR/deploy/sdk
+        sha256sums $TMPDIR/deploy/sdk
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/*buildtools* $DEST/buildtools
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/i686-nativesdk-libc* $DEST/toolchain/i686
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/sdk/x86_64-nativesdk-libc* $DEST/toolchain/x86_64
@@ -42,165 +42,165 @@ case "$target" in
         ;;
     "qemuarm64")
         mkdir -p $DEST/machines/qemu/qemuarm64
-        md5sums $TMPDIR/deploy/images/qemuarm64
+        sha256sums $TMPDIR/deploy/images/qemuarm64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*qemuarm64* $DEST/machines/qemu/qemuarm64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*Image* $DEST/machines/qemu/qemuarm64
         ;;
     "qemuarm64-ptest")
         mkdir -p $DEST/machines/qemu/qemuarm64
-        md5sums $TMPDIR/deploy/images/qemuarm64
+        sha256sums $TMPDIR/deploy/images/qemuarm64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*qemuarm64* $DEST/machines/qemu/qemuarm64
         ;;
     "qemuarm")
         mkdir -p $DEST/machines/qemu/qemuarm
-        md5sums $TMPDIR/deploy/images/qemuarm
+        sha256sums $TMPDIR/deploy/images/qemuarm
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*qemuarm* $DEST/machines/qemu/qemuarm
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*Image* $DEST/machines/qemu/qemuarm
         ;;
     "beaglebone")
         mkdir -p $DEST/machines/beaglebone-yocto
-        md5sums $TMPDIR/deploy/images/beaglebone-yocto
+        sha256sums $TMPDIR/deploy/images/beaglebone-yocto
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*Image* $DEST/machines/beaglebone-yocto
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*u-boot* $DEST/machines/beaglebone-yocto
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*beaglebone-yocto* $DEST/machines/beaglebone-yocto
         ;;
     "qemuarm-alt")
         mkdir -p $DEST/machines/qemu/qemuarm-alt
-        md5sums $TMPDIR/deploy/images/qemuarm
+        sha256sums $TMPDIR/deploy/images/qemuarm
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*qemuarm* $DEST/machines/qemu/qemuarm-alt
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm/*Image* $DEST/machines/qemu/qemuarm-alt
         ;;
     "beaglebone-alt")
         mkdir -p $DEST/machines/beaglebone-yocto-alt
-        md5sums $TMPDIR/deploy/images/beaglebone-yocto
+        sha256sums $TMPDIR/deploy/images/beaglebone-yocto
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*Image* $DEST/machines/beaglebone-yocto-alt
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*u-boot* $DEST/machines/beaglebone-yocto-alt
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/beaglebone-yocto/*beaglebone-yocto* $DEST/machines/beaglebone-yocto-alt
         ;;
     "qemumips64")
         mkdir -p $DEST/machines/qemu/qemumips64
-        md5sums $TMPDIR/deploy/images/qemumips64
+        sha256sums $TMPDIR/deploy/images/qemumips64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemumips64/*qemumips64* $DEST/machines/qemu/qemumips64
         ;;
     "qemumips")
         mkdir -p $DEST/machines/qemu/qemumips
-        md5sums $TMPDIR/deploy/images/qemumips
+        sha256sums $TMPDIR/deploy/images/qemumips
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemumips/*qemumips* $DEST/machines/qemu/qemumips
         ;;
     "edgerouter")
         mkdir -p $DEST/machines/edgerouter
-        md5sums $TMPDIR/deploy/images/edgerouter
+        sha256sums $TMPDIR/deploy/images/edgerouter
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/edgerouter/*edgerouter* $DEST/machines/edgerouter
         ;;
     "qemumips-alt")
         mkdir -p $DEST/machines/qemu/qemumips-alt
-        md5sums $TMPDIR/deploy/images/qemumips
+        sha256sums $TMPDIR/deploy/images/qemumips
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemumips/*qemumips* $DEST/machines/qemu/qemumips-alt
         ;;
     "edgerouter-alt")
         mkdir -p $DEST/machines/edgerouter-alt
-        md5sums $TMPDIR/deploy/images/edgerouter
+        sha256sums $TMPDIR/deploy/images/edgerouter
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/edgerouter/*edgerouter* $DEST/machines/edgerouter-alt
         ;;
     "qemuppc")
         mkdir -p $DEST/machines/qemu/qemuppc
-        md5sums $TMPDIR/deploy/images/qemuppc
+        sha256sums $TMPDIR/deploy/images/qemuppc
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuppc/*qemuppc* $DEST/machines/qemu/qemuppc
         ;;
     "qemuppc-alt")
         mkdir -p $DEST/machines/qemu/qemuppc-alt
-        md5sums $TMPDIR/deploy/images/qemuppc
+        sha256sums $TMPDIR/deploy/images/qemuppc
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuppc/*qemuppc* $DEST/machines/qemu/qemuppc-alt
         ;;
     "wic")
         mkdir -p $DEST/machines/qemu/qemux86
-        md5sums $TMPDIR/deploy/wic_images/qemux86
+        sha256sums $TMPDIR/deploy/wic_images/qemux86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/qemux86/*/*/*.direct $DEST/machines/qemu/qemux86
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/qemux86/*/*/*.direct.md5sum $DEST/machines/qemu/qemux86
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/qemux86/*/*/*.direct.sha256sum $DEST/machines/qemu/qemux86
         mkdir -p $DEST/machines/genericx86
-        md5sums $TMPDIR/deploy/wic_images/genericx86
+        sha256sums $TMPDIR/deploy/wic_images/genericx86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/genericx86/*/*/*.direct $DEST/machines/genericx86
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/genericx86/*/*/*.direct.md5sum $DEST/machines/genericx86
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/genericx86/*/*/*.direct.sha256sum $DEST/machines/genericx86
         mkdir -p $DEST/machines/qemu/qemux86-64
-        md5sums $TMPDIR/deploy/wic_images/qemux86-64
+        sha256sums $TMPDIR/deploy/wic_images/qemux86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/qemux86-64/*/*/*.direct $DEST/machines/qemu/qemux86-64
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/qemux86-64/*/*/*.direct.md5sum $DEST/machines/qemu/qemux86-64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/qemux86-64/*/*/*.direct.sha256sum $DEST/machines/qemu/qemux86-64
         mkdir -p $DEST/machines/genericx86-64
-        md5sums $TMPDIR/deploy/wic_images/genericx86-64
+        sha256sums $TMPDIR/deploy/wic_images/genericx86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/genericx86-64/*/*/*.direct $DEST/machines/genericx86-64
-        cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/genericx86-64/*/*/*.direct.md5sum $DEST/machines/genericx86-64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/wic_images/genericx86-64/*/*/*.direct.sha256sum $DEST/machines/genericx86-64
         ;;
     "qemux86-64")
         mkdir -p $DEST/machines/qemu/qemux86-64
-        md5sums $TMPDIR/deploy/images/qemux86-64
+        sha256sums $TMPDIR/deploy/images/qemux86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64
         ;;
     "qemux86-64-ptest")
         mkdir -p $DEST/machines/qemu/qemux86-64
-        md5sums $TMPDIR/deploy/images/qemux86-64
+        sha256sums $TMPDIR/deploy/images/qemux86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64
         ;;
     "genericx86-64")
         mkdir -p $DEST/machines/genericx86-64
-        md5sums $TMPDIR/deploy/images/genericx86-64
+        sha256sums $TMPDIR/deploy/images/genericx86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86-64/*genericx86-64* $DEST/machines/genericx86-64
         ;;
     "qemux86-64-alt")
         mkdir -p $DEST/machines/qemu/qemux86-64-alt
-        md5sums $TMPDIR/deploy/images/qemux86-64
+        sha256sums $TMPDIR/deploy/images/qemux86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86-64/*qemux86-64* $DEST/machines/qemu/qemux86-64-alt
         ;;
     "genericx86-64-alt")
         mkdir -p $DEST/machines/genericx86-64-alt
-        md5sums $TMPDIR/deploy/images/genericx86-64
+        sha256sums $TMPDIR/deploy/images/genericx86-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86-64/*genericx86-64* $DEST/machines/genericx86-64-alt
         ;;
     "nightly-x86-64-bsp")
         rm -rf $DEST/$target/images/intel-corei7-64/*
         mkdir -p $DEST/$target/images/intel-corei7-64
-        md5sums $TMPDIR/deploy/images/intel-corei7-64
+        sha256sums $TMPDIR/deploy/images/intel-corei7-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/intel-corei7-64/bzImage* $DEST/$target/images/intel-corei7-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/intel-corei7-64/*core-image-sato-sdk-intel-corei7-64*tar* $DEST/$target/images/intel-corei7-64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/intel-corei7-64/*modules-* $DEST/$target/images/intel-corei7-64
         ;;
     "qemux86")
         mkdir -p $DEST/machines/qemu/qemux86
-        md5sums $TMPDIR/deploy/images/qemux86
+        sha256sums $TMPDIR/deploy/images/qemux86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemux86
         ;;
     "genericx86")
         mkdir -p $DEST/machines/genericx86
-        md5sums $TMPDIR/deploy/images/genericx86
+        sha256sums $TMPDIR/deploy/images/genericx86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86/*genericx86* $DEST/machines/genericx86
         ;;
     "qemux86-alt")
         mkdir -p $DEST/machines/qemu/qemux86-alt
-        md5sums $TMPDIR/deploy/images/qemux86
+        sha256sums $TMPDIR/deploy/images/qemux86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemux86-alt
         ;;
     "genericx86-alt")
         mkdir -p $DEST/machines/genericx86-alt
-        md5sums $TMPDIR/deploy/images/genericx86
+        sha256sums $TMPDIR/deploy/images/genericx86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/genericx86/*genericx86* $DEST/machines/genericx86-alt
         ;;
     "poky-tiny")
         mkdir -p $DEST/machines/qemu/qemu-tiny
-        md5sums $TMPDIR/deploy/images/qemux86
+        sha256sums $TMPDIR/deploy/images/qemux86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemu-tiny
         ;;
     "eclipse-plugin-neon")
         DIR=$WORKDIR/../scripts
-        # create md5sums only for the zip files
-        for x in `ls $DIR/*.zip`; do md5sum $x >> $x.md5sum; done
+        # create sha256sums only for the zip files
+        for x in `ls $DIR/*.zip`; do sha256sum $x >> $x.sha256sum; done
         mkdir -p $DEST/eclipse-plugin/neon
-        cp --no-dereference --preserve=links $DIR/org.*.zip $DIR/org.*.md5sum $DEST/eclipse-plugin/neon
+        cp --no-dereference --preserve=links $DIR/org.*.zip $DIR/org.*.sha256sum $DEST/eclipse-plugin/neon
         ;;
     "eclipse-plugin-oxygen")
         DIR=$WORKDIR/../scripts
-        # create md5sums only for the zip files
-        for x in `ls $DIR/*.zip`; do md5sum $x >> $x.md5sum; done
+        # create sha256sums only for the zip files
+        for x in `ls $DIR/*.zip`; do sha256sum $x >> $x.sha256sum; done
         mkdir -p $DEST/eclipse-plugin/oxygen
-        cp --no-dereference --preserve=links $DIR/org.*.zip $DIR/org.*.md5sum $DEST/eclipse-plugin/oxygen
+        cp --no-dereference --preserve=links $DIR/org.*.zip $DIR/org.*.sha256sum $DEST/eclipse-plugin/oxygen
         ;;
 esac
 
