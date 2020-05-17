@@ -885,7 +885,7 @@
         },
         "auh" : {
             "EXTRAPLAINCMDS" : [
-                "${SCRIPTSDIR}/setup-auh ${BUILDDIR}; ${SCRIPTSDIR}/run-auh ${BUILDDIR}"
+                "${SCRIPTSDIR}/setup-auh ${HELPERBUILDDIR}; ${SCRIPTSDIR}/run-auh ${HELPERBUILDDIR}"
             ]
         },
         "a-quick" : {
