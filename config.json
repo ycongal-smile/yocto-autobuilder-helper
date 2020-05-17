@@ -883,6 +883,11 @@
         "buildperf-centos7" : {
             "TEMPLATE" : "buildperf"
         },
+        "auh" : {
+            "EXTRAPLAINCMDS" : [
+                "${SCRIPTSDIR}/setup-auh ${BUILDDIR}; ${SCRIPTSDIR}/run-auh ${BUILDDIR}"
+            ]
+        },
         "a-quick" : {
             "TEMPLATE" : "trigger-build"
         },
