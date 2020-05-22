@@ -5,10 +5,14 @@ target=$3
 
 sha256sums(){
     dest=$1
-    for x in `find $dest -maxdepth 5 -type f`; do
-        if [ ${x##*.} != sha256sum ]; then
-            sha256sum $x >> $x.sha256sum
-        fi
+    for x in `find -L $dest -maxdepth 5 -type f`; do
+        for w in $x;do
+            if [ ${w##*.} != sha256sum ]; then
+                shasum=`sha256sum $w | awk '{print $1}'`
+                filename=${w##*/}
+                echo $shasum $filename >> $w.sha256sum
+            fi
+        done
     done
 }
 
