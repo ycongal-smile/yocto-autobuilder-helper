@@ -55,8 +55,8 @@ if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
     if comparebranch:
         extraopts = extraopts + " --branch2 %s" % (comparebranch)
     elif basebranch:
-        print("No comparision branch found, comparing to master")
-        extraopts = extraopts + " --branch2 master"
+        print("No comparision branch found, comparing to %s" % basebranch)
+        extraopts = extraopts + " --branch2 %s" % basebranch
 
     report = subprocess.check_output([resulttool, "report", args.results_dir])
     with open(args.results_dir + "/testresult-report.txt", "wb") as f:
@@ -64,7 +64,16 @@ if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
 
     tempdir = tempfile.mkdtemp(prefix='sendqaemail.')
     try:
-        subprocess.check_call(["git", "clone", "git@git.yoctoproject.org:yocto-testresults", tempdir, "--depth", "5"])
+        cloneopts = []
+        if comparebranch:
+            cloneopts = ["--branch", comparebranch]
+        elif basebranch:
+            cloneopts = ["--branch", basebranch]
+        try:
+            subprocess.check_call(["git", "clone", "git@git.yoctoproject.org:yocto-testresults", tempdir, "--depth", "5"] + cloneopts)
+        except subprocess.CalledProcessError:
+            print("No comparision branch found, falling back to master")
+            subprocess.check_call(["git", "clone", "git@git.yoctoproject.org:yocto-testresults", tempdir, "--depth", "5"])
 
         # If the base comparision branch isn't present regression comparision won't work
         # at least until we can tell the tool to ignore internal branch information
