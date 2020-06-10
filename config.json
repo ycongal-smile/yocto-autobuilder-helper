@@ -179,6 +179,7 @@
             "MACHINE" : "qemux86",
             "step1" : {
                 "BBTARGETS" : "universe -c fetch -k",
+                "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"],
                 "extravars" : [
                     "SOURCE_MIRROR_FETCH = '1'"
                 ]
