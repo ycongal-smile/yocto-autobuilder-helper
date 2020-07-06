@@ -276,9 +276,9 @@
         "meta-arm" : {
             "NEEDREPOS" : ["poky", "meta-arm"],
             "ADDLAYER" : [
+                "${BUILDDIR}/../meta-arm/meta-arm-toolchain",
                 "${BUILDDIR}/../meta-arm/meta-arm",
-                "${BUILDDIR}/../meta-arm/meta-arm-bsp",
-                "${BUILDDIR}/../meta-arm/meta-arm-toolchain"
+                "${BUILDDIR}/../meta-arm/meta-arm-bsp"
             ],
             "step1": {
                 "MACHINE": "n1sdp",
