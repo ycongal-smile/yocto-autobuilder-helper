@@ -368,6 +368,25 @@ def getcomparisonbranch(ourconfig, reponame, branchname):
         return branchname, None
     return None, None
 
+def sha256_file(filename):
+    """
+    Return the hex string representation of the 256-bit SHA checksum of
+    filename.
+    """
+    import hashlib
+    import mmap
+
+    method = hashlib.sha256()
+    with open(filename, "rb") as f:
+        try:
+            with mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ) as mm:
+                for chunk in iter(lambda: mm.read(8192), b''):
+                    method.update(chunk)
+        except ValueError:
+            # You can't mmap() an empty file so silence this exception
+            pass
+    return method.hexdigest()
+
 def setup_buildtools_tarball(ourconfig, workername, btdir):
     bttarball = None
     if "buildtools" in ourconfig and workername:
@@ -379,6 +398,9 @@ def setup_buildtools_tarball(ourconfig, workername, btdir):
 
     btenv = None
     if bttarball:
+        sha256 = None
+        if ";" in bttarball:
+            bttarball, sha256 = bttarball.split(";")
         btdir = os.path.abspath(btdir)
         if not os.path.exists(btdir):
             btdlpath = getconfig("BASE_SHAREDDIR", ourconfig) + "/buildtools/" + os.path.basename(bttarball)
@@ -391,6 +413,10 @@ def setup_buildtools_tarball(ourconfig, workername, btdir):
                     with open(btlock, 'a+') as lf:
                         fileno = lf.fileno()
                         fcntl.flock(fileno, fcntl.LOCK_EX)
+                        if sha256 and os.path.exists(btdlpath):
+                            dl_sha256 = sha256_file(btdlpath)
+                            if dl_sha256 != sha256:
+                                os.unlink(btdlpath)
                         if not os.path.exists(btdlpath):
                             if bttarball.startswith("/"):
                                 subprocess.check_call(["cp", bttarball, btdlpath])
