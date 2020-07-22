@@ -49,7 +49,7 @@ def trash_processor(trashdir):
         try:
             files = os.listdir(trashdir)
             if files:
-                os.system("ionice -c 3 rm %s/* -rf" % trashdir)
+                os.system("nice -n 10 ionice -c 3 rm %s/* -rf" % trashdir)
             else:
                 time.sleep(120*60) # 30 minutes
         except Exception as e:
