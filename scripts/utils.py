@@ -233,18 +233,24 @@ def fetchgitrepo(clonedir, repo, params, stashdir):
     branch = params["branch"]
     revision = params["revision"]
     print("Checking for stash at: " + stashdir + "/" + repo)
+    flush()
     if os.path.exists(stashdir + "/" + repo):
         print("Cloning from stash to %s..." % sharedrepo)
+        flush()
         subprocess.check_call(["git", "clone", "file://%s/%s" % (stashdir, repo), "%s/%s" % (clonedir, repo)])
         subprocess.check_call(["git", "remote", "rm", "origin"], cwd=sharedrepo)
         subprocess.check_call(["git", "remote", "add", "origin", params["url"]], cwd=sharedrepo)
         print("Updating from origin...")
+        flush()
         subprocess.check_call(["git", "fetch", "origin"], cwd=sharedrepo)
         subprocess.check_call(["git", "fetch", "origin", "-t"], cwd=sharedrepo)
     else:
         print("Cloning from origin to %s..." % sharedrepo)
+        flush()
         subprocess.check_call(["git", "clone", params["url"], sharedrepo])
 
+    print("Updating checkout...")
+    flush()
     subprocess.check_call(["git", "checkout", branch], cwd=sharedrepo)
     # git reset revision==HEAD won't help, we need to reset onto the potentially fetched origin branch
     subprocess.check_call(["git", "reset", "origin/" + branch, "--hard"], cwd=sharedrepo)
