@@ -232,13 +232,17 @@ def fetchgitrepo(clonedir, repo, params, stashdir):
     sharedrepo = "%s/%s" % (clonedir, repo)
     branch = params["branch"]
     revision = params["revision"]
+    print("Checking for stash at: " + stashdir + "/" + repo)
     if os.path.exists(stashdir + "/" + repo):
+        print("Cloning from stash to %s..." % sharedrepo)
         subprocess.check_call(["git", "clone", "file://%s/%s" % (stashdir, repo), "%s/%s" % (clonedir, repo)])
         subprocess.check_call(["git", "remote", "rm", "origin"], cwd=sharedrepo)
         subprocess.check_call(["git", "remote", "add", "origin", params["url"]], cwd=sharedrepo)
+        print("Updating from origin...")
         subprocess.check_call(["git", "fetch", "origin"], cwd=sharedrepo)
         subprocess.check_call(["git", "fetch", "origin", "-t"], cwd=sharedrepo)
     else:
+        print("Cloning from origin to %s..." % sharedrepo)
         subprocess.check_call(["git", "clone", params["url"], sharedrepo])
 
     subprocess.check_call(["git", "checkout", branch], cwd=sharedrepo)
