@@ -397,6 +397,20 @@ def sha256_file(filename):
             pass
     return method.hexdigest()
 
+def enable_buildtools_tarball(btdir):
+    btenv = glob.glob(btdir + "/environment-setup*")
+    print("Using buildtools %s" % btenv)
+    # We either parse or wrap all our execution calls, rock and a hard place :(
+    with open(btenv[0], "r") as f:
+        for line in f.readlines():
+            if line.startswith("export "):
+                line = line.strip().split(" ", 1)[1].split("=", 1)
+                if "$PATH" in line[1]:
+                    line[1] = line[1].replace("$PATH", os.environ["PATH"])
+                if line[1].startswith(("'", '"')):
+                    line[1] = line[1][1:-1]
+                os.environ[line[0]] = line[1]
+
 def setup_buildtools_tarball(ourconfig, workername, btdir):
     bttarball = None
     if "buildtools" in ourconfig and workername:
@@ -438,15 +452,4 @@ def setup_buildtools_tarball(ourconfig, workername, btdir):
                     # We raced with someone else, try again
                     pass
             subprocess.check_call(["bash", btdlpath, "-d", btdir, "-y"])
-        btenv = glob.glob(btdir + "/environment-setup*")
-        print("Using buildtools %s" % btenv)
-        # We either parse or wrap all our execution calls, rock and a hard place :(
-        with open(btenv[0], "r") as f:
-            for line in f.readlines():
-                if line.startswith("export "):
-                    line = line.strip().split(" ", 1)[1].split("=", 1)
-                    if "$PATH" in line[1]:
-                        line[1] = line[1].replace("$PATH", os.environ["PATH"])
-                    if line[1].startswith(("'", '"')):
-                        line[1] = line[1][1:-1]
-                    os.environ[line[0]] = line[1]
+        enable_buildtools_tarball(btdir)
