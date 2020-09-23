@@ -161,7 +161,8 @@
             "SDKMACHINE" : "x86_64",
             "PACKAGE_CLASSES" : "package_rpm",
             "extravars" : [
-                "RPM_GPG_SIGN_CHUNK = '1'"
+                "RPM_GPG_SIGN_CHUNK = '1'",
+                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
             ],
             "step1" : {
                 "EXTRACMDS" : ["bitbake-selftest"]
@@ -330,10 +331,16 @@
         },
         "qemumips" : {
             "MACHINE" : "qemumips",
+            "extravars" : [
+                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+            ],
             "TEMPLATE" : "arch-qemu"
         },
         "qemumips-alt" : {
             "MACHINE" : "qemumips",
+            "extravars" : [
+                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+            ],
             "TEMPLATE" : "altcfg-qemu"
         },
         "edgerouter" : {
@@ -350,10 +357,16 @@
         },
         "qemuppc" : {
             "MACHINE" : "qemuppc",
+            "extravars" : [
+                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+            ],
             "TEMPLATE" : "arch-qemu"
         },
         "qemuppc-alt" : {
             "MACHINE" : "qemuppc",
+            "extravars" : [
+                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+            ],
             "TEMPLATE" : "altcfg-qemu"
         },
         "qemux86" : {
