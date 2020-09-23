@@ -410,6 +410,10 @@ def enable_buildtools_tarball(btdir):
                 if line[1].startswith(("'", '"')):
                     line[1] = line[1][1:-1]
                 os.environ[line[0]] = line[1]
+            elif line.startswith("unset "):
+                line = line.strip().split(" ", 1)[1]
+                if line in os.environ:
+                    del os.environ[line]
 
 def setup_buildtools_tarball(ourconfig, workername, btdir):
     bttarball = None
