@@ -41,9 +41,9 @@ with open(args.repojson) as f:
 
 resulttool = os.path.dirname(args.repojson) + "/build/scripts/resulttool"
 
-buildtoolsdir = os.path.dirname(args.repojson) + "/buildtools"
+buildtoolsdir = os.path.dirname(args.repojson) + "/build/buildtools"
 if os.path.exists(buildtoolsdir):
-    utils.enable_buildtools_tarball(ourconfig, args.workername, buildtoolsdir)
+    utils.enable_buildtools_tarball(buildtoolsdir)
 
 if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
     # Need the finalised revisions (not 'HEAD')
