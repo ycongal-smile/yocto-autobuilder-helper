@@ -83,9 +83,9 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
     reldir = "./" + build + "/testresults/"
     btype = "other"
     files = os.listdir(buildpath)
-    if os.path.exists(buildpath + "/a-full"):
+    if os.path.exists(buildpath + "/a-full-posttrigger"):
         btype = "full"
-    elif os.path.exists(buildpath + "/a-quick"):
+    elif os.path.exists(buildpath + "/a-quick-posttrigger"):
         btype = "quick"
     elif len(files) == 1:
         btype = files[0]
