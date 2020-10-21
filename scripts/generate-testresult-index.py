@@ -21,9 +21,9 @@ index_templpate = """
   <td>Type</td>
   <td>Branch</td>
   <td>Test Results Report</td>
-  <td>Buildhistory</td>
   <td>Performance Reports</td>
   <td>ptest Logs</td>
+  <td>Buildhistory</td>
 </tr>
 {% for entry in entries %}
 <tr>
@@ -32,11 +32,6 @@ index_templpate = """
    <td>{% if entry[4] %} {{entry[4]}}{% endif %}</td>
    <td> {% if entry[3] %}<a href="{{entry[3]}}">Report</a>{% endif %} </td>
    <td>
-   {% for bh in entry[5] %}
-     <a href="{{bh[0]}}">{{bh[1]}}</a>
-   {% endfor %}
-   </td>
-   <td>
    {% for perfrep in entry[6] %}
      <a href="{{perfrep[0]}}">{{perfrep[1]}}</a>
    {% endfor %}
@@ -44,6 +39,11 @@ index_templpate = """
    <td>
    {% for ptest in entry[7] %}
      <a href="{{ptest[0]}}">{{ptest[1]}}</a>
+   {% endfor %}
+   </td>
+   <td>
+   {% for bh in entry[5] %}
+     <a href="{{bh[0]}}">{{bh[1]}}</a>
    {% endfor %}
    </td>
 </tr>
@@ -92,7 +92,7 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
     if not os.path.exists(buildpath):
         # No test results
         continue
-    reldir = "./" + build + "/testresults/"
+    reldir = "./" + build + "/"
 
     btype = "other"
     files = os.listdir(buildpath)
@@ -107,7 +107,7 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
 
     testreport = ""
     if os.path.exists(buildpath + "/testresult-report.txt"):
-        testreport = reldir + "testresult-report.txt"
+        testreport = reldir + "testresults/testresult-report.txt"
 
     ptestlogs = []
     ptestseen = []
@@ -116,20 +116,20 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
             continue
         buildname = os.path.basename(os.path.dirname(p))
         if buildname not in ptestseen:
-            ptestlogs.append((reldir + "/" + buildname + "/", buildname.replace("-ptest","")))
+            ptestlogs.append((reldir + "testresults/" + buildname + "/", buildname.replace("-ptest","")))
             ptestseen.append(buildname)
 
     perfreports = []
     for p in glob.glob(buildpath + "/buildperf*/*.html"):
         perfname = os.path.basename(os.path.dirname(p))
-        perfreports.append((reldir + "/" + perfname + "/" + os.path.basename(p), perfname.replace("buildperf-","")))
+        perfreports.append((reldir + "testresults/" + perfname + "/" + os.path.basename(p), perfname.replace("buildperf-","")))
 
     buildhistory = []
     if os.path.exists(buildpath + "/qemux86-64/buildhistory.txt"):
-        buildhistory.append((reldir + "/qemux86-64/buildhistory.txt", "qemux86-64"))
+        buildhistory.append((reldir + "testresults/qemux86-64/buildhistory.txt", "qemux86-64"))
 
     if os.path.exists(buildpath + "/qemuarm/buildhistory.txt"):
-        buildhistory.append((reldir + "/qemuarm/buildhistory.txt", "qemuarm"))
+        buildhistory.append((reldir + "testresults/qemuarm/buildhistory.txt", "qemuarm"))
 
     branch = get_build_branch(buildpath)
 
