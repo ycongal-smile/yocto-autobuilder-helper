@@ -13,18 +13,29 @@ import subprocess
 from jinja2 import Template
 
 index_templpate = """
-<h1>Index of autobuilder test results</h1>
-    
-<table>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Index of autobuilder test results</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+</head>
+<body>
+ 
+<table class="table is-narrow is-striped">
+<thead>
 <tr>
-  <td>Build</td>     
-  <td>Type</td>
-  <td>Branch</td>
-  <td>Test Results Report</td>
-  <td>Performance Reports</td>
-  <td>ptest Logs</td>
-  <td>Buildhistory</td>
+  <th>Build</th>
+  <th>Type</th>
+  <th>Branch</th>
+  <th>Test Results Report</th>
+  <th>Performance Reports</th>
+  <th>ptest Logs</th>
+  <th>Buildhistory</th>
 </tr>
+</thead>
+<tdata>
 {% for entry in entries %}
 <tr>
    <td><a href="{{entry[1]}}">{{entry[0]}}</a></td>
@@ -48,7 +59,10 @@ index_templpate = """
    </td>
 </tr>
 {% endfor %}
+</tdata>
 </table>
+</body>
+</html>
 """
 
 def parse_args(argv=None):
