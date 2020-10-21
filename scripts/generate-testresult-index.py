@@ -20,8 +20,10 @@ index_templpate = """
   <td>Build</td>     
   <td>Type</td>
   <td>Branch</td>
-  <td>Report</td>
+  <td>Test Results Report</td>
   <td>Buildhistory</td>
+  <td>Performance Reports</td>
+  <td>ptest Logs</td>
 </tr>
 {% for entry in entries %}
 <tr>
@@ -32,6 +34,16 @@ index_templpate = """
    <td>
    {% for bh in entry[5] %}
      <a href="{{bh[0]}}">{{bh[1]}}</a>
+   {% endfor %}
+   </td>
+   <td>
+   {% for perfrep in entry[6] %}
+     <a href="{{perfrep[0]}}">{{perfrep[1]}}</a>
+   {% endfor %}
+   </td>
+   <td>
+   {% for ptest in entry[7] %}
+     <a href="{{ptest[0]}}">{{ptest[1]}}</a>
    {% endfor %}
    </td>
 </tr>
@@ -81,6 +93,7 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
         # No test results
         continue
     reldir = "./" + build + "/testresults/"
+
     btype = "other"
     files = os.listdir(buildpath)
     if os.path.exists(buildpath + "/a-full-posttrigger") or \
@@ -91,14 +104,25 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
         btype = "quick"
     elif len(files) == 1:
         btype = files[0]
+
     testreport = ""
     if os.path.exists(buildpath + "/testresult-report.txt"):
         testreport = reldir + "testresult-report.txt"
-    elif btype.startswith("buildperf-"):
-        try:
-            testreport = reldir + btype + "/" + os.path.basename(glob.glob(buildpath + "/" + btype + "/*.html")[0])
-        except IndexError:
-            pass
+
+    ptestlogs = []
+    ptestseen = []
+    for p in glob.glob(buildpath + "/*-ptest/*.log"):
+        if p.endswith("resulttool-done.log"):
+            continue
+        buildname = os.path.basename(os.path.dirname(p))
+        if buildname not in ptestseen:
+            ptestlogs.append((reldir + "/" + buildname + "/", buildname.replace("-ptest","")))
+            ptestseen.append(buildname)
+
+    perfreports = []
+    for p in glob.glob(buildpath + "/buildperf*/*.html"):
+        perfname = os.path.basename(os.path.dirname(p))
+        perfreports.append((reldir + "/" + perfname + "/" + os.path.basename(p), perfname.replace("buildperf-","")))
 
     buildhistory = []
     if os.path.exists(buildpath + "/qemux86-64/buildhistory.txt"):
@@ -109,7 +133,7 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
 
     branch = get_build_branch(buildpath)
 
-    entries.append((build, reldir, btype, testreport, branch, buildhistory))
+    entries.append((build, reldir, btype, testreport, branch, buildhistory, perfreports, ptestlogs))
 
     # Also ensure we have saved out log data for ptest runs to aid debugging
     if "ptest" in btype or btype in ["full", "quick"]:
