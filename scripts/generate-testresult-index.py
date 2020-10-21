@@ -121,6 +121,9 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
                     if logs:
                         continue
                     subprocess.check_call(["resulttool", "log", f, "--dump-ptest", f])
+                    # Ensure we don't rerun every time with a dummy log
+                    with open(f + "/resulttool-done.log", "a+") as tf:
+                        tf.write("\n")
 
 t = Template(index_templpate)
 with open(os.path.join(path, "index.html"), 'w') as f:
