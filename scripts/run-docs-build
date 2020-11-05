@@ -1,0 +1,4 @@
+#!/bin/bash
+# Called with $1 as the path to yocto-docs
+cd $1
+$1/autobuilder-publish-docs
