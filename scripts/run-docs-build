@@ -14,7 +14,7 @@ mkdir buildtools
 $docs_buildtools -y -d $builddir/buildtools
 . $builddir/buildtools/environment-setup*
 
-wget https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz -c
+wget https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz
 mkdir $outputdir
 cd $outputdir
 tar -xJf $builddir/docbook-archives-20201105.tar.xz
@@ -40,7 +40,8 @@ mv ./_build/html/* $outputdir/bitbake/1.48
 #mkdir $outputdir/bitbake/1.46
 #mv ./_build/html/* $outputdir/bitbake/1.46
 
-rsync -av -n $outputdir docs@docs.yoctoproject.org:docs/
+cd $outputdir
+rsync -av -n * docs@docs.yoctoproject.org:docs/
 
 cd $ypdocs
 git checkout master
@@ -73,4 +74,5 @@ mv ./_build/html/* $outputdir/3.2
 #mkdir $outputdir/3.1
 #mv ./_build/html/* $outputdir/3.1
 
-rsync -av -n $outputdir docs@docs.yoctoproject.org:docs/
+cd $outputdir
+rsync -av -n * docs@docs.yoctoproject.org:docs/
