@@ -1,4 +1,76 @@
 #!/bin/bash
-# Called with $1 as the path to yocto-docs
-cd $1
-$1/autobuilder-publish-docs
+# Called with $1 as the build directory
+#             $2 as the path to yocto-docs
+#             $3 as the path to bitbake
+builddir=$1
+ypdocs=$2/documentation/
+bbdocs=$3/doc/
+docs_buildtools=/srv/autobuilder/autobuilder.yoctoproject.org/pub/buildtools/x86_64-buildtools-docs-nativesdk-standalone-3.2+snapshot-20201105.sh
+outputdir=$builddir/output
+
+
+cd $builddir
+mkdir buildtools
+$docs_buildtools -y -d $builddir/buildtools
+. $builddir/buildtools/environment-setup*
+
+wget https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz -c
+mkdir $outputdir
+cd $outputdir
+tar -xJf $builddir/docbook-archives-20201105.tar.xz
+
+cd $bbdocs
+git checkout master
+make html
+mkdir $outputdir/bitbake
+mv ./_build/html/* $outputdir/bitbake
+
+git checkout master-next
+make html
+mkdir $outputdir/bitbake/next
+mv ./_build/html/* $outputdir/bitbake/next
+
+git checkout 1.48
+make html
+mkdir $outputdir/bitbake/1.48
+mv ./_build/html/* $outputdir/bitbake/1.48
+
+#git checkout 1.46
+#make html
+#mkdir $outputdir/bitbake/1.46
+#mv ./_build/html/* $outputdir/bitbake/1.46
+
+rsync -av -n $outputdir docs@docs.yoctoproject.org:docs/
+
+cd $ypdocs
+git checkout master
+make html
+mv ./_build/html/* $outputdir
+
+cd $ypdocs
+git checkout transition
+make publish
+cp -r ./_build/final/* $outputdir/
+
+# Update switchers.js with the copy from master ypdocs
+cd $outputdir
+find . -name switchers.js -not -path ./_static/switchers.js -exec cp ./_static/switchers.js {} \;
+
+cd $ypdocs
+git checkout master-next
+make html
+mkdir $outputdir/next
+mv ./_build/html/* $outputdir/next
+
+cd $ypdocs
+git checkout gatesgarth
+make html
+mkdir $outputdir/3.2
+mv ./_build/html/* $outputdir/3.2
+
+#git checkout dunfell
+#make html
+#mkdir $outputdir/3.1
+#mv ./_build/html/* $outputdir/3.1
+
+rsync -av -n $outputdir docs@docs.yoctoproject.org:docs/
