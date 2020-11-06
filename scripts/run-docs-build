@@ -62,8 +62,8 @@ mv ./_build/html/* $outputdir/next
 cd $ypdocs
 git checkout gatesgarth
 make html
-mkdir $outputdir/3.2
-mv ./_build/html/* $outputdir/3.2
+mkdir $outputdir/gatesgarth
+mv ./_build/html/* $outputdir/gatesgarth
 
 #git checkout dunfell
 #make html
