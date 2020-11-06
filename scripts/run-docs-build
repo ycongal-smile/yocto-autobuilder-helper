@@ -53,10 +53,6 @@ git checkout transition
 make publish
 cp -r ./_build/final/* $outputdir/
 
-# Update switchers.js with the copy from master ypdocs
-cd $outputdir
-find . -name switchers.js -not -path ./_static/switchers.js -exec cp ./_static/switchers.js {} \;
-
 cd $ypdocs
 git checkout master-next
 make html
@@ -73,6 +69,10 @@ mv ./_build/html/* $outputdir/3.2
 #make html
 #mkdir $outputdir/3.1
 #mv ./_build/html/* $outputdir/3.1
+
+# Update switchers.js with the copy from master ypdocs
+cd $outputdir
+find . -name switchers.js -not -path ./_static/switchers.js -exec cp ./_static/switchers.js {} \;
 
 cd $outputdir
 rsync -av -n * docs@docs.yoctoproject.org:docs/
