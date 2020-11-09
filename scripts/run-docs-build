@@ -46,7 +46,7 @@ cp -r ./_build/final/* $outputdir/bitbake/1.48
 #cp -r ./_build/final/* $outputdir/bitbake/1.46
 
 cd $outputdir
-rsync -irlp * docs@docs.yoctoproject.org:docs/
+rsync -irlp --checksum --ignore-times * docs@docs.yoctoproject.org:docs/
 
 cd $ypdocs
 git checkout master
@@ -85,4 +85,4 @@ cd $outputdir
 find . -name switchers.js -not -path ./_static/switchers.js -exec cp ./_static/switchers.js {} \;
 
 cd $outputdir
-rsync -irlp * docs@docs.yoctoproject.org:docs/
+rsync -irlp --checksum --ignore-times * docs@docs.yoctoproject.org:docs/
