@@ -25,25 +25,25 @@ git checkout master
 make clean
 make publish
 mkdir $outputdir/bitbake
-mv ./_build/html/* $outputdir/bitbake
+cp -r ./_build/final/* $outputdir/bitbake
 
 git checkout master-next
 make clean
 make publish
 mkdir $outputdir/bitbake/next
-mv ./_build/html/* $outputdir/bitbake/next
+mv cp -r ./_build/final/* $outputdir/bitbake/next
 
 git checkout 1.48
 make clean
 make publish
 mkdir $outputdir/bitbake/1.48
-mv ./_build/html/* $outputdir/bitbake/1.48
+mv cp -r ./_build/final/* $outputdir/bitbake/1.48
 
 #git checkout 1.46
 #make clean
 #make publish
 #mkdir $outputdir/bitbake/1.46
-#mv ./_build/html/* $outputdir/bitbake/1.46
+#mv cp -r ./_build/final/* $outputdir/bitbake/1.46
 
 cd $outputdir
 rsync -av * docs@docs.yoctoproject.org:docs/
@@ -52,7 +52,7 @@ cd $ypdocs
 git checkout master
 make clean
 make publish
-mv ./_build/html/* $outputdir
+mv cp -r ./_build/final/* $outputdir
 
 cd $ypdocs
 git checkout transition
@@ -65,20 +65,20 @@ git checkout master-next
 make clean
 make publish
 mkdir $outputdir/next
-mv ./_build/html/* $outputdir/next
+mv cp -r ./_build/final/* $outputdir/next
 
 cd $ypdocs
 git checkout gatesgarth
 make clean
 make publish
 mkdir $outputdir/gatesgarth
-mv ./_build/html/* $outputdir/gatesgarth
+mv cp -r ./_build/final/* $outputdir/gatesgarth
 
 #git checkout dunfell
 #make clean
 #make publish
 #mkdir $outputdir/3.1
-#mv ./_build/html/* $outputdir/3.1
+#mv cp -r ./_build/final/* $outputdir/3.1
 
 # Update switchers.js with the copy from master ypdocs
 cd $outputdir
