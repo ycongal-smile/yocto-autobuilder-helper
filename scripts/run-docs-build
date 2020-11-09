@@ -22,25 +22,25 @@ tar -xJf $builddir/docbook-archives-20201105.tar.xz
 cd $bbdocs
 git checkout master
 make clean
-make html
+make publish
 mkdir $outputdir/bitbake
 mv ./_build/html/* $outputdir/bitbake
 
 git checkout master-next
 make clean
-make html
+make publish
 mkdir $outputdir/bitbake/next
 mv ./_build/html/* $outputdir/bitbake/next
 
 git checkout 1.48
 make clean
-make html
+make publish
 mkdir $outputdir/bitbake/1.48
 mv ./_build/html/* $outputdir/bitbake/1.48
 
 #git checkout 1.46
 #make clean
-#make html
+#make publish
 #mkdir $outputdir/bitbake/1.46
 #mv ./_build/html/* $outputdir/bitbake/1.46
 
@@ -50,7 +50,7 @@ rsync -av -n * docs@docs.yoctoproject.org:docs/
 cd $ypdocs
 git checkout master
 make clean
-make html
+make publish
 mv ./_build/html/* $outputdir
 
 cd $ypdocs
@@ -62,20 +62,20 @@ cp -r ./_build/final/* $outputdir/
 cd $ypdocs
 git checkout master-next
 make clean
-make html
+make publish
 mkdir $outputdir/next
 mv ./_build/html/* $outputdir/next
 
 cd $ypdocs
 git checkout gatesgarth
 make clean
-make html
+make publish
 mkdir $outputdir/gatesgarth
 mv ./_build/html/* $outputdir/gatesgarth
 
 #git checkout dunfell
 #make clean
-#make html
+#make publish
 #mkdir $outputdir/3.1
 #mv ./_build/html/* $outputdir/3.1
 
