@@ -46,7 +46,7 @@ mv ./_build/html/* $outputdir/bitbake/1.48
 #mv ./_build/html/* $outputdir/bitbake/1.46
 
 cd $outputdir
-rsync -av -n * docs@docs.yoctoproject.org:docs/
+rsync -av * docs@docs.yoctoproject.org:docs/
 
 cd $ypdocs
 git checkout master
@@ -85,4 +85,4 @@ cd $outputdir
 find . -name switchers.js -not -path ./_static/switchers.js -exec cp ./_static/switchers.js {} \;
 
 cd $outputdir
-rsync -av -n * docs@docs.yoctoproject.org:docs/
+rsync -av * docs@docs.yoctoproject.org:docs/
