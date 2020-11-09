@@ -14,10 +14,11 @@ mkdir buildtools
 $docs_buildtools -y -d $builddir/buildtools
 . $builddir/buildtools/environment-setup*
 
-wget https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz
+#wget https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz
+docbookarchive=/srv/autobuilder/autobuilder.yoctoproject.org/pub/docbook-mirror/docbook-archives-20201105.tar.xz
 mkdir $outputdir
 cd $outputdir
-tar -xJf $builddir/docbook-archives-20201105.tar.xz
+tar -xJf $docbookarchive
 
 cd $bbdocs
 git checkout master
