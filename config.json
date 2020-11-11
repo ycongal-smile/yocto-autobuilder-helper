@@ -484,6 +484,7 @@
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "step1" : {
+                "description" : "x86_64 32bit multilib image with rpm",
                 "BBTARGETS" : "lib32-core-image-minimal",
                 "SANITYTARGETS" : "lib32-core-image-minimal:do_testimage",
                 "extravars" : [
@@ -494,6 +495,7 @@
                 ]
             },
             "step2" : {
+                "description" : "x86_64 32bit multilib image with ipk",
                 "PACKAGE_CLASSES" : "package_ipk",
                 "BBTARGETS" : "lib32-core-image-minimal",
                 "SANITYTARGETS" : "lib32-core-image-minimal:do_testimage",
@@ -505,6 +507,7 @@
                 ]
             },
             "step3" : {
+                "description" : "x86_64 64bit image and 32 bit multilibs with rpm",
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -517,6 +520,7 @@
                 ]
             },
             "step4" : {
+                "description" : "x86_64 64bit image and 32 bit multilibs with ipk",
                 "PACKAGE_CLASSES" : "package_ipk",
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
@@ -530,6 +534,7 @@
                 ]
             },
             "step5" : {
+                "description" : "x86 building 64bit multilib image",
                 "MACHINE" : "qemux86",
                 "SDKMACHINE" : "i686",
                 "BBTARGETS" : "lib64-core-image-sato lib64-core-image-sato-sdk",
@@ -540,6 +545,7 @@
                 ]
             },
             "step6" : {
+                "description" : "mips64 image using n32 as default",
                 "MACHINE" : "qemumips64",
                 "BBTARGETS" : "core-image-minimal core-image-minimal:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-minimal:do_testsdk",
