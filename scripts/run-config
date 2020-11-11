@@ -153,6 +153,10 @@ def bitbakecmd(builddir, cmd, report, stepnum, stepname, oeenv=True):
     except FileNotFoundError:
         numreports = 0
 
+    def writelog(msg, a, b):
+        a.write(msg)
+        b.write(msg)
+
     if oeenv:
         cmd = ". ./oe-init-build-env; %s" % cmd
 
@@ -160,21 +164,22 @@ def bitbakecmd(builddir, cmd, report, stepnum, stepname, oeenv=True):
         print("Would run '%s'" % cmd)
         return
 
-    print("Running '%s' with output to %s" % (cmd, log))
-    flush()
+    with open(log, "a") as outf:
+        writelog("Running '%s' with output to %s\n" % (cmd, log), outf, sys.stdout)
 
-    autoconf = builddir + "/conf/auto.conf"
-    if os.path.exists(autoconf):
-        with open(autoconf, "r") as inf, open(log, "a") as outf:
-            outf.write("auto.conf settings:\n")
-            for line in inf.readlines():
-                outf.write(line)
-            outf.write("\n")
+        autoconf = builddir + "/conf/auto.conf"
+        if os.path.exists(autoconf):
+            with open(autoconf, "r") as inf, open(log, "a") as outf:
+                writelog("auto.conf settings:\n", outf, sys.stdout)
+                for line in inf.readlines():
+                    writelog(line, outf, sys.stdout)
+                writelog("\n", outf, sys.stdout)
+
+    flush()
 
     with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'ab') as f:
         for line in p.stdout:
-            sys.stdout.buffer.write(line)
-            f.write(line)
+            writelog(line, f, sys.stdout.buffer)
             sys.stdout.flush()
             f.flush()
         ret = p.wait()
