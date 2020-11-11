@@ -415,7 +415,7 @@ def enable_buildtools_tarball(btdir):
                 if line in os.environ:
                     del os.environ[line]
 
-def setup_buildtools_tarball(ourconfig, workername, btdir):
+def setup_buildtools_tarball(ourconfig, workername, btdir, checkonly=False):
     bttarball = None
     if "buildtools" in ourconfig and workername:
         btcfg = getconfig("buildtools", ourconfig)
@@ -423,6 +423,9 @@ def setup_buildtools_tarball(ourconfig, workername, btdir):
             if fnmatch.fnmatch(workername, entry):
                 bttarball = btcfg[entry]
                 break
+
+    if checkonly:
+        return bttarball
 
     btenv = None
     if bttarball:

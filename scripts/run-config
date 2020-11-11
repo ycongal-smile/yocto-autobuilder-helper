@@ -52,6 +52,19 @@ parser.add_argument('--workername',
                     action='store',
                     default=None,
                     help="the name of the worker the build is running on")
+parser.add_argument('-j', '--json-outputfile',
+                    action='store',
+                    default="",
+                    help="the file to store json information about the build in")
+parser.add_argument('--stepname',
+                    action='store',
+                    default=None,
+                    help="the name of the step to run")
+parser.add_argument('--phase',
+                    action='store',
+                    default=None,
+                    help="the phase of the step to run")
+
 
 
 args = parser.parse_args()
@@ -94,7 +107,19 @@ if args.target in ourconfig['overrides']:
 
 hp.printheader("Target task %s has %d steps" % (args.target, maxsteps))
 
-utils.setup_buildtools_tarball(ourconfig, args.workername, args.builddir + "/../buildtools")
+jcfg = False
+if args.json_outputfile:
+    jsonconfig = []
+    jcfg = True
+
+if jcfg:
+    buildtools = utils.setup_buildtools_tarball(ourconfig, args.workername, None, checkonly=True)
+    if buildtools:
+        jsonconfig.append({"name" : "buildtools", "description" : "Extract and setup buildtools tarball", "phase" : "init"})
+else:
+    utils.setup_buildtools_tarball(ourconfig, args.workername, args.builddir + "/../buildtools")
+    if args.phase == "init" and args.stepname == "buildtools":
+        sys.exit(0)
 
 logconfig = args.builddir + "/../bitbake/contrib/autobuilderlog.json"
 print("Using BB_LOGCONFIG=%s" % logconfig)
@@ -181,70 +206,126 @@ def runcmd(cmd, *args, **kwargs):
 
 bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, args.builddir, args.target, args.reponame, args.branchname, 1)
 if bh_path:
-    runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
+    if jcfg:
+        jsonconfig.append({"name" : "buildhistory-init", "description" : "Initialize buildhistory", "phase" : "init"})
+if args.phase == "init" and args.stepname == "buildhistory-init":
+    if bh_path:
+        runcmd([os.path.join(scriptsdir, "buildhistory-init"), bh_path, remoterepo, remotebranch, baseremotebranch])
+    sys.exit(0)
 
-for stepnum in range(1, maxsteps + 1):
+def handle_stepnum(stepnum):
     # Add any layers specified
     layers = utils.getconfiglist("ADDLAYER", ourconfig, args.target, stepnum)
-    for layer in layers:
-        bitbakecmd(args.builddir, "bitbake-layers add-layer %s" % layer, report, stepnum, 'a')
+    if jcfg:
+        if layers:
+            jsonconfig.append({"name" : "add-layers", "description" : "Adding layers %s" % str(layers), "phase" : str(stepnum)})
+    elif args.stepname == "add-layers":
+        for layer in layers:
+            bitbakecmd(args.builddir, "bitbake-layers add-layer %s" % layer, report, stepnum, 'a')
 
     flush()
+
     # Generate the configuration files needed for this step
     if utils.getconfigvar("WRITECONFIG", ourconfig, args.target, stepnum):
-        runcmd([scriptsdir + "/setup-config", args.target, str(stepnum - 1), args.builddir, args.branchname, args.reponame, "-s", args.sstateprefix, "-b", args.buildappsrcrev])
+        if jcfg:
+            jsonconfig.append({"name" : "write-config", "description" : "Writing configuration files", "phase" : str(stepnum)})
+        elif args.stepname == "write-config":
+            runcmd([scriptsdir + "/setup-config", args.target, str(stepnum - 1), args.builddir, args.branchname, args.reponame, "-s", args.sstateprefix, "-b", args.buildappsrcrev])
 
     # Execute the targets for this configuration
     targets = utils.getconfigvar("BBTARGETS", ourconfig, args.target, stepnum)
     if targets:
-        hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, targets))
-        bitbakecmd(args.builddir, "bitbake %s -k" % targets, report, stepnum, 'b')
+        if jcfg:
+            jsonconfig.append({"name" : "build-targets", "description" : "Building targets %s" % str(targets), "phase" : str(stepnum)})
+        elif args.stepname == "build-targets":
+            hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, targets))
+            bitbakecmd(args.builddir, "bitbake %s -k" % targets, report, stepnum, 'b')
 
     # Execute the sanity targets for this configuration
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, args.target, stepnum)
     if sanitytargets:
-        hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
-        bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s -k" % (scriptsdir, sanitytargets), report, stepnum, 'c')
+        if jcfg:
+            jsonconfig.append({"name" : "test-targets", "description" : "Running OEQA test targets %s" % str(sanitytargets), "phase" : str(stepnum)})
+        elif args.stepname == "test-targets":
+            hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
+            bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s -k" % (scriptsdir, sanitytargets), report, stepnum, 'c')
 
     # Run any extra commands specified
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, args.target, stepnum)
-    for cmd in cmds:
-        hp.printheader("Step %s/%s: Running command %s" % (stepnum, maxsteps, cmd))
-        bitbakecmd(args.builddir, cmd, report, stepnum, 'd')
+    if jcfg:
+        if cmds:
+            jsonconfig.append({"name" : "cmds", "description" : "Running bitbake environment commands %s" % str(cmds), "phase" : str(stepnum)})
+    elif args.stepname == "cmds":
+        for cmd in cmds:
+            hp.printheader("Step %s/%s: Running command %s" % (stepnum, maxsteps, cmd))
+            bitbakecmd(args.builddir, cmd, report, stepnum, 'd')
+
     cmds = utils.getconfiglist("EXTRAPLAINCMDS", ourconfig, args.target, stepnum)
-    for cmd in cmds:
-        hp.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
-        bitbakecmd(args.builddir, cmd, report, stepnum, 'd', oeenv=False)
+    if jcfg:
+        if cmds:
+            jsonconfig.append({"name" : "plain-cmds", "description" : "Running commands %s" % str(cmds), "phase" : str(stepnum)})
+    elif args.stepname == "plain-cmds":
+        for cmd in cmds:
+            hp.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
+            bitbakecmd(args.builddir, cmd, report, stepnum, 'd', oeenv=False)
 
-    # Remove any layers we added in a reverse order
-    for layer in reversed(layers):
-        bitbakecmd(args.builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum, 'a')
+    if jcfg:
+        if layers:
+            jsonconfig.append({"name" : "remove-layers", "description" : "Removing layers %s" % str(layers), "phase" : str(stepnum)})
+    elif args.stepname == "remove-layers":
+        # Remove any layers we added in a reverse order
+        for layer in reversed(layers):
+            bitbakecmd(args.builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum, 'a')
 
-if args.publish_dir:
-    hp.printheader("Running publish artefacts")
-    runcmd([scriptsdir + "/publish-artefacts", args.builddir, args.publish_dir, args.target])
+    if not jcfg:
+        sys.exit(finalret)
 
-if args.results_dir:
-    hp.printheader("Running results collection")
-    runcmd([scriptsdir + "/collect-results", args.builddir, args.results_dir, args.target])
+if jcfg:
+    for stepnum in range(1, maxsteps + 1):
+        handle_stepnum(stepnum)
+else:
+    try:
+        stepnum = int(args.phase)
+    except ValueError:
+        stepnum = None
 
-if args.build_url and utils.getconfigvar("SENDERRORS", ourconfig, args.target, stepnum):
-    hp.printheader("Sending any error reports")
-    runcmd([scriptsdir + "/upload-error-reports", args.builddir, args.build_url])
+    if stepnum is not None:
+        handle_stepnum(stepnum)
 
-if args.builddir and os.path.exists(args.builddir):
-    # Clean up our build directory if things were successful and we're not publishing anything
-    # (keep published builds around for longer just in case we need them)
-    if not finalret and not args.publish_dir:
-        runcmd([scriptsdir + "/../janitor/clobberdir", args.builddir])
-    else:
-        # Rename any completed build directory so that other builds can't reference paths within it
+
+if jcfg:
+    jsonconfig.append({"name" : "publish", "description" : "Publishing artefacts", "phase" : "finish"})
+elif args.phase == "finish" and args.stepname == "publish":
+    if args.publish_dir:
+        hp.printheader("Running publish artefacts")
+        runcmd([scriptsdir + "/publish-artefacts", args.builddir, args.publish_dir, args.target])
+    sys.exit(0)
+
+if jcfg:
+    jsonconfig.append({"name" : "collect-results", "description" : "Collecting result files", "phase" : "finish"})
+elif args.phase == "finish" and args.stepname == "collect-results":
+    if args.results_dir:
+        hp.printheader("Running results collection")
+        runcmd([scriptsdir + "/collect-results", args.builddir, args.results_dir, args.target])
+    sys.exit(0)
+
+if jcfg:
+    jsonconfig.append({"name" : "send-errors", "description" : "Sending error reports", "phase" : "finish"})
+elif args.phase == "finish" and args.stepname == "send-errors":
+    if args.build_url and utils.getconfigvar("SENDERRORS", ourconfig, args.target, stepnum):
+        hp.printheader("Sending any error reports")
+        runcmd([scriptsdir + "/upload-error-reports", args.builddir, args.build_url])
+    sys.exit(0)
+
+if jcfg:
+    jsonconfig.append({"name" : "builddir-cleanup", "description" : "Cleaning up build directory", "phase" : "finish"})
+elif args.phase == "finish" and args.stepname == "builddir-cleanup":
+    if args.builddir and os.path.exists(args.builddir):
         runcmd(["mv", args.builddir, args.builddir + "-renamed"])
 
-if finalret:
-    hp.printheader("There were %s failures" % finalret)
-    hp.printheader("Failures in logfiles: %s" % " ".join(errorlogs))
-    sys.exit(1)
+if args.json_outputfile:
+    with open(args.json_outputfile, "w") as f:
+        json.dump(jsonconfig, f, indent=4, sort_keys=True)
 
 sys.exit(0)
 
