@@ -131,11 +131,8 @@ def flush():
     sys.stdout.flush()
     sys.stderr.flush()
 
-lognum = 0
-def logname(path, stepnum, logsuffix):
-    global lognum
-    lognum += 1
-    return path + "/command.log.%s%s" % (stepnum, logsuffix)
+def logname(path, stepnum, stepname):
+    return path + "/command-%s-%s.log" % (stepnum, stepname)
 
 utils.mkdir(args.builddir)
 
@@ -146,10 +143,10 @@ utils.mkdir(errordir)
 
 errorlogs = set()
 
-def bitbakecmd(builddir, cmd, report, stepnum, logsuffix, oeenv=True):
+def bitbakecmd(builddir, cmd, report, stepnum, stepname, oeenv=True):
     global finalret
     flush()
-    log = logname(builddir, stepnum, logsuffix)
+    log = logname(builddir, stepnum, stepname)
     errordir = utils.errorreportdir(builddir)
     try:
         numreports = len(os.listdir(errordir))
@@ -176,10 +173,9 @@ def bitbakecmd(builddir, cmd, report, stepnum, logsuffix, oeenv=True):
 
     with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'ab') as f:
         for line in p.stdout:
-            if not args.quietlogging:
-                sys.stdout.buffer.write(line)
-                sys.stdout.flush()
+            sys.stdout.buffer.write(line)
             f.write(line)
+            sys.stdout.flush()
             f.flush()
         ret = p.wait()
     if ret:
@@ -221,7 +217,7 @@ def handle_stepnum(stepnum):
             jsonconfig.append({"name" : "add-layers", "description" : "Adding layers %s" % str(layers), "phase" : str(stepnum)})
     elif args.stepname == "add-layers":
         for layer in layers:
-            bitbakecmd(args.builddir, "bitbake-layers add-layer %s" % layer, report, stepnum, 'a')
+            bitbakecmd(args.builddir, "bitbake-layers add-layer %s" % layer, report, stepnum, args.stepname)
 
     flush()
 
@@ -239,7 +235,7 @@ def handle_stepnum(stepnum):
             jsonconfig.append({"name" : "build-targets", "description" : "Building targets %s" % str(targets), "phase" : str(stepnum)})
         elif args.stepname == "build-targets":
             hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, targets))
-            bitbakecmd(args.builddir, "bitbake %s -k" % targets, report, stepnum, 'b')
+            bitbakecmd(args.builddir, "bitbake %s -k" % targets, report, stepnum, args.stepname)
 
     # Execute the sanity targets for this configuration
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, args.target, stepnum)
@@ -248,7 +244,7 @@ def handle_stepnum(stepnum):
             jsonconfig.append({"name" : "test-targets", "description" : "Running OEQA test targets %s" % str(sanitytargets), "phase" : str(stepnum)})
         elif args.stepname == "test-targets":
             hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
-            bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s -k" % (scriptsdir, sanitytargets), report, stepnum, 'c')
+            bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s -k" % (scriptsdir, sanitytargets), report, stepnum, args.stepname)
 
     # Run any extra commands specified
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, args.target, stepnum)
@@ -258,7 +254,7 @@ def handle_stepnum(stepnum):
     elif args.stepname == "cmds":
         for cmd in cmds:
             hp.printheader("Step %s/%s: Running command %s" % (stepnum, maxsteps, cmd))
-            bitbakecmd(args.builddir, cmd, report, stepnum, 'd')
+            bitbakecmd(args.builddir, cmd, report, stepnum, args.stepname)
 
     cmds = utils.getconfiglist("EXTRAPLAINCMDS", ourconfig, args.target, stepnum)
     if jcfg:
@@ -267,7 +263,7 @@ def handle_stepnum(stepnum):
     elif args.stepname == "plain-cmds":
         for cmd in cmds:
             hp.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
-            bitbakecmd(args.builddir, cmd, report, stepnum, 'd', oeenv=False)
+            bitbakecmd(args.builddir, cmd, report, stepnum, args.stepname, oeenv=False)
 
     if jcfg:
         if layers:
@@ -275,7 +271,7 @@ def handle_stepnum(stepnum):
     elif args.stepname == "remove-layers":
         # Remove any layers we added in a reverse order
         for layer in reversed(layers):
-            bitbakecmd(args.builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum, 'a')
+            bitbakecmd(args.builddir, "bitbake-layers remove-layer %s" % layer, report, stepnum, args.stepname)
 
     if not jcfg:
         sys.exit(finalret)
