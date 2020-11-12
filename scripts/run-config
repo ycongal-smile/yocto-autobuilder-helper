@@ -112,13 +112,26 @@ if args.json_outputfile:
     jsonconfig = []
     jcfg = True
 
+# There is a 50 char limit on "bbname" but buildbot may append "_1", "_2" if multiple steps
+# with the same name exist in a build
 def addentry(name, description, phase):
-    jsonconfig.append({"name" : name, "bbname" : description[:45], "phase" : phase, "description" : description})
+    jsonconfig.append({"name" : name, "bbname" : description[:46], "phase" : phase, "description" : description})
+
+def addstepentry(name, taskdesc, shortname, description, detail, phase):
+    bbname = taskdesc
+    if shortname:
+        bbname = shortname + ": " + taskdesc
+    bbdesc = taskdesc
+    if description:
+        bbdesc = description
+    if detail:
+        bbdesc = bbdesc + ": " + detail
+    jsonconfig.append({"name" : name, "bbname" : bbname[:46], "phase" : phase, "description" : bbdesc})
 
 if jcfg:
     buildtools = utils.setup_buildtools_tarball(ourconfig, args.workername, None, checkonly=True)
     if buildtools:
-        addentry("buildtools", "Extract and setup buildtools tarball", "init")
+        addentry("buildtools", "Setup buildtools tarball", "init")
 else:
     utils.setup_buildtools_tarball(ourconfig, args.workername, args.builddir + "/../buildtools")
     if args.phase == "init" and args.stepname == "buildtools":
@@ -218,15 +231,14 @@ if args.phase == "init" and args.stepname == "buildhistory-init":
     sys.exit(0)
 
 def handle_stepnum(stepnum):
+    shortdesc = utils.getconfigvar("shortname", ourconfig, args.target, stepnum) or ""
     desc = utils.getconfigvar("description", ourconfig, args.target, stepnum) or ""
-    if desc:
-        desc = desc + ": "
 
     # Add any layers specified
     layers = utils.getconfiglist("ADDLAYER", ourconfig, args.target, stepnum)
     if jcfg:
         if layers:
-            addentry("add-layers", "%sAdding layers %s" % (desc, str(layers)), str(stepnum))
+            addstepentry("add-layers", "Add layers", shortdesc, desc, str(layers), str(stepnum))
     elif args.stepname == "add-layers":
         for layer in layers:
             bitbakecmd(args.builddir, "bitbake-layers add-layer %s" % layer, report, stepnum, args.stepname)
@@ -236,7 +248,7 @@ def handle_stepnum(stepnum):
     # Generate the configuration files needed for this step
     if utils.getconfigvar("WRITECONFIG", ourconfig, args.target, stepnum):
         if jcfg:
-            addentry("write-config", "%sWriting configuration files" % desc, str(stepnum))
+            addstepentry("write-config", "Write config", shortdesc, desc, None, str(stepnum))
         elif args.stepname == "write-config":
             runcmd([scriptsdir + "/setup-config", args.target, str(stepnum - 1), args.builddir, args.branchname, args.reponame, "-s", args.sstateprefix, "-b", args.buildappsrcrev])
 
@@ -244,7 +256,7 @@ def handle_stepnum(stepnum):
     targets = utils.getconfigvar("BBTARGETS", ourconfig, args.target, stepnum)
     if targets:
         if jcfg:
-            addentry("build-targets", "%sBuilding targets %s" % (desc, str(targets)), str(stepnum))
+            addstepentry("build-targets", "Build targets", shortdesc, desc, str(targets), str(stepnum))
         elif args.stepname == "build-targets":
             hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, targets))
             bitbakecmd(args.builddir, "bitbake %s -k" % targets, report, stepnum, args.stepname)
@@ -253,7 +265,7 @@ def handle_stepnum(stepnum):
     sanitytargets = utils.getconfigvar("SANITYTARGETS", ourconfig, args.target, stepnum)
     if sanitytargets:
         if jcfg:
-            addentry("test-targets", "%sRunning OEQA test targets %s" % (desc, str(sanitytargets)), str(stepnum))
+            addstepentry("test-targets", "QA targets", shortdesc, desc, str(sanitytargets), str(stepnum))
         elif args.stepname == "test-targets":
             hp.printheader("Step %s/%s: Running bitbake %s" % (stepnum, maxsteps, sanitytargets))
             bitbakecmd(args.builddir, "%s/checkvnc; DISPLAY=:1 bitbake %s -k" % (scriptsdir, sanitytargets), report, stepnum, args.stepname)
@@ -262,7 +274,7 @@ def handle_stepnum(stepnum):
     cmds = utils.getconfiglist("EXTRACMDS", ourconfig, args.target, stepnum)
     if jcfg:
         if cmds:
-            addentry("cmds", "%sRunning bitbake environment commands %s" % (desc, str(cmds)), str(stepnum))
+            addstepentry("cmds", "Run cmds", shortdesc, desc, str(cmds), str(stepnum))
     elif args.stepname == "cmds":
         for cmd in cmds:
             hp.printheader("Step %s/%s: Running command %s" % (stepnum, maxsteps, cmd))
@@ -271,7 +283,7 @@ def handle_stepnum(stepnum):
     cmds = utils.getconfiglist("EXTRAPLAINCMDS", ourconfig, args.target, stepnum)
     if jcfg:
         if cmds:
-            addentry("plain-cmds", "%sRunning commands %s" % (desc, str(cmds)), str(stepnum))
+            addstepentry("plain-cmds", "Run cmds", shortdesc, desc, str(cmds), str(stepnum))
     elif args.stepname == "plain-cmds":
         for cmd in cmds:
             hp.printheader("Step %s/%s: Running 'plain' command %s" % (stepnum, maxsteps, cmd))
@@ -279,7 +291,7 @@ def handle_stepnum(stepnum):
 
     if jcfg:
         if layers:
-            addentry("remove-layers", "%sRemoving layers %s" % (desc, str(layers)), str(stepnum))
+            addstepentry("remove-layers", "Remove layers", shortdesc, desc, str(layers), str(stepnum))
     elif args.stepname == "remove-layers":
         # Remove any layers we added in a reverse order
         for layer in reversed(layers):
