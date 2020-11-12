@@ -60,6 +60,7 @@ for repo in sorted(repos.keys()):
         utils.fetchgitrepo(targetsubdir, repo, repos[repo], stashdir)
         if args.publish_dir:
             utils.publishrepo(targetsubdir, repo, args.publish_dir)
+    utils.flush()
 
 utils.setup_buildtools_tarball(ourconfig, args.workername, args.abworkdir + "/buildtools")
 
