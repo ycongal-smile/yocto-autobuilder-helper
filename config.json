@@ -275,9 +275,8 @@
             "TEMPLATE" : "ltp-qemu"
         },
         "meta-arm" : {
-            "NEEDREPOS" : ["poky", "meta-arm", "meta-kernel"],
+            "NEEDREPOS" : ["poky", "meta-arm"],
             "ADDLAYER" : [
-                "${BUILDDIR}/../meta-kernel",
                 "${BUILDDIR}/../meta-arm/meta-arm-toolchain",
                 "${BUILDDIR}/../meta-arm/meta-arm",
                 "${BUILDDIR}/../meta-arm/meta-arm-bsp"
