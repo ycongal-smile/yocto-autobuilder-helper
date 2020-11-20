@@ -84,6 +84,7 @@ elif args.build_type == "full":
 maxsteps = 0
 stepnum = 0
 if args.target in ourconfig['overrides']:
+    maxsteps = 1
     for v in ourconfig['overrides'][args.target]:
         if v.startswith("step"):
             n = int(v[4:])
