@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+#
+# Check whether a target exists in config.json
+#
+
+import json
+import os
+import sys
+
+import utils
+
+parser = utils.ArgParser(description='Runs configurations in json.conf.')
+
+parser.add_argument('target',
+                    help="The 'nightly' target the autobuilder is running")
+
+args = parser.parse_args()
+
+scriptsdir = os.path.dirname(os.path.realpath(__file__))
+os.environ["SCRIPTSDIR"] = scriptsdir
+ourconfig = utils.loadconfig()
+
+# Find out if this target exists
+if args.target in ourconfig['overrides']:
+    sys.exit(0)
+sys.exit(1)
+
