@@ -71,6 +71,7 @@
                 "SANITYTARGETS" : "core-image-sato:do_testsdk core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
             },
             "step3" : {
+                "shortname" : "Machine oe-selftest",
                 "BUILDHISTORY" : false,
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest ${HELPERSTMACHTARGS} -j 15"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
@@ -128,6 +129,7 @@
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-sato:do_testsdk core-image-sato:do_testsdkext"
             },
             "step2" : {
+                "shortname" : "Machine oe-selftest",
                 "BUILDHISTORY" : false,
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest -a -t machine -j 15"]
             }
@@ -165,13 +167,16 @@
                 "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
             ],
             "step1" : {
+                "shortname" : "Bitbake Selftest",
                 "EXTRACMDS" : ["bitbake-selftest"]
             },
             "step2" : {
+                "shortname" : "OE Selftest",
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; OEQA_DEBUGGING_SAVED_OUTPUT=${BASE_SHAREDDIR}/pub/repro-fail/ DISPLAY=:1 oe-selftest --skip-tests distrodata.Distrodata.test_checkpkg buildoptions.SourceMirroring.test_yocto_source_mirror devtool.DevtoolAddTests.test_devtool_add_npm recipetool.RecipetoolTests.test_recipetool_create_npm -T machine -T toolchain-user -T toolchain-system -j 15"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             },
             "step3" : {
+                "shortname" : "Python Linter Report",
                 "EXTRACMDS" : ["if [ `which oe-pylint` ]; then mkdir -p ${HELPERRESULTSDIR}/${HELPERTARGET}; oe-pylint > ${HELPERRESULTSDIR}/${HELPERTARGET}/pylint.log || true; fi"]
             }
         },
@@ -179,6 +184,7 @@
             "SDKMACHINE" : "x86_64",
             "MACHINE" : "qemux86",
             "step1" : {
+                "shortname" : "Sources pre-fetching",
                 "BBTARGETS" : "universe -c fetch -k",
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"],
                 "extravars" : [
@@ -190,6 +196,7 @@
             "SDKMACHINE" : "x86_64",
             "MACHINE" : "qemux86",
             "step1" : {
+                "shortname" : "Source Mirror Selftest",
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest -r buildoptions.SourceMirroring.test_yocto_source_mirror"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
@@ -602,6 +609,7 @@
             ],
             "step1" : {
                 "MACHINE" : "qemux86",
+                "shortname" : "qemux86 wic",
                 "BBTARGETS" : "wic-tools core-image-sato",
                 "EXTRACMDS" : [
                     "wic create directdisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/qemux86/directdisk/core-image-sato/",
@@ -611,6 +619,7 @@
             },
             "step2" : {
                 "MACHINE" : "genericx86",
+                "shortname" : "genericx86 wic",
                 "BBTARGETS" : "wic-tools core-image-sato",
                 "EXTRACMDS" : [
                     "wic create directdisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/genericx86/directdisk/core-image-sato/",
@@ -620,6 +629,7 @@
             },
             "step3" : {
                 "MACHINE" : "qemux86-64",
+                "shortname" : "qemux86-64 wic",
                 "BBTARGETS" : "wic-tools core-image-sato",
                 "EXTRACMDS" : [
                     "wic create directdisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/qemux86-64/directdisk/core-image-sato/",
@@ -629,6 +639,7 @@
             },
             "step4" : {
                 "MACHINE" : "genericx86-64",
+                "shortname" : "genericx86-64 wic",
                 "BBTARGETS" : "wic-tools core-image-sato",
                 "EXTRACMDS" : [
                     "wic create directdisk -e core-image-sato -o ${BUILDDIR}/tmp/deploy/wic_images/genericx86-64/directdisk/core-image-sato/",
@@ -644,14 +655,17 @@
             ],
             "step1" : {
                 "SDKMACHINE" : "x86_64",
+                "shortname" : "x86_64 tools",
                 "BBTARGETS" : "buildtools-tarball buildtools-extended-tarball uninative-tarball"
             },
             "step2" : {
                 "SDKMACHINE" : "i686",
+                "shortname" : "i686 tools",
                 "BBTARGETS" : "uninative-tarball"
             },
             "step3" : {
                 "SDKMACHINE" : "aarch64",
+                "shortname" : "aarch64 tools",
                 "BBTARGETS" : "buildtools-tarball buildtools-extended-tarball uninative-tarball"
             }
         },
@@ -666,9 +680,11 @@
                 "SOURCE_MIRROR_URL = 'file://${BASE_SHAREDDIR}/current_sources'"
             ],
             "step1" : {
+                "shortname" : "Universe fetch",
                 "BBTARGETS" : "universe -k -c fetch"
             },
             "step2" : {
+                "shortname" : "BA image build",
                 "BBTARGETS" : "build-appliance-image"
             }
         },
@@ -796,6 +812,7 @@
         "qa-extras" : {
             "MACHINE" : "qemux86-64",
             "step1" : {
+                "shortname" : "Readonly rootfs",
                 "BBTARGETS" : "core-image-minimal",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage",
                 "extravars" : [
@@ -803,6 +820,7 @@
                 ]
             },
             "step2" : {
+                "shortname" : "ROOT_HOME testing",
                 "BBTARGETS" : "core-image-minimal",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage",
                 "extravars" : [
@@ -810,6 +828,7 @@
                 ]
             },
             "step3" : {
+                "shortname" : "Full eSDK type",
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext",
                 "extravars" : [
@@ -817,15 +836,18 @@
                 ]
             },
             "step4" : {
+                "shortname" : "Prep locked-sigs test",
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato core-image-sato:do_populate_sdk_ext"
             },
             "step5" : {
+                "shortname" : "Prep #2 locked-sigs test",
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato -S none",
                 "EXTRACMDS" : ["${SCRIPTSDIR}/../janitor/clobberdir ${BUILDDIR}/../build/tmp"]
             },
             "step6" : {
+                "shortname" : "Test locked-sigs image",
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato",
                 "extravars" : [
@@ -834,6 +856,7 @@
                 ]
             },
             "step7" : {
+                "shortname" : "Test locked-sigs eSDK",
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato:do_populate_sdk_ext",
                 "extravars" : [
@@ -844,6 +867,7 @@
         "qa-extras2" : {
             "MACHINE" : "qemux86-64",
             "step1" : {
+                "shortname" : "Test logrotate",
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -860,6 +884,7 @@
                 ]
             },
             "step3" : {
+                "shortname" : "Test skeletoninit",
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -869,6 +894,7 @@
                 "ADDLAYER" : ["${BUILDDIR}/../meta-skeleton"]
             },
             "step4" : {
+                "shortname" : "Systemd with sysvinit compat",
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -878,6 +904,7 @@
                 ]
             },
             "step5" : {
+                "shortname" : "Sysvinit with systemd",
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -886,6 +913,7 @@
                 ]
             },
             "step6" : {
+                "shortname" : "Systemd",
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
@@ -896,6 +924,7 @@
                 ]
             },
             "step7" : {
+                "shortname" : "Mesa gallium-llvm",
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
