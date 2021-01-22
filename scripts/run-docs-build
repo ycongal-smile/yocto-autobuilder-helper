@@ -45,8 +45,10 @@ make publish
 mkdir $outputdir/bitbake/1.46
 cp -r ./_build/final/* $outputdir/bitbake/1.46
 
+# only sync bitbake folder for now. We need bitbake to be published first
+# since the bitbake intersphinx index will be downloaded to build yocto-docs
 cd $outputdir
-rsync -irlp --checksum --ignore-times * docs@docs.yoctoproject.org:docs/
+rsync -irlp --checksum --ignore-times --delete bitbake docs@docs.yoctoproject.org:docs/
 
 cd $ypdocs
 git checkout master
@@ -86,4 +88,4 @@ cd $outputdir
 find . -name switchers.js -not -path ./_static/switchers.js -exec cp ./_static/switchers.js {} \;
 
 cd $outputdir
-rsync -irlp --checksum --ignore-times * docs@docs.yoctoproject.org:docs/
+rsync -irlp --checksum --ignore-times --delete . docs@docs.yoctoproject.org:docs/
