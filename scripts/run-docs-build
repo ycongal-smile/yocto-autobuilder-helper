@@ -91,6 +91,13 @@ mkdir $outputdir/3.2.1
 cp -r ./_build/final/* $outputdir/3.2.1
 
 cd $ypdocs
+git checkout yocto-3.2
+make clean
+make publish
+mkdir $outputdir/3.2
+cp -r ./_build/final/* $outputdir/3.2
+
+cd $ypdocs
 git checkout yocto-3.1.5
 make clean
 make publish
