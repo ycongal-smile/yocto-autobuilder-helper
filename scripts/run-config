@@ -193,7 +193,7 @@ def bitbakecmd(builddir, cmd, report, stepnum, stepname, oeenv=True):
 
     flush()
 
-    with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1) as p, open(log, 'ab') as f:
+    with subprocess.Popen(cmd, shell=True, cwd=builddir + "/..", stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=0) as p, open(log, 'ab') as f:
         for line in p.stdout:
             writelog(line, f, sys.stdout.buffer)
             sys.stdout.flush()
