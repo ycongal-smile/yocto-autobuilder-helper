@@ -145,6 +145,10 @@ Build hash information: \n
 
 ''' % (args.release, args.publish_dir.replace(web_root, web_url), buildhashes)
 
+# Store a copy of the email in case it doesn't reach the lists
+with open(os.path.join(args.publish_dir, "qa-email"), "wb") as qa_email:
+    qa_email.write(email.encode('utf-8'))
+
 utils.printheader("Sending QA email")
 env = os.environ.copy()
 # Many distros have sendmail in */sbin
