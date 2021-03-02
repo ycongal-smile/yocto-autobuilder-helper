@@ -715,8 +715,19 @@
             "SANITYTARGETS" : "core-image-full-cmdline:do_testimage core-image-weston:do_testimage",
             "extravars" : [
                 "DISTRO_FEATURES_remove = 'x11'"
-            ]
-
+            ],
+            "step1" : {
+                "shortname" : "Sysvinit weston"
+            },
+            "step2" : {
+                "shortname" : "Systemd weston",
+                "extravars" : [
+                     "TEST_SUITES_append = ' systemd'",
+                     "DISTRO_FEATURES_append = ' pam systemd'",
+                     "VIRTUAL-RUNTIME_init_manager = 'systemd'",
+                     "DISTRO_FEATURES_BACKFILL_CONSIDERED = 'sysvinit'"
+                ]
+            }
         },
         "musl-qemux86" : {
             "MACHINE" : "qemux86",
