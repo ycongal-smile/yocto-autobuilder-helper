@@ -33,17 +33,14 @@ make publish
 mkdir $outputdir/bitbake/next
 cp -r ./_build/final/* $outputdir/bitbake/next
 
-git checkout 1.48
-make clean
-make publish
-mkdir $outputdir/bitbake/1.48
-cp -r ./_build/final/* $outputdir/bitbake/1.48
-
-git checkout 1.46
-make clean
-make publish
-mkdir $outputdir/bitbake/1.46
-cp -r ./_build/final/* $outputdir/bitbake/1.46
+# stable branches
+for branch in 1.46 1.48; do
+    git checkout $branch
+    make clean
+    make publish
+    mkdir $outputdir/bitbake/$branch
+    cp -r ./_build/final/* $outputdir/bitbake/$branch
+done
 
 # only sync bitbake folder for now. We need bitbake to be published first
 # since the bitbake intersphinx index will be downloaded to build yocto-docs
@@ -69,40 +66,25 @@ make publish
 mkdir $outputdir/next
 cp -r ./_build/final/* $outputdir/next
 
-cd $ypdocs
-git checkout gatesgarth
-make clean
-make publish
-mkdir $outputdir/gatesgarth
-cp -r ./_build/final/* $outputdir/gatesgarth
+# stable branches
+for branch in dunfell gatesgarth; do
+    cd $ypdocs
+    git checkout $branch
+    make clean
+    make publish
+    mkdir $outputdir/$branch
+    cp -r ./_build/final/* $outputdir/$branch
+done
 
-cd $ypdocs
-git checkout dunfell
-make clean
-make publish
-mkdir $outputdir/dunfell
-cp -r ./_build/final/* $outputdir/dunfell
-
-cd $ypdocs
-git checkout yocto-3.2.1
-make clean
-make publish
-mkdir $outputdir/3.2.1
-cp -r ./_build/final/* $outputdir/3.2.1
-
-cd $ypdocs
-git checkout yocto-3.2
-make clean
-make publish
-mkdir $outputdir/3.2
-cp -r ./_build/final/* $outputdir/3.2
-
-cd $ypdocs
-git checkout yocto-3.1.5
-make clean
-make publish
-mkdir $outputdir/3.1.5
-cp -r ./_build/final/* $outputdir/3.1.5
+# Yocto Project releases/tags
+for tag in 3.1.5 3.2 3.2.1; do
+    cd $ypdocs
+    git checkout yocto-$tag
+    make clean
+    make publish
+    mkdir $outputdir/$tag
+    cp -r ./_build/final/* $outputdir/$tag
+done
 
 # Update switchers.js with the copy from master ypdocs
 cd $outputdir
