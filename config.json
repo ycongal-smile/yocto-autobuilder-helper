@@ -310,6 +310,23 @@
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             }
         },
+        "meta-agl-core" : {
+            "NEEDREPOS" : ["poky", "meta-agl"],
+            "ADDLAYER" : [
+                "${BUILDDIR}/../meta-agl/meta-agl-core"
+            ],
+            "DISTRO" : "poky-agl",
+            "BUILDINFO" : true,
+            "BUILDHISTORY" : true,
+            "PACKAGE_CLASSES" : "package_rpm",
+            "extravars" : [
+                "AGL_FEATURES = 'aglcore'"
+            ],
+            "step1" : {
+                "MACHINE": "qemux86-64",
+                "BBTARGETS": "agl-image-core-autobuilder"
+            }
+        },
        "bringup" : {
             "BUILDINFO" : true,
             "SSTATEDIR" : ["SSTATE_DIR ?= '${HELPERBUILDDIR}/sstate'"],
@@ -1082,8 +1099,13 @@
             "branch" : "master",
             "revision" : "HEAD",
             "no-layer-add" : true
+        },
+        "meta-agl": {
+            "url" : "https://git.automotivelinux.org/AGL/meta-agl",
+            "branch" : "next",
+            "revision" : "HEAD",
+            "no-layer-add" : true
         }
-
     },
     "buildtools" : {
         "debian8*" : "${BUILDTOOLS_URL}",
