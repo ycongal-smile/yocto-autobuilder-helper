@@ -33,6 +33,7 @@ index_templpate = """
   <th>Performance Reports</th>
   <th>ptest Logs</th>
   <th>Buildhistory</th>
+  <th>Host Data</th>
 </tr>
 </thead>
 <tdata>
@@ -55,6 +56,11 @@ index_templpate = """
    <td>
    {% for bh in entry[5] %}
      <a href="{{bh[0]}}">{{bh[1]}}</a>
+   {% endfor %}
+   </td>
+   <td>
+   {% for hd in entry[8] %}
+     <a href="{{hd[0]}}">{{hd[1]}}</a>
    {% endfor %}
    </td>
 </tr>
@@ -145,9 +151,19 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
     if os.path.exists(buildpath + "/qemuarm/buildhistory.txt"):
         buildhistory.append((reldir + "testresults/qemuarm/buildhistory.txt", "qemuarm"))
 
+    hd = []
+    counter = 0
+    # do we really need the loop?
+    for p in glob.glob(buildpath + "/*/*/host_stats*top.txt"):
+        n_split = p.split(build)
+        res = reldir[0:-1] + n_split[1]
+        hd.append((res, str(counter)))
+        counter += 1
+
+
     branch = get_build_branch(buildpath)
 
-    entries.append((build, reldir, btype, testreport, branch, buildhistory, perfreports, ptestlogs))
+    entries.append((build, reldir, btype, testreport, branch, buildhistory, perfreports, ptestlogs, hd))
 
     # Also ensure we have saved out log data for ptest runs to aid debugging
     if "ptest" in btype or btype in ["full", "quick"]:
