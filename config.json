@@ -159,7 +159,8 @@
                 "PARALLEL_MAKE = '-j 24'",
                 "DL_DIR = '${BUILDPERF_STATEDIR}/downloads'",
                 "CONNECTIVITY_CHECK_URIS = ''",
-                "BB_HASHSERVE = 'auto'"
+                "BB_HASHSERVE = 'auto'",
+                "BB_LOG_HOST_STAT_CMDS = ''"
             ]
         },
         "selftest" : {
