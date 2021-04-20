@@ -330,6 +330,9 @@ class ErrorReport(object):
         elif  'oe-selftest' in command:
             report['error_type'] = 'oe-selftest'
             failure['task'] = command[command.find('oe-selftest'):]
+        elif 'yocto-check-layer' in command:
+            report['error_type'] = 'check-layer'
+            failure['task'] = command[command.find('yocto-check-layer'):]
         else:
             report['error_type'] = 'core'
             failure['task'] = command[command.find('bitbake'):]
