@@ -831,6 +831,17 @@
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-gplv2"]
             }
         },
+        "check-layer-nightly" : {
+            "NEEDREPOS" : ["poky", "meta-agl", "meta-arm", "meta-aws", "meta-intel", "meta-openembedded", "meta-virtualization"],
+            "step1" : {
+                "shortname" : "Test meta-aws YP Compatibility",
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-aws --dependency ../meta-openembedded/meta-oe ../meta-openembedded/meta-networking ../meta-openembedded/meta-python -n"]
+            },
+            "step2" : {
+                "shortname" : "Test meta-intel YP Compatibility",
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-intel"]
+            }
+        },
         "meta-mingw" : {
             "NEEDREPOS" : ["poky", "meta-mingw"],
             "MACHINE" : "qemux86",
@@ -1047,7 +1058,8 @@
         "meta-intel" : {
             "url" : "git://git.yoctoproject.org/meta-intel",
             "branch" : "master",
-            "revision" : "HEAD"
+            "revision" : "HEAD",
+            "no-layer-add" : true
         },
         "oecore" : {"url" : "git://git.openembedded.org/openembedded-core",
             "branch" : "master",
@@ -1107,6 +1119,12 @@
         "meta-agl": {
             "url" : "https://git.automotivelinux.org/AGL/meta-agl",
             "branch" : "next",
+            "revision" : "HEAD",
+            "no-layer-add" : true
+        },
+        "meta-aws": {
+            "url" : "https://github.com/aws/meta-aws.git",
+            "branch" : "master",
             "revision" : "HEAD",
             "no-layer-add" : true
         }
