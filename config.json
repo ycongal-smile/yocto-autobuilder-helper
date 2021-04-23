@@ -858,13 +858,19 @@
         "meta-oe" : {
             "NEEDREPOS" : ["poky", "meta-openembedded"],
             "MACHINE" : "qemux86-64",
-            "BBTARGETS" : "world -k",
-            "ADDLAYER" : [
-                "${BUILDDIR}/../meta-openembedded/meta-oe",
-                "${BUILDDIR}/../meta-openembedded/meta-python",
-                "${BUILDDIR}/../meta-openembedded/meta-networking",
-                "${BUILDDIR}/../meta-openembedded/meta-filesystems"
-            ]
+            "step1" : {
+                "shortname" : "Test meta-oe YP Compatibility",
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-openembedded"]
+            },
+            "step2" : {
+                "ADDLAYER" : [
+                    "${BUILDDIR}/../meta-openembedded/meta-oe",
+                    "${BUILDDIR}/../meta-openembedded/meta-python",
+                    "${BUILDDIR}/../meta-openembedded/meta-networking",
+                    "${BUILDDIR}/../meta-openembedded/meta-filesystems"
+                ],
+                "BBTARGETS" : "world -k"
+            }
         },
         "meta-virt" : {
             "NEEDREPOS" : ["poky", "meta-openembedded", "meta-virtualization"],
