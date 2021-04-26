@@ -849,6 +849,14 @@
             "step4" : {
                 "shortname" : "Test meta-ti YP Compatibility",
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-ti"]
+            },
+            "step5" : {
+                "shortname" : "Test meta-oe YP Compatibility",
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-openembedded"]
+            },
+            "step6" : {
+                "shortname" : "Test meta-virtualization YP Compatibility",
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-virtualization --dependency ../meta-openembedded/meta-oe ../meta-openembedded/meta-networking ../meta-openembedded/meta-python ../meta-openembedded/meta-filesystems"]
             }
         },
         "meta-mingw" : {
