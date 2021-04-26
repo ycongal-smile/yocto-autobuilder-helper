@@ -833,7 +833,7 @@
             }
         },
         "check-layer-nightly" : {
-            "NEEDREPOS" : ["poky", "meta-agl", "meta-arm", "meta-aws", "meta-intel", "meta-openembedded", "meta-virtualization"],
+            "NEEDREPOS" : ["poky", "meta-agl", "meta-arm", "meta-aws", "meta-intel", "meta-ti", "meta-openembedded", "meta-virtualization"],
             "step1" : {
                 "shortname" : "Test meta-agl YP Compatibility",
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-agl/meta-agl-core ../meta-agl/meta-netboot ../meta-agl/meta-pipewire ../meta-agl/meta-agl-bsp --dependency ../meta-openembedded/meta-oe ../meta-openembedded/meta-networking ../meta-openembedded/meta-python -n"]
@@ -845,6 +845,10 @@
             "step3" : {
                 "shortname" : "Test meta-intel YP Compatibility",
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-intel"]
+            },
+            "step4" : {
+                "shortname" : "Test meta-ti YP Compatibility",
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-ti"]
             }
         },
         "meta-mingw" : {
@@ -1135,6 +1139,12 @@
         },
         "meta-aws": {
             "url" : "https://github.com/aws/meta-aws.git",
+            "branch" : "master",
+            "revision" : "HEAD",
+            "no-layer-add" : true
+        },
+        "meta-ti" : {
+            "url" : "git://git.yoctoproject.org/meta-ti",
             "branch" : "master",
             "revision" : "HEAD",
             "no-layer-add" : true
