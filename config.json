@@ -59,7 +59,7 @@
             "RUNQEMU_TMPFS_DIR = '/home/pokybuild/tmp'",
             "BB_HEARTBEAT_EVENT = '60'",
             "BB_LOG_HOST_STAT_ON_INTERVAL = '1'",
-            "BB_LOG_HOST_STAT_CMDS = 'oe-time-dd-test.sh 100'"
+            "BB_LOG_HOST_STAT_CMDS_INTERVAL = 'oe-time-dd-test.sh 100'"
         ]
     },
     "templates" : {
