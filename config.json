@@ -833,7 +833,7 @@
             }
         },
         "check-layer-nightly" : {
-            "NEEDREPOS" : ["poky", "meta-agl", "meta-arm", "meta-aws", "meta-intel", "meta-ti", "meta-openembedded", "meta-virtualization"],
+            "NEEDREPOS" : ["poky", "meta-agl", "meta-arm", "meta-aws", "meta-intel", "meta-ti", "meta-openembedded", "meta-virtualization", "meta-security"],
             "step1" : {
                 "shortname" : "Test meta-agl YP Compatibility",
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-agl/meta-agl-core ../meta-agl/meta-netboot ../meta-agl/meta-pipewire --dependency ../meta-openembedded/meta-oe ../meta-openembedded/meta-networking ../meta-openembedded/meta-python"]
@@ -857,6 +857,10 @@
             "step6" : {
                 "shortname" : "Test meta-virtualization YP Compatibility",
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-virtualization --dependency ../meta-openembedded/meta-oe ../meta-openembedded/meta-networking ../meta-openembedded/meta-python ../meta-openembedded/meta-filesystems"]
+            },
+            "step7" : {
+                "shortname" : "Test meta-security YP Compatibility",
+                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-security --dependency ../meta-openembedded/meta-oe ../meta-openembedded/meta-networking ../meta-openembedded/meta-python ../meta-openembedded/meta-perl"]
             }
         },
         "meta-mingw" : {
@@ -1153,6 +1157,12 @@
         },
         "meta-ti" : {
             "url" : "git://git.yoctoproject.org/meta-ti",
+            "branch" : "master",
+            "revision" : "HEAD",
+            "no-layer-add" : true
+        },
+        "meta-security" : {
+            "url" : "git://git.yoctoproject.org/meta-security",
             "branch" : "master",
             "revision" : "HEAD",
             "no-layer-add" : true
