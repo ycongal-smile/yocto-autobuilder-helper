@@ -92,6 +92,10 @@ for tag in $(git tag --list 'yocto-*'); do
     fi
 done
 
+# get current release (e.g. most recent tag), and add a 'current' link
+tag=$(git tag --list 'yocto-*' | sort --version-sort | tail -1 | cut -c7-)
+ln -s $tag $outputdir/current
+
 # Update switchers.js with the copy from master ypdocs
 cd $outputdir
 find . -name switchers.js -not -path ./_static/switchers.js -exec cp ./_static/switchers.js {} \;
