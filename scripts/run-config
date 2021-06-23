@@ -327,6 +327,7 @@ elif args.phase == "finish" and args.stepname == "collect-results":
     if args.results_dir:
         hp.printheader("Running results collection")
         runcmd([scriptsdir + "/collect-results", args.builddir, args.results_dir, args.target])
+        runcmd([scriptsdir + "/summarize_top_output.py", args.results_dir, args.target])
     sys.exit(0)
 
 if jcfg:

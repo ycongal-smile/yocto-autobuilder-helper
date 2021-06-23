@@ -154,7 +154,7 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
     hd = []
     counter = 0
     # do we really need the loop?
-    for p in glob.glob(buildpath + "/*/*/host_stats*top.txt"):
+    for p in glob.glob(buildpath + "/*/*/host_stats*top_summary.txt"):
         n_split = p.split(build)
         res = reldir[0:-1] + n_split[1]
         hd.append((res, str(counter)))

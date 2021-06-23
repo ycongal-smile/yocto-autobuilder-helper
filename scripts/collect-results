@@ -19,7 +19,7 @@ if [ -e $WORKDIR/buildhistory ]; then
 fi
 
 HSFILE=$WORKDIR/tmp/buildstats/*/host_stats
-d=`date +%Y-%m-%d--%H-%M`
+d="intermittent_failure_host_data"
 
 mkdir -p $DEST/$target/$d
 
