@@ -152,13 +152,15 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
         buildhistory.append((reldir + "testresults/qemuarm/buildhistory.txt", "qemuarm"))
 
     hd = []
-    counter = 0
-    # do we really need the loop?
-    for p in glob.glob(buildpath + "/*/*/host_stats*top_summary.txt"):
+    for p in glob.glob(buildpath + "/*/*/host_stats*summary.txt"):
         n_split = p.split(build)
         res = reldir[0:-1] + n_split[1]
-        hd.append((res, str(counter)))
-        counter += 1
+        n = os.path.basename(p).split("host_stats_")[-1]
+        if "failure" in n:
+            n = n.split("_summary.txt")[0]
+        elif "top" in n:
+            n = n.split("_top_summary.txt")[0]
+        hd.append((res, n))
 
 
     branch = get_build_branch(buildpath)
