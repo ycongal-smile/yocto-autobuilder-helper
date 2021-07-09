@@ -168,9 +168,11 @@ def main():
     target = sys.argv[2]
     host_data_dir = "intermittent_failure_host_data"
     directory = os.path.join(dest, target, host_data_dir)
-    for f in glob.glob(directory + "/*_top.txt"):
-        outputs = list_top_outputs(f)
-        short_summary, summary, kernel_summary, zombie_summary, other_build = summarize_top(outputs, target)
-        write_summary(short_summary, summary, kernel_summary, zombie_summary, other_build, target, f)
+    regs = (directory + "/*_top.txt", directory + "/*_failure_*.txt")
+    for exts in regs:
+        for f in glob.glob(exts):
+            outputs = list_top_outputs(f)
+            short_summary, summary, kernel_summary, zombie_summary, other_build = summarize_top(outputs, target)
+            write_summary(short_summary, summary, kernel_summary, zombie_summary, other_build, target, f)
 
 main()
