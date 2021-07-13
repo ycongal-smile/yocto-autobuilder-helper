@@ -70,6 +70,9 @@
         "arch-qemu" : {
             "BUILDINFO" : true,
             "BUILDHISTORY" : true,
+            "extravars" : [
+                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+            ],
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-sato:do_testsdk"
@@ -90,6 +93,9 @@
             "DISTRO" : "poky-altcfg",
             "BUILDINFO" : true,
             "BUILDHISTORY" : true,
+            "extravars" : [
+                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+            ],
             "step1" : {
                 "BBTARGETS" : "core-image-full-cmdline core-image-sato core-image-sato-sdk",
                 "SANITYTARGETS" : "core-image-full-cmdline:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
@@ -382,16 +388,10 @@
         },
         "qemumips" : {
             "MACHINE" : "qemumips",
-            "extravars" : [
-                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
-            ],
             "TEMPLATE" : "arch-qemu"
         },
         "qemumips-alt" : {
             "MACHINE" : "qemumips",
-            "extravars" : [
-                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
-            ],
             "TEMPLATE" : "altcfg-qemu"
         },
         "edgerouter" : {
@@ -408,16 +408,10 @@
         },
         "qemuppc" : {
             "MACHINE" : "qemuppc",
-            "extravars" : [
-                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
-            ],
             "TEMPLATE" : "arch-qemu"
         },
         "qemuppc-alt" : {
             "MACHINE" : "qemuppc",
-            "extravars" : [
-                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
-            ],
             "TEMPLATE" : "altcfg-qemu"
         },
         "qemux86" : {
