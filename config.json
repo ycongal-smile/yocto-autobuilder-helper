@@ -35,7 +35,7 @@
         "SDKEXTRAS" : ["SSTATE_MIRRORS += '\\", "file://.* http://sstate.yoctoproject.org/dev/@RELEASENUM@PATH;downloadfilename=PATH'"],
         "BUILDINFO" : false,
         "BUILDHISTORY" : false,
-        "BUILDINFOVARS" : ["INHERIT += 'image-buildinfo'", "IMAGE_BUILDINFO_VARS_append = ' IMAGE_BASENAME IMAGE_NAME'"],
+        "BUILDINFOVARS" : ["INHERIT += 'image-buildinfo'", "IMAGE_BUILDINFO_VARS:append = ' IMAGE_BASENAME IMAGE_NAME'"],
         "WRITECONFIG" : true,
         "SENDERRORS" : true,
         "extravars" : [
@@ -48,9 +48,9 @@
             "XZ_MEMLIMIT = '5%'",
             "XZ_THREADS = '8'",
             "BB_TASK_NICE_LEVEL = '5'",
-            "BB_TASK_NICE_LEVEL_task-testimage = '0'",
+            "BB_TASK_NICE_LEVEL:task-testimage = '0'",
             "BB_TASK_IONICE_LEVEL = '2.7'",
-            "BB_TASK_IONICE_LEVEL_task-testimage = '2.1'",
+            "BB_TASK_IONICE_LEVEL:task-testimage = '2.1'",
             "INHERIT += 'testimage'",
             "TEST_QEMUBOOT_TIMEOUT = '1500'",
             "SANITY_TESTED_DISTROS = ''",
@@ -71,7 +71,7 @@
             "BUILDINFO" : true,
             "BUILDHISTORY" : true,
             "extravars" : [
-                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+                "IMAGE_INSTALL:append = ' ssh-pregen-hostkeys'"
             ],
             "step1" : {
                 "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato:do_populate_sdk",
@@ -94,7 +94,7 @@
             "BUILDINFO" : true,
             "BUILDHISTORY" : true,
             "extravars" : [
-                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+                "IMAGE_INSTALL:append = ' ssh-pregen-hostkeys'"
             ],
             "step1" : {
                 "BBTARGETS" : "core-image-full-cmdline core-image-sato core-image-sato-sdk",
@@ -122,11 +122,11 @@
             "BBTARGETS" : "core-image-sato",
             "SANITYTARGETS" : "core-image-sato:do_testimage",
             "extravars" : [
-                "IMAGE_INSTALL_append = ' ltp'",
+                "IMAGE_INSTALL:append = ' ltp'",
                 "TEST_SUITES = 'ping ssh ltp ltp_compliance'",
                 "IMAGE_OVERHEAD_FACTOR = '1.0'",
                 "IMAGE_ROOTFS_EXTRA_SPACE = '1324288'",
-                "QB_MEM_forcevariable = '-m 1024'"
+                "QB_MEM:forcevariable = '-m 1024'"
             ]
         },
         "arch-hw" : {
@@ -180,7 +180,7 @@
             "PACKAGE_CLASSES" : "package_rpm",
             "extravars" : [
                 "RPM_GPG_SIGN_CHUNK = '1'",
-                "IMAGE_INSTALL_append = ' ssh-pregen-hostkeys'"
+                "IMAGE_INSTALL:append = ' ssh-pregen-hostkeys'"
             ],
             "step1" : {
                 "shortname" : "Bitbake Selftest",
@@ -436,7 +436,7 @@
             "TEMPLATE" : "arch-qemu",
             "step1" : {
                 "extravars" : [
-                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
+                     "IMAGE_FSTYPES:append = ' wic wic.bmap'"
                 ]
             }
         },
@@ -449,7 +449,7 @@
             "TEMPLATE" : "arch-hw",
             "step1" : {
                 "extravars" : [
-                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
+                     "IMAGE_FSTYPES:append = ' wic wic.bmap'"
                 ]
             }
         },
@@ -462,7 +462,7 @@
             "TEMPLATE" : "arch-qemu",
             "step1" : {
                 "extravars" : [
-                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
+                     "IMAGE_FSTYPES:append = ' wic wic.bmap'"
                 ]
             }
         },
@@ -475,7 +475,7 @@
             "TEMPLATE" : "arch-hw",
             "step1" : {
                 "extravars" : [
-                     "IMAGE_FSTYPES_append = ' wic wic.bmap'"
+                     "IMAGE_FSTYPES:append = ' wic wic.bmap'"
                 ]
             }
         },
@@ -496,7 +496,7 @@
             "extravars" : [
                 "require conf/multilib.conf",
                 "MULTILIBS = 'multilib:lib32'",
-                "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'"
+                "DEFAULTTUNE:virtclass-multilib-lib32 = 'x86'"
             ]
         },
         "qemux86-world-alt" : {
@@ -505,10 +505,10 @@
             "DISTRO" : "poky-altcfg",
             "BBTARGETS" : "world",
             "extravars" : [
-                "DISTRO_FEATURES_append = ' api-documentation'",
+                "DISTRO_FEATURES:append = ' api-documentation'",
                 "require conf/multilib.conf",
                 "MULTILIBS = 'multilib:lib32'",
-                "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'",
+                "DEFAULTTUNE:virtclass-multilib-lib32 = 'x86'",
                 "QTDEMOS_remove = 'qmmp'"
             ]
         },
@@ -527,7 +527,7 @@
             "step2" : {
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "TEST_SUITES_append = ' x32lib'"
+                    "TEST_SUITES:append = ' x32lib'"
                 ]
             }
         },
@@ -555,7 +555,7 @@
                     "TEST_SUITES = 'ping'",
                     "require conf/multilib.conf",
                     "MULTILIBS = 'multilib:lib32'",
-                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'"
+                    "DEFAULTTUNE:virtclass-multilib-lib32 = 'x86'"
                 ]
             },
             "step2" : {
@@ -568,7 +568,7 @@
                     "TEST_SUITES = 'ping'",
                     "require conf/multilib.conf",
                     "MULTILIBS = 'multilib:lib32'",
-                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'"
+                    "DEFAULTTUNE:virtclass-multilib-lib32 = 'x86'"
                 ]
             },
             "step3" : {
@@ -577,12 +577,12 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "TEST_SUITES_append = ' multilib'",
+                    "TEST_SUITES:append = ' multilib'",
                     "require conf/multilib.conf",
                     "MULTILIBS = 'multilib:lib32'",
-                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'",
+                    "DEFAULTTUNE:virtclass-multilib-lib32 = 'x86'",
                     "RPM_PREFER_ELF_ARCH = '1'",
-                    "IMAGE_INSTALL_append = ' lib32-connman-gnome pango-module-basic-fc lib32-pango-module-basic-fc'"
+                    "IMAGE_INSTALL:append = ' lib32-connman-gnome pango-module-basic-fc lib32-pango-module-basic-fc'"
                 ]
             },
             "step4" : {
@@ -592,12 +592,12 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "TEST_SUITES_append = ' multilib'",
+                    "TEST_SUITES:append = ' multilib'",
                     "require conf/multilib.conf",
                     "MULTILIBS = 'multilib:lib32'",
-                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'x86'",
+                    "DEFAULTTUNE:virtclass-multilib-lib32 = 'x86'",
                     "RPM_PREFER_ELF_ARCH = '1'",
-                    "IMAGE_INSTALL_append = ' lib32-connman-gnome pango-module-basic-fc lib32-pango-module-basic-fc'"
+                    "IMAGE_INSTALL:append = ' lib32-connman-gnome pango-module-basic-fc lib32-pango-module-basic-fc'"
                 ]
             },
             "step5" : {
@@ -609,7 +609,7 @@
                 "extravars" : [
                     "require conf/multilib.conf",
                     "MULTILIBS = 'multilib:lib64'",
-                    "DEFAULTTUNE_virtclass-multilib-lib64 = 'x86-64'"
+                    "DEFAULTTUNE:virtclass-multilib-lib64 = 'x86-64'"
                 ]
             },
             "step6" : {
@@ -622,8 +622,8 @@
                     "require conf/multilib.conf",
                     "MULTILIBS = 'multilib:lib64 multilib:lib32'",
                     "DEFAULTTUNE = 'mips64-n32'",
-                    "DEFAULTTUNE_virtclass-multilib-lib64 = 'mips64'",
-                    "DEFAULTTUNE_virtclass-multilib-lib32 = 'mips32r2'"
+                    "DEFAULTTUNE:virtclass-multilib-lib64 = 'mips64'",
+                    "DEFAULTTUNE:virtclass-multilib-lib32 = 'mips32r2'"
                 ]
             }
         },
@@ -661,7 +661,7 @@
             "BUILDINFO" : true,
             "extravars" : [
                 "IMAGE_FSTYPES += ' hddimg'",
-                "MACHINE_FEATURES_append = ' efi'"
+                "MACHINE_FEATURES:append = ' efi'"
             ],
             "step1" : {
                 "MACHINE" : "qemux86",
@@ -728,7 +728,7 @@
         "build-appliance" : {
             "MACHINE" : "qemux86-64",
             "DLDIR" : "DL_DIR ?= '${TOPDIR}/downloads'",
-            "BUILDAPP_SRCREV" : ["SRCREV_pn-build-appliance-image = '@SRCREV@'", "PV_append_pn-build-appliance-image = '+git${SRCPV}'"],
+            "BUILDAPP_SRCREV" : ["SRCREV_pn-build-appliance-image = '@SRCREV@'", "PV:append:pn-build-appliance-image = '+git${SRCPV}'"],
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline",
             "extravars" : [
                 "SOURCE_MIRROR_FETCH = '1'",
@@ -760,7 +760,7 @@
             "BBTARGETS" : "core-image-full-cmdline core-image-weston world",
             "SANITYTARGETS" : "core-image-full-cmdline:do_testimage core-image-weston:do_testimage",
             "extravars" : [
-                "DISTRO_FEATURES_remove = 'x11'"
+                "DISTRO_FEATURES:remove = 'x11'"
             ],
             "step1" : {
                 "shortname" : "Sysvinit weston"
@@ -768,8 +768,8 @@
             "step2" : {
                 "shortname" : "Systemd weston",
                 "extravars" : [
-                     "TEST_SUITES_append = ' systemd'",
-                     "DISTRO_FEATURES_append = ' pam systemd'",
+                     "TEST_SUITES:append = ' systemd'",
+                     "DISTRO_FEATURES:append = ' pam systemd'",
                      "VIRTUAL-RUNTIME_init_manager = 'systemd'",
                      "DISTRO_FEATURES_BACKFILL_CONSIDERED = 'sysvinit'"
                 ]
@@ -801,7 +801,7 @@
             "extravars" : [
                 "SOURCE_MIRROR_FETCH = '1'",
                 "BB_NUMBER_THREADS = '1'",
-                "do_checkuri_pn-lsof = ''"
+                "do_checkuri:pn-lsof = ''"
             ]
         },
         "oe-selftest" : {
@@ -929,7 +929,7 @@
                 "${BUILDDIR}/../meta-virtualization"
             ],
             "extravars" : [
-                "DISTRO_FEATURES_append = ' virtualization'"
+                "DISTRO_FEATURES:append = ' virtualization'"
             ]
         },
         "qa-extras" : {
@@ -939,7 +939,7 @@
                 "BBTARGETS" : "core-image-minimal",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage",
                 "extravars" : [
-                    "IMAGE_FEATURES_append = ' read-only-rootfs'"
+                    "IMAGE_FEATURES:append = ' read-only-rootfs'"
                 ]
             },
             "step2" : {
@@ -994,16 +994,16 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "IMAGE_INSTALL_append = ' logrotate'",
-                    "TEST_SUITES_append = ' logrotate'"
+                    "IMAGE_INSTALL:append = ' logrotate'",
+                    "TEST_SUITES:append = ' logrotate'"
                 ]
             },
             "step2" : {
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "DISTRO_FEATURES_append = ' pam'",
-                    "TEST_SUITES_append = ' pam'"
+                    "DISTRO_FEATURES:append = ' pam'",
+                    "TEST_SUITES:append = ' pam'"
                 ]
             },
             "step3" : {
@@ -1011,8 +1011,8 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "IMAGE_INSTALL_append = ' service hello-mod'",
-                    "TEST_SUITES_append = ' skeletoninit'"
+                    "IMAGE_INSTALL:append = ' service hello-mod'",
+                    "TEST_SUITES:append = ' skeletoninit'"
                 ],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-skeleton"]
             },
@@ -1021,9 +1021,9 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "DISTRO_FEATURES_append = ' systemd'",
+                    "DISTRO_FEATURES:append = ' systemd'",
                     "VIRTUAL-RUNTIME_init_manager = 'systemd'",
-                    "TEST_SUITES_append = ' systemd'"
+                    "TEST_SUITES:append = ' systemd'"
                 ]
             },
             "step5" : {
@@ -1031,7 +1031,7 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "DISTRO_FEATURES_append = ' systemd'",
+                    "DISTRO_FEATURES:append = ' systemd'",
                     "VIRTUAL-RUNTIME_init_manager = 'sysvinit'"
                 ]
             },
@@ -1040,8 +1040,8 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "TEST_SUITES_append = ' systemd'",
-                    "DISTRO_FEATURES_append = ' systemd'",
+                    "TEST_SUITES:append = ' systemd'",
+                    "DISTRO_FEATURES:append = ' systemd'",
                     "VIRTUAL-RUNTIME_init_manager = 'systemd'",
                     "DISTRO_FEATURES_BACKFILL_CONSIDERED = 'sysvinit'"
                 ]
@@ -1051,7 +1051,7 @@
                 "BBTARGETS" : "core-image-sato",
                 "SANITYTARGETS" : "core-image-sato:do_testimage",
                 "extravars" : [
-                    "PACKAGECONFIG_append_x86-64_pn-mesa = ' gallium-llvm gallium r600'"
+                    "PACKAGECONFIG:append:x86-64:pn-mesa = ' gallium-llvm gallium r600'"
                 ]
 
             }
