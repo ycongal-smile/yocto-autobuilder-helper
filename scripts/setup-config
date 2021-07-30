@@ -101,7 +101,7 @@ if bh_path:
         force = "-f "
     variables.append('BUILDHISTORY_PUSH_REPO = "%s%s %s:%s"' % (force, remoterepo, remotebranch, remotebranch))
     variables.append("BUILDHISTORY_COMMIT = '1'")
-    variables.append('ERROR_QA_remove = "version-going-backwards"')
+    variables.append('ERROR_QA:remove = "version-going-backwards"')
 
 utils.printheader("Writing %s with contents:" % autoconf)
 with open(autoconf, "w") as f:
