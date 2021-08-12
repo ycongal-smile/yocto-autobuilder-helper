@@ -712,7 +712,8 @@
             "step1" : {
                 "SDKMACHINE" : "x86_64",
                 "shortname" : "x86_64 tools",
-                "BBTARGETS" : "buildtools-tarball buildtools-extended-tarball uninative-tarball"
+                "BBTARGETS" : "buildtools-tarball buildtools-extended-tarball uninative-tarball",
+                "SANITYTARGETS" : "buildtools-tarball:do_testsdk buildtools-extended-tarball:do_testsdk"
             },
             "step2" : {
                 "SDKMACHINE" : "i686",
