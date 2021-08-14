@@ -1,5 +1,5 @@
 
 INHERIT += "buildhistory"
 LICENSE_FLAGS_WHITELIST = "commercial"
-DISTRO_FEATURES_append_libc-glibc = ' systemd'
-DISTRO_FEATURES_append = ' pam'
+DISTRO_FEATURES:append:libc-glibc = ' systemd'
+DISTRO_FEATURES:append = ' pam'
