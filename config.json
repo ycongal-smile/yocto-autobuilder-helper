@@ -707,7 +707,7 @@
         "buildtools" : {
             "MACHINE" : "qemux86-64",
             "extravars" : [
-                "BUILD_REPRODUCIBLE_BINARIES_pn-nativesdk-python3 = '0'"
+                "PACKAGECONFIG:pn-nativesdk-python3:append = ' pgo'"
             ],
             "step1" : {
                 "SDKMACHINE" : "x86_64",
