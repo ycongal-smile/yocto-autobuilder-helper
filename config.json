@@ -324,11 +324,13 @@
                 "${BUILDDIR}/../meta-arm/meta-arm-bsp"
             ],
             "step1": {
-                "MACHINE": "n1sdp",
+                "shortname": "Build for fvp-base",
+                "MACHINE": "fvp-base",
                 "BBTARGETS": "core-image-minimal core-image-sato core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
                 },
             "step2": {
+                "shortname": "Build for juno",
                 "MACHINE": "juno",
                 "BBTARGETS": "core-image-minimal core-image-sato core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
