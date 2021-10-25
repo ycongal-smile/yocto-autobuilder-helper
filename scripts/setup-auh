@@ -14,7 +14,7 @@ pushd $1
 
 git clone git://git.yoctoproject.org/poky
 pushd poky
-git config user.email auh@auh.yoctoproject.org
+git config user.email auh@yoctoproject.org
 git config user.name "Auto Upgrade Helper"
 popd
 git clone git://git.yoctoproject.org/auto-upgrade-helper
