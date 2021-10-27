@@ -1,0 +1,54 @@
+From f6dcef2532c741c8b3ad251152b45e4079062ee3 Mon Sep 17 00:00:00 2001
+From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Date: Thu, 21 Oct 2021 10:36:37 +0200
+Subject: [PATCH] [honister] conf: update for release 3.4
+
+conf.py:
+* set version to 3.4
+
+switchers.js:
+* add 3.4 release
+* update 'dev' to 3.5
+
+Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+---
+
+Not tested + Assumed to be enough
+No need to wait for the new release as the honister branch will be
+integrated in the docs only when tagged but let's make sure we don't
+forget to do this change before tagging a release.
+
+ documentation/conf.py                    | 2 +-
+ documentation/sphinx-static/switchers.js | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/documentation/conf.py b/documentation/conf.py
+index 8e0847938..104b49ea0 100644
+--- a/documentation/conf.py
++++ b/documentation/conf.py
+@@ -16,7 +16,7 @@ import os
+ import sys
+ import datetime
+ 
+-current_version = "dev"
++current_version = "3.4"
+ 
+ # String used in sidebar
+ version = 'Version: ' + current_version
+diff --git a/documentation/sphinx-static/switchers.js b/documentation/sphinx-static/switchers.js
+index 1e37b625a..6038dbb5a 100644
+--- a/documentation/sphinx-static/switchers.js
++++ b/documentation/sphinx-static/switchers.js
+@@ -2,7 +2,8 @@
+   'use strict';
+ 
+   var all_versions = {
+-    'dev': 'dev (3.4)',
++    'dev': 'dev (3.5)',
++    '3.4': '3.4',
+     '3.3.3': '3.3.3',
+     '3.2.4': '3.2.4',
+     '3.1.11': '3.1.11',
+-- 
+2.31.1
+

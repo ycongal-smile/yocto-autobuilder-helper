@@ -1,0 +1,48 @@
+From 02f6e97894aa768ca1a7546646c35a175aca9a33 Mon Sep 17 00:00:00 2001
+From: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+Date: Fri, 1 Oct 2021 17:21:48 +0200
+Subject: [PATCH] conf: update for release 3.3
+
+conf.py:
+* set version to 3.3
+
+switchers.js:
+* add 3.3 release
+* update 'dev' to 3.4
+
+Signed-off-by: Quentin Schulz <quentin.schulz@theobroma-systems.com>
+---
+ documentation/conf.py                    | 2 +-
+ documentation/sphinx-static/switchers.js | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/documentation/conf.py b/documentation/conf.py
+index 5a2e25f7b..ab1b2b14c 100644
+--- a/documentation/conf.py
++++ b/documentation/conf.py
+@@ -16,7 +16,7 @@ import os
+ import sys
+ import datetime
+ 
+-current_version = "dev"
++current_version = "3.3"
+ 
+ # String used in sidebar
+ version = 'Version: ' + current_version
+diff --git a/documentation/sphinx-static/switchers.js b/documentation/sphinx-static/switchers.js
+index 7a4edc9e7..96efab2e8 100644
+--- a/documentation/sphinx-static/switchers.js
++++ b/documentation/sphinx-static/switchers.js
+@@ -2,7 +2,8 @@
+   'use strict';
+ 
+   var all_versions = {
+-    'dev': 'dev (3.3)',
++    'dev': 'dev (3.4)',
++    '3.3': '3.3',
+     '3.2.3': '3.2.3',
+     '3.1.6': '3.1.6',
+     '3.0.4': '3.0.4',
+-- 
+2.31.1
+
