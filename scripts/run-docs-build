@@ -34,7 +34,7 @@ mkdir $outputdir/bitbake/next
 cp -r ./_build/final/* $outputdir/bitbake/next
 
 # stable branches
-for branch in 1.46 1.48 1.50; do
+for branch in 1.46 1.48 1.50 1.52; do
     git checkout $branch
     make clean
     make publish
@@ -67,7 +67,7 @@ mkdir $outputdir/next
 cp -r ./_build/final/* $outputdir/next
 
 # stable branches
-for branch in dunfell gatesgarth hardknott; do
+for branch in dunfell gatesgarth hardknott honister; do
     cd $ypdocs
     git checkout $branch
     make clean
