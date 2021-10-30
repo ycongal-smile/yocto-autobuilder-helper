@@ -228,26 +228,34 @@ def runcmd(cmd):
     return subprocess.check_output(cmd, stderr=subprocess.STDOUT)
 
 
-def fetchgitrepo(clonedir, repo, params, stashdir):
+def fetchgitrepo(clonedir, repo, params, stashdir, depth=None):
     sharedrepo = "%s/%s" % (clonedir, repo)
     branch = params["branch"]
     revision = params["revision"]
+    if revision != "HEAD":
+        depth = None
+    fetchopt = []
+    depthopt = []
+    if depth:
+        fetchopt = ["--depth", str(depth), branch + ":origin/" + branch]
+        depthopt = ["--depth", str(depth), "--branch", branch]
     print("Checking for stash at: " + stashdir + "/" + repo)
     flush()
     if os.path.exists(stashdir + "/" + repo):
         print("Cloning from stash to %s..." % sharedrepo)
         flush()
-        subprocess.check_call(["git", "clone", "file://%s/%s" % (stashdir, repo), "%s/%s" % (clonedir, repo)])
+        subprocess.check_call(["git", "clone", "file://%s/%s" % (stashdir, repo), "%s/%s" % (clonedir, repo)] + depthopt)
         subprocess.check_call(["git", "remote", "rm", "origin"], cwd=sharedrepo)
         subprocess.check_call(["git", "remote", "add", "origin", params["url"]], cwd=sharedrepo)
         print("Updating from origin...")
         flush()
-        subprocess.check_call(["git", "fetch", "origin"], cwd=sharedrepo)
-        subprocess.check_call(["git", "fetch", "origin", "-t"], cwd=sharedrepo)
+        subprocess.check_call(["git", "fetch", "origin"] + fetchopt, cwd=sharedrepo)
+        if not depth:
+            subprocess.check_call(["git", "fetch", "origin", "-t"], cwd=sharedrepo)
     else:
         print("Cloning from origin to %s..." % sharedrepo)
         flush()
-        subprocess.check_call(["git", "clone", params["url"], sharedrepo])
+        subprocess.check_call(["git", "clone", params["url"], sharedrepo] + depthopt)
 
     print("Updating checkout...")
     flush()
