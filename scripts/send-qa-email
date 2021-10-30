@@ -45,9 +45,11 @@ buildtoolsdir = os.path.dirname(args.repojson) + "/build/buildtools"
 if os.path.exists(buildtoolsdir):
     utils.enable_buildtools_tarball(buildtoolsdir)
 
+repodir = os.path.dirname(args.repojson) + "/build/repos"
+
 if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
     # Need the finalised revisions (not 'HEAD')
-    targetrepodir = "%s/poky" % (args.sharedrepodir)
+    targetrepodir = "%s/poky" % (repodir)
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=targetrepodir).decode('utf-8').strip()
     branch = repos['poky']['branch']
     repo = repos['poky']['url']
@@ -116,7 +118,7 @@ if args.send.lower() != 'true' or not args.publish_dir or not args.release:
 buildhashes = ""
 for repo in sorted(repos.keys()):
     # Need the finalised revisions (not 'HEAD')
-    targetrepodir = "%s/%s" % (args.sharedrepodir, repo)
+    targetrepodir = "%s/%s" % (repodir, repo)
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=targetrepodir).decode('utf-8').strip()
     buildhashes += "%s: %s\n" % (repo, revision)
 
