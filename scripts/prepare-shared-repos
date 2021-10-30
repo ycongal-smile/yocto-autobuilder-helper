@@ -39,4 +39,5 @@ with tempfile.TemporaryDirectory(prefix="shared-repo-temp-", dir="/home/pokybuil
         if args.publish_dir:
             utils.publishrepo(tempdir, repo, args.publish_dir)
 
+    utils.printheader("Running rsync")
     subprocess.check_call("rsync -a " + tempdir + "/* " + args.sharedsrcdir, shell=True)
