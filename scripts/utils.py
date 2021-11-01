@@ -232,7 +232,7 @@ def fetchgitrepo(clonedir, repo, params, stashdir, depth=None):
     sharedrepo = "%s/%s" % (clonedir, repo)
     branch = params["branch"]
     revision = params["revision"]
-    if revision != "HEAD":
+    if revision != "HEAD" or branch != "master":
         depth = None
     fetchopt = []
     depthopt = []
