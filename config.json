@@ -330,8 +330,8 @@
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
                 },
             "step2": {
-                "shortname": "Build for juno",
-                "MACHINE": "juno",
+                "shortname": "Build for generic-arm64",
+                "MACHINE": "generic-arm64",
                 "BBTARGETS": "core-image-minimal core-image-sato core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             }
