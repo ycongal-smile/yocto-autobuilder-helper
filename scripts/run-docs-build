@@ -15,6 +15,7 @@ mkdir buildtools
 $docs_buildtools -y -d $builddir/buildtools
 . $builddir/buildtools/environment-setup*
 
+# Getting the old docbook built docs from an archive. Not rebuilding them.
 #wget https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz
 docbookarchive=/srv/autobuilder/autobuilder.yoctoproject.org/pub/docbook-mirror/docbook-archives-20201105.tar.xz
 mkdir $outputdir
@@ -35,6 +36,9 @@ mkdir $outputdir/bitbake/next
 cp -r ./_build/final/* $outputdir/bitbake/next
 
 # stable branches
+# A decision was made to keep updating all the Sphinx generated docs for the moment,
+# even the ones corresponding to no longer supported releases
+# https://lists.yoctoproject.org/g/docs/message/2193
 for branch in 1.46 1.48 1.50 1.52; do
     git checkout $branch
     make clean
@@ -68,6 +72,7 @@ mkdir $outputdir/next
 cp -r ./_build/final/* $outputdir/next
 
 # stable branches
+# Again, keeping even the no longer supported releases (see above comment)
 for branch in dunfell gatesgarth hardknott honister; do
     cd $ypdocs
     git checkout $branch
