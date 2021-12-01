@@ -39,8 +39,11 @@ cp -r ./_build/final/* $outputdir/bitbake/next
 # A decision was made to keep updating all the Sphinx generated docs for the moment,
 # even the ones corresponding to no longer supported releases
 # https://lists.yoctoproject.org/g/docs/message/2193
+# We copy the releases.rst file from master so that all versions of the docs
+# see the latest releases.
 for branch in 1.46 1.48 1.50 1.52; do
     git checkout $branch
+    git checkout master doc/releases.rst
     make clean
     make publish
     mkdir $outputdir/bitbake/$branch
@@ -76,6 +79,7 @@ cp -r ./_build/final/* $outputdir/next
 for branch in dunfell gatesgarth hardknott honister; do
     cd $ypdocs
     git checkout $branch
+    git checkout master documentation/releases.rst
     make clean
     make publish
     mkdir $outputdir/$branch
@@ -97,6 +101,7 @@ for tag in $(git tag --list 'yocto-*'); do
         if [ "$tag" = "yocto-3.3" ] || [ "$tag" = "yocto-3.4" ]; then
             git am "${scriptdir}/${tag}/0001-conf-update-for-release.patch"
         fi
+        git checkout master documentation/releases.rst
         make clean
         make publish
         version=$(echo $tag | cut -c7-)
