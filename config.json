@@ -826,6 +826,13 @@
         "oe-selftest-centos" : {
             "TEMPLATE" : "selftest"
         },
+        "oe-selftest-arm" : {
+            "MACHINE": "qemuarm64",
+            "TEMPLATE" : "selftest"
+        },
+        "oe-selftest-armhost" : {
+            "TEMPLATE" : "selftest"
+        },
         "reproducible" : {
             "TEMPLATE" : "reproducible"
         },
