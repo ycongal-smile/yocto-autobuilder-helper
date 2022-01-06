@@ -1,6 +1,6 @@
 {
     "BASE_HOMEDIR" : "/home/pokybuild",
-    "BASE_SHAREDDIR" : "/srv/autobuilder/autobuilder.yoctoproject.org",
+    "BASE_SHAREDDIR" : "/srv/autobuilder/autobuilder.yocto.io",
     "BASE_PUBLISHDIR" : "/srv/autobuilder/downloads.yoctoproject.org",
 
     "BUILD_HISTORY_DIR" : "buildhistory",
