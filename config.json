@@ -288,6 +288,10 @@
             "MACHINE" : "qemuarm64",
             "TEMPLATE" : "arch-qemu"
         },
+        "qemuarm64-alt" : {
+            "MACHINE" : "qemuarm64",
+            "TEMPLATE" : "altcfg-qemu"
+        },
         "qemuarm64-armhost" : {
             "MACHINE" : "qemuarm64",
             "BUILDINFO" : true,

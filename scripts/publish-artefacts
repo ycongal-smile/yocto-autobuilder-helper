@@ -50,6 +50,12 @@ case "$target" in
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*qemuarm64* $DEST/machines/qemu/qemuarm64
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*Image* $DEST/machines/qemu/qemuarm64
         ;;
+    "qemuarm64-alt")
+        mkdir -p $DEST/machines/qemu/qemuarm64-alt
+        sha256sums $TMPDIR/deploy/images/qemuarm64
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*qemuarm64* $DEST/machines/qemu/qemuarm64-alt
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemuarm64/*Image* $DEST/machines/qemu/qemuarm64-alt
+        ;;
     "qemuarm64-ptest")
         mkdir -p $DEST/machines/qemu/qemuarm64
         sha256sums $TMPDIR/deploy/images/qemuarm64
