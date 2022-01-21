@@ -35,7 +35,8 @@ stashdir = utils.getconfig("REPO_STASH_DIR", ourconfig)
 with tempfile.TemporaryDirectory(prefix="shared-repo-temp-", dir="/home/pokybuild/tmp") as tempdir:
     for repo in sorted(repos.keys()):
         utils.printheader("Intially fetching repo %s" % repo)
-        if args.publish_dir:
+        # shallow clones disabled as it doesn't work correctly with revision numbers in the result repo leading to release build failures.
+        if True or args.publish_dir:
             utils.fetchgitrepo(tempdir, repo, repos[repo], stashdir)
             utils.publishrepo(tempdir, repo, args.publish_dir)
         else:
