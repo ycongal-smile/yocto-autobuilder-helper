@@ -20,9 +20,11 @@ $docs_buildtools -y -d $builddir/buildtools
 docbookarchive=/srv/autobuilder/autobuilder.yoctoproject.org/pub/docbook-mirror/docbook-archives-20201105.tar.xz
 mkdir $outputdir
 cd $outputdir
+echo Extracing old content from archive
 tar -xJf $docbookarchive
 
 cd $bbdocs
+echo Building bitbake master branch
 git checkout master
 make clean
 make publish
@@ -30,6 +32,7 @@ mkdir $outputdir/bitbake
 cp -r ./_build/final/* $outputdir/bitbake
 
 git checkout master-next
+echo Building bitbake master-next branch
 make clean
 make publish
 mkdir $outputdir/bitbake/next
@@ -42,6 +45,7 @@ cp -r ./_build/final/* $outputdir/bitbake/next
 # We copy the releases.rst file from master so that all versions of the docs
 # see the latest releases.
 for branch in 1.46 1.48 1.50 1.52; do
+    echo Building bitbake $branch branch
     git checkout $branch
     git checkout master releases.rst
     make clean
@@ -57,18 +61,21 @@ cd $outputdir
 rsync -irlp --checksum --ignore-times --delete bitbake docs@docs.yoctoproject.org:docs/
 
 cd $ypdocs
+echo Building master branch
 git checkout master
 make clean
 make publish
 cp -r ./_build/final/* $outputdir
 
 cd $ypdocs
+echo Building transition branch
 git checkout transition
 make clean
 make publish
 cp -r ./_build/final/* $outputdir/
 
 cd $ypdocs
+echo Building master-next branch
 git checkout master-next
 make clean
 make publish
@@ -79,6 +86,7 @@ cp -r ./_build/final/* $outputdir/next
 # Again, keeping even the no longer supported releases (see above comment)
 for branch in dunfell gatesgarth hardknott honister; do
     cd $ypdocs
+    echo Building $branch branch
     git checkout $branch
     git checkout master releases.rst
     make clean
@@ -94,6 +102,7 @@ cd $ypdocs
 for tag in $(git tag --list 'yocto-*'); do
     first=$(printf '%s\n%s' $tag $v_sphinx | sort --version-sort | head -n1)
     if [ "$first" = "$v_sphinx" ]; then
+        echo Processing $tag
         cd $ypdocs
         git checkout $tag
         # yocto-3.3 and yocto-3.4 were tagged before the current_version in
@@ -101,6 +110,7 @@ for tag in $(git tag --list 'yocto-*'); do
         # development branches which breaks all sorts of assumptions. Moving a
         # tag isn't best practice so we just patch the releases here instead.
         if [ "$tag" = "yocto-3.3" ] || [ "$tag" = "yocto-3.4" ]; then
+            echo Adding patch for $tag
             git am "${scriptdir}/${tag}/0001-conf-update-for-release.patch"
         fi
         git checkout master releases.rst
@@ -110,11 +120,13 @@ for tag in $(git tag --list 'yocto-*'); do
         mkdir $outputdir/$version
         cp -r ./_build/final/* $outputdir/$version
         git reset --hard
+        echo Finished processing $tag
     fi
 done
 
 # get current release (e.g. most recent tag), and add a 'current' link
 tag=$(git tag --list 'yocto-*' | sort --version-sort | tail -1 | cut -c7-)
+echo Linking to $tag as current
 ln -s $tag $outputdir/current
 
 # Update switchers.js with the copy from master ypdocs
