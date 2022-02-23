@@ -33,14 +33,14 @@ cd $bbdocs
 echo Building bitbake master branch
 git checkout master
 make clean
-make publish
+SPHINXOPTS="-j auto" make publish
 mkdir $outputdir/bitbake
 cp -r ./_build/final/* $outputdir/bitbake
 
 git checkout master-next
 echo Building bitbake master-next branch
 make clean
-make publish
+SPHINXOPTS="-j auto" make publish
 mkdir $outputdir/bitbake/next
 cp -r ./_build/final/* $outputdir/bitbake/next
 
@@ -55,7 +55,7 @@ for branch in 1.46 1.48 1.50 1.52; do
     git checkout $branch
     git checkout master releases.rst
     make clean
-    make publish
+    SPHINXOPTS="-j auto" make publish
     mkdir $outputdir/bitbake/$branch
     cp -r ./_build/final/* $outputdir/bitbake/$branch
     git reset --hard
@@ -70,21 +70,21 @@ cd $ypdocs
 echo Building master branch
 git checkout master
 make clean
-make publish
+SPHINXOPTS="-j auto" make publish
 cp -r ./_build/final/* $outputdir
 
 cd $ypdocs
 echo Building transition branch
 git checkout transition
 make clean
-make publish
+SPHINXOPTS="-j auto" make publish
 cp -r ./_build/final/* $outputdir/
 
 cd $ypdocs
 echo Building master-next branch
 git checkout master-next
 make clean
-make publish
+SPHINXOPTS="-j auto" make publish
 mkdir $outputdir/next
 cp -r ./_build/final/* $outputdir/next
 
@@ -96,7 +96,7 @@ for branch in dunfell gatesgarth hardknott honister; do
     git checkout $branch
     git checkout master releases.rst
     make clean
-    make publish
+    SPHINXOPTS="-j auto" make publish
     mkdir $outputdir/$branch
     cp -r ./_build/final/* $outputdir/$branch
     git reset --hard
@@ -121,7 +121,7 @@ for tag in $(git tag --list 'yocto-*'); do
         fi
         git checkout master releases.rst
         make clean
-        make publish
+        SPHINXOPTS="-j auto" make publish
         version=$(echo $tag | cut -c7-)
         mkdir $outputdir/$version
         cp -r ./_build/final/* $outputdir/$version
