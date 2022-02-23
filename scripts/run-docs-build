@@ -2,6 +2,12 @@
 # Called with $1 as the build directory
 #             $2 as the path to yocto-docs
 #             $3 as the path to bitbake
+
+set -e
+set -u
+set -o pipefail
+set -x
+
 builddir=$1
 ypdocs=$2/documentation/
 bbdocs=$3/doc/
