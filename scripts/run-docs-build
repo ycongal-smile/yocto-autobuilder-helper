@@ -111,13 +111,13 @@ for tag in $(git tag --list 'yocto-*'); do
         echo Processing $tag
         cd $ypdocs
         git checkout $tag
-        # yocto-3.3 and yocto-3.4 were tagged before the current_version in
+        # Update versions tagged before the current_version in
         # conf.py was changed resulting in sphinx believing these are
         # development branches which breaks all sorts of assumptions. Moving a
         # tag isn't best practice so we just patch the releases here instead.
-        if [ "$tag" = "yocto-3.3" ] || [ "$tag" = "yocto-3.4" ]; then
+        if [ "$tag" = "yocto-3.3" ] || [ "$tag" = "yocto-3.4" ] || [ "$tag" = "yocto-3.1.14" ] || [ "$tag" = "yocto-3.4.2" ] ; then
             echo Adding patch for $tag
-            git am "${scriptdir}/${tag}/0001-conf-update-for-release.patch"
+            git am "${scriptdir}/${tag}/"000*
         fi
         git checkout master releases.rst
         make clean

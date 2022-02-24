@@ -1,0 +1,27 @@
+From f202f16ae44f0d58a8f2fdfdc73befb47ad08e26 Mon Sep 17 00:00:00 2001
+From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Date: Tue, 22 Feb 2022 10:13:41 +0100
+Subject: [PATCH 2/2] documentation: conf.py: update for 3.4.2
+
+Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Signed-off-by: Richard Purdie <richard.purdie@linuxfoundation.org>
+---
+ documentation/conf.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/documentation/conf.py b/documentation/conf.py
+index ef369b7f1..213912f37 100644
+--- a/documentation/conf.py
++++ b/documentation/conf.py
+@@ -16,7 +16,7 @@ import os
+ import sys
+ import datetime
+ 
+-current_version = "3.4.1"
++current_version = "3.4.2"
+ bitbake_version = "1.52"
+ 
+ # String used in sidebar
+-- 
+2.35.1
+

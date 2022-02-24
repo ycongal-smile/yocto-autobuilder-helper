@@ -1,0 +1,41 @@
+From 2e3ec94e906a255cd7b22dfca29a6148fc433732 Mon Sep 17 00:00:00 2001
+From: Michael Halstead <mhalstead@linuxfoundation.org>
+Date: Wed, 16 Feb 2022 23:04:15 -0800
+Subject: [PATCH 1/2] releases: update to include 3.1.14
+
+Adding 3.1.14 to documentation switcher and release list.
+
+Signed-off-by: Michael Halstead <mhalstead@linuxfoundation.org>
+---
+ documentation/releases.rst               | 1 +
+ documentation/sphinx-static/switchers.js | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/documentation/releases.rst b/documentation/releases.rst
+index 57e4566e1..affe63403 100644
+--- a/documentation/releases.rst
++++ b/documentation/releases.rst
+@@ -39,6 +39,7 @@ Release Series 3.1 (dunfell)
+ - :yocto_docs:`3.1.11 Documentation </3.1.11>`
+ - :yocto_docs:`3.1.12 Documentation </3.1.12>`
+ - :yocto_docs:`3.1.13 Documentation </3.1.13>`
++- :yocto_docs:`3.1.14 Documentation </3.1.14>`
+ 
+ ==========================
+  Outdated Release Manuals
+diff --git a/documentation/sphinx-static/switchers.js b/documentation/sphinx-static/switchers.js
+index bda15485c..1d65fa7fa 100644
+--- a/documentation/sphinx-static/switchers.js
++++ b/documentation/sphinx-static/switchers.js
+@@ -6,7 +6,7 @@
+     '3.4.1': '3.4.1',
+     '3.3.4': '3.3.4',
+     '3.2.4': '3.2.4',
+-    '3.1.13': '3.1.13',
++    '3.1.14': '3.1.14',
+     '3.0.4': '3.0.4',
+     '2.7.4': '2.7.4',
+   };
+-- 
+2.35.1
+
