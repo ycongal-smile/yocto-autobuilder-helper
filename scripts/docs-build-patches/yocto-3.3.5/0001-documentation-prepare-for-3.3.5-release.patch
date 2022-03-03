@@ -1,0 +1,80 @@
+From 3e4e06b7b0a6d2675e2420e3229d2e2d511ac359 Mon Sep 17 00:00:00 2001
+From: Michael Halstead <mhalstead@linuxfoundation.org>
+Date: Wed, 2 Mar 2022 22:15:43 -0800
+Subject: [PATCH] documentation: prepare for 3.3.5 release
+
+Also add links for documentation released since 3.3.4.
+
+Signed-off-by: Michael Halstead <mhalstead@linuxfoundation.org>
+---
+ documentation/conf.py      | 2 +-
+ documentation/poky.yaml    | 8 ++++----
+ documentation/releases.rst | 4 ++++
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/documentation/conf.py b/documentation/conf.py
+index e42e7b18a..fc064bf32 100644
+--- a/documentation/conf.py
++++ b/documentation/conf.py
+@@ -16,7 +16,7 @@ import os
+ import sys
+ import datetime
+ 
+-current_version = "3.3.4"
++current_version = "3.3.5"
+ bitbake_version = "1.50"
+ 
+ # String used in sidebar
+diff --git a/documentation/poky.yaml b/documentation/poky.yaml
+index 30eb45379..32849bc70 100644
+--- a/documentation/poky.yaml
++++ b/documentation/poky.yaml
+@@ -1,12 +1,12 @@
+-DISTRO : "3.3.4"
++DISTRO : "3.3.5"
+ DISTRO_NAME_NO_CAP : "hardknott"
+ DISTRO_NAME : "Hardknott"
+ DISTRO_NAME_NO_CAP_MINUS_ONE : "gatesgarth"
+ DISTRO_NAME_NO_CAP_LTS : "gatesgarth"
+-YOCTO_DOC_VERSION : "3.3.4"
++YOCTO_DOC_VERSION : "3.3.5"
+ YOCTO_DOC_VERSION_MINUS_ONE : "3.2.4"
+-DISTRO_REL_TAG : "yocto-3.3.4"
+-POKYVERSION : "25.0.4"
++DISTRO_REL_TAG : "yocto-3.3.5"
++POKYVERSION : "25.0.5"
+ YOCTO_POKY : "poky-&DISTRO_NAME_NO_CAP;-&POKYVERSION;"
+ YOCTO_DL_URL : "https://downloads.yoctoproject.org"
+ YOCTO_AB_URL : "https://autobuilder.yoctoproject.org"
+diff --git a/documentation/releases.rst b/documentation/releases.rst
+index acee21d6b..1fb6054bc 100644
+--- a/documentation/releases.rst
++++ b/documentation/releases.rst
+@@ -10,6 +10,7 @@
+ 
+ - :yocto_docs:`3.4 Documentation </3.4>`
+ - :yocto_docs:`3.4.1 Documentation </3.4.1>`
++- :yocto_docs:`3.4.1 Documentation </3.4.2>`
+ 
+ *******************************
+ 3.3 'hardknott' Release Series
+@@ -20,6 +21,7 @@
+ - :yocto_docs:`3.3.2 Documentation </3.3.2>`
+ - :yocto_docs:`3.3.3 Documentation </3.3.3>`
+ - :yocto_docs:`3.3.4 Documentation </3.3.4>`
++- :yocto_docs:`3.3.5 Documentation </3.3.5>`
+ 
+ ****************************
+ 3.1 'dunfell' Release Series
+@@ -38,6 +40,8 @@
+ - :yocto_docs:`3.1.10 Documentation </3.1.10>`
+ - :yocto_docs:`3.1.11 Documentation </3.1.11>`
+ - :yocto_docs:`3.1.12 Documentation </3.1.12>`
++- :yocto_docs:`3.1.13 Documentation </3.1.13>`
++- :yocto_docs:`3.1.14 Documentation </3.1.14>`
+ 
+ ==========================
+  Previous Release Manuals
+-- 
+2.35.1
+
