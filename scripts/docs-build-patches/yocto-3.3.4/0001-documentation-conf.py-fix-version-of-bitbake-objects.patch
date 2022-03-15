@@ -1,0 +1,38 @@
+From 79e90a28ef7f591b1b9b4c41ef7f353bcf17679f Mon Sep 17 00:00:00 2001
+From: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Date: Wed, 8 Dec 2021 17:17:25 +0100
+Subject: [PATCH] documentation: conf.py: fix version of bitbake objects.inv
+
+Using the Bitbake 1.50 references instead of the master ones,
+which may break if some variables or sections are removed.
+
+Signed-off-by: Michael Opdenacker <michael.opdenacker@bootlin.com>
+Reported-by: Quentin Schulz <foss@0leil.net>
+---
+ documentation/conf.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/documentation/conf.py b/documentation/conf.py
+index 28af37d7b..e42e7b18a 100644
+--- a/documentation/conf.py
++++ b/documentation/conf.py
+@@ -17,6 +17,7 @@ import sys
+ import datetime
+ 
+ current_version = "3.3.4"
++bitbake_version = "1.50"
+ 
+ # String used in sidebar
+ version = 'Version: ' + current_version
+@@ -89,7 +90,7 @@ extlinks = {
+ 
+ # Intersphinx config to use cross reference with Bitbake user manual
+ intersphinx_mapping = {
+-    'bitbake': ('https://docs.yoctoproject.org/bitbake/', None)
++    'bitbake': ('https://docs.yoctoproject.org/bitbake/' + bitbake_version, None)
+ }
+ 
+ # -- Options for HTML output -------------------------------------------------
+-- 
+2.35.1
+
