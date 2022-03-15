@@ -46,7 +46,7 @@ if "TRASH_DIR" not in ourconfig:
 trashdir = utils.getconfig("TRASH_DIR", ourconfig)
 
 for x in [clobberdir]:
-    if os.path.exists(x):
+    if os.path.exists(x) and os.path.exists(trashdir):
         if (os.stat(trashdir).st_dev == os.stat(x).st_dev):
             trashdest = trashdir + "/" + str(int(time.time())) + '-'  + str(random.randrange(100, 100000, 2))
             mkdir(trashdest)
