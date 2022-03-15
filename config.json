@@ -1094,6 +1094,9 @@
         "buildperf-centos7" : {
             "TEMPLATE" : "buildperf"
         },
+        "buildperf-debian11" : {
+            "TEMPLATE" : "buildperf"
+        },
         "auh" : {
             "EXTRAPLAINCMDS" : [
                 "${SCRIPTSDIR}/setup-auh ${HELPERBUILDDIR}; ${SCRIPTSDIR}/run-auh ${HELPERBUILDDIR}"
