@@ -68,18 +68,6 @@ if args.results_dir:
     git_repo = args.results_dir + "/archive-repo"
     global_results = args.results_dir
 
-if args.email_addr:
-    try:
-        subprocess.check_output(["which", "phantomjs"])
-    except subprocess.CalledProcessError:
-        print("Please install phantomjs to email reports")
-        sys.exit(1)
-    try:
-        subprocess.check_output(["which", "optipng"])
-    except subprocess.CalledProcessError:
-        print("Please install optipng to email reports")
-        sys.exit(1)
-
 op = fcntl.LOCK_EX
 try:
     lf = open("/tmp/oe-build-perf-test-wrapper.lock", 'a+')
@@ -218,7 +206,7 @@ if git_repo:
         os_name = subprocess.check_output(". /etc/os-release; eval echo '$'PRETTY_NAME", shell=True).decode("utf-8").strip()
         cmd = scriptsdir + "/oe-build-perf-report-email.py --to '" + args.email_addr + \
               "' --subject 'Build Perf Test Report for " + os_name + "' --text " + \
-              report_txt + " --html " + report_html
+              report_txt
         try:
             subprocess.check_call(cmd, shell=True)
         except subprocess.CalledProcessError:
