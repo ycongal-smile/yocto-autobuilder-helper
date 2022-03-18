@@ -68,37 +68,24 @@ cd $outputdir
 rsync -irlp --checksum --ignore-times --delete bitbake docs@docs.yoctoproject.org:docs/
 
 cd $ypdocs
-echo Building master branch
-git checkout master
-make clean
-make publish
-cp -r ./_build/final/* $outputdir
 
-cd $ypdocs
-echo Building transition branch
-git checkout transition
-make clean
-make publish
-cp -r ./_build/final/* $outputdir/
-
-cd $ypdocs
-echo Building master-next branch
-git checkout master-next
-make clean
-make publish
-mkdir $outputdir/next
-cp -r ./_build/final/* $outputdir/next
-
-# stable branches
 # Again, keeping even the no longer supported releases (see above comment)
-for branch in dunfell gatesgarth hardknott honister; do
-    cd $ypdocs
+for branch in dunfell gatesgarth hardknott honister master master-next transition; do
     echo Building $branch branch
     git checkout $branch
     git checkout master releases.rst
     make clean
     make publish
-    mkdir $outputdir/$branch
+
+    if [ "$branch" = "master-next" ]; then
+        branch="next"
+	mkdir $outputdir/$branch
+    elif [ "$branch" = "master" ] || [ "$branch" = "transition" ]; then
+        branch=""
+    else
+	mkdir $outputdir/$branch
+    fi
+
     cp -r ./_build/final/* $outputdir/$branch
     git reset --hard
 done
