@@ -37,7 +37,12 @@ mkdir $outputdir/bitbake
 # https://lists.yoctoproject.org/g/docs/message/2193
 # We copy the releases.rst file from master so that all versions of the docs
 # see the latest releases.
-for branch in 1.46 1.48 1.50 1.52 master master-next; do
+first_sphinx_commit=84ccba0f4aff91528f764523fe1205a354c889ed
+for branch in 1.46 $(git branch --remote --contains "$first_sphinx_commit" --format '%(refname:lstrip=3)'); do
+    if [ "$branch" = "HEAD" ]; then
+        continue
+    fi
+
     echo Building bitbake $branch branch
     git checkout $branch
     git checkout master releases.rst
