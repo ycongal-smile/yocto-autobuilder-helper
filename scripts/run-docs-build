@@ -30,33 +30,29 @@ echo Extracing old content from archive
 tar -xJf $docbookarchive
 
 cd $bbdocs
-echo Building bitbake master branch
-git checkout master
-make clean
-make publish
 mkdir $outputdir/bitbake
-cp -r ./_build/final/* $outputdir/bitbake
 
-git checkout master-next
-echo Building bitbake master-next branch
-make clean
-make publish
-mkdir $outputdir/bitbake/next
-cp -r ./_build/final/* $outputdir/bitbake/next
-
-# stable branches
 # A decision was made to keep updating all the Sphinx generated docs for the moment,
 # even the ones corresponding to no longer supported releases
 # https://lists.yoctoproject.org/g/docs/message/2193
 # We copy the releases.rst file from master so that all versions of the docs
 # see the latest releases.
-for branch in 1.46 1.48 1.50 1.52; do
+for branch in 1.46 1.48 1.50 1.52 master master-next; do
     echo Building bitbake $branch branch
     git checkout $branch
     git checkout master releases.rst
     make clean
     make publish
-    mkdir $outputdir/bitbake/$branch
+
+    if [ "$branch" = "master-next" ]; then
+        branch="next"
+	mkdir $outputdir/bitbake/$branch
+    elif [ "$branch" = "master" ]; then
+        branch=""
+    else
+	mkdir $outputdir/bitbake/$branch
+    fi
+
     cp -r ./_build/final/* $outputdir/bitbake/$branch
     git reset --hard
 done
