@@ -70,7 +70,18 @@ rsync -irlp --checksum --ignore-times --delete bitbake docs@docs.yoctoproject.or
 cd $ypdocs
 
 # Again, keeping even the no longer supported releases (see above comment)
-for branch in dunfell gatesgarth hardknott honister master master-next transition; do
+first_sphinx_commit=01dd5af7954e24552aca022917669b27bb0541ed
+for branch in dunfell transition $(git branch --remote --contains "$first_sphinx_commit" --format '%(refname:lstrip=3)'); do
+    if [ "$branch" = "HEAD" ]; then
+        continue
+    fi
+
+    # Do not build <release>-next branches as they are development branches only
+    # Do build master-next branch though!
+    if echo "$branch" | grep -v "master-next" | grep -q -E "-next$"; then
+        continue
+    fi
+
     echo Building $branch branch
     git checkout $branch
     git checkout master releases.rst
