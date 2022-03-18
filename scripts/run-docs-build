@@ -71,7 +71,8 @@ cd $ypdocs
 
 # Again, keeping even the no longer supported releases (see above comment)
 first_sphinx_commit=01dd5af7954e24552aca022917669b27bb0541ed
-for branch in dunfell transition $(git branch --remote --contains "$first_sphinx_commit" --format '%(refname:lstrip=3)'); do
+first_dunfell_sphinx_commit=c25fe058b88b893b0d146f3ed27320b47cdec236
+for branch in dunfell transition $(git branch --remote --contains "$first_sphinx_commit" --format '%(refname:lstrip=3)') $(git tag --contains "$first_sphinx_commit" --contains "$first_dunfell_sphinx_commit" 'yocto-*'); do
     if [ "$branch" = "HEAD" ]; then
         continue
     fi
@@ -82,11 +83,20 @@ for branch in dunfell transition $(git branch --remote --contains "$first_sphinx
         continue
     fi
 
-    echo Building $branch branch
+    echo Building $branch
     git checkout $branch
+
+    if [ -e "${scriptdir}/docs-build-patches/${branch}/" ]; then
+        echo Adding patch for $branch
+        git am "${scriptdir}/docs-build-patches/${branch}/"000*
+    fi
+
     git checkout master releases.rst
     make clean
     make publish
+
+    # Strip yocto- from tag names
+    branch=$(echo "$branch" | sed 's/yocto-//')
 
     if [ "$branch" = "master-next" ]; then
         branch="next"
@@ -99,28 +109,6 @@ for branch in dunfell transition $(git branch --remote --contains "$first_sphinx
 
     cp -r ./_build/final/* $outputdir/$branch
     git reset --hard
-done
-
-# Yocto Project releases/tags
-first_dunfell_sphinx_commit=c25fe058b88b893b0d146f3ed27320b47cdec236
-
-cd $ypdocs
-for tag in $(git tag --contains "$first_sphinx_commit" --contains "$first_dunfell_sphinx_commit" 'yocto-*'); do
-    echo Processing $tag
-    cd $ypdocs
-    git checkout $tag
-    if [ -e "${scriptdir}/docs-build-patches/${tag}/" ]; then
-        echo Adding patch for $tag
-        git am "${scriptdir}/docs-build-patches/${tag}/"000*
-    fi
-    git checkout master releases.rst
-    make clean
-    make publish
-    version=$(echo $tag | cut -c7-)
-    mkdir $outputdir/$version
-    cp -r ./_build/final/* $outputdir/$version
-    git reset --hard
-    echo Finished processing $tag
 done
 
 # get current release (e.g. most recent tag), and add a 'current' link
