@@ -102,27 +102,25 @@ for branch in dunfell transition $(git branch --remote --contains "$first_sphinx
 done
 
 # Yocto Project releases/tags
-v_sphinx='yocto-3.1.5' #This and newer versions have Sphinx docs.
+first_dunfell_sphinx_commit=c25fe058b88b893b0d146f3ed27320b47cdec236
+
 cd $ypdocs
-for tag in $(git tag --list 'yocto-*'); do
-    first=$(printf '%s\n%s' $tag $v_sphinx | sort --version-sort | head -n1)
-    if [ "$first" = "$v_sphinx" ]; then
-        echo Processing $tag
-        cd $ypdocs
-        git checkout $tag
-	if [ -e "${scriptdir}/docs-build-patches/${tag}/" ]; then
-            echo Adding patch for $tag
-            git am "${scriptdir}/docs-build-patches/${tag}/"000*
-        fi
-        git checkout master releases.rst
-        make clean
-        make publish
-        version=$(echo $tag | cut -c7-)
-        mkdir $outputdir/$version
-        cp -r ./_build/final/* $outputdir/$version
-        git reset --hard
-        echo Finished processing $tag
+for tag in $(git tag --contains "$first_sphinx_commit" --contains "$first_dunfell_sphinx_commit" 'yocto-*'); do
+    echo Processing $tag
+    cd $ypdocs
+    git checkout $tag
+    if [ -e "${scriptdir}/docs-build-patches/${tag}/" ]; then
+        echo Adding patch for $tag
+        git am "${scriptdir}/docs-build-patches/${tag}/"000*
     fi
+    git checkout master releases.rst
+    make clean
+    make publish
+    version=$(echo $tag | cut -c7-)
+    mkdir $outputdir/$version
+    cp -r ./_build/final/* $outputdir/$version
+    git reset --hard
+    echo Finished processing $tag
 done
 
 # get current release (e.g. most recent tag), and add a 'current' link
