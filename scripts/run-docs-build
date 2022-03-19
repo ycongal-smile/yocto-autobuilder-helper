@@ -69,10 +69,11 @@ rsync -irlp --checksum --ignore-times --delete bitbake docs@docs.yoctoproject.or
 
 cd $ypdocs
 
+# transition must build after master for the switchers.js file
 # Again, keeping even the no longer supported releases (see above comment)
 first_sphinx_commit=01dd5af7954e24552aca022917669b27bb0541ed
 first_dunfell_sphinx_commit=c25fe058b88b893b0d146f3ed27320b47cdec236
-for branch in dunfell transition $(git branch --remote --contains "$first_sphinx_commit" --format '%(refname:lstrip=3)') $(git tag --contains "$first_sphinx_commit" --contains "$first_dunfell_sphinx_commit" 'yocto-*'); do
+for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --format '%(refname:lstrip=3)') $(git tag --contains "$first_sphinx_commit" --contains "$first_dunfell_sphinx_commit" 'yocto-*') transition; do
     if [ "$branch" = "HEAD" ]; then
         continue
     fi
@@ -92,6 +93,20 @@ for branch in dunfell transition $(git branch --remote --contains "$first_sphinx
     fi
 
     git checkout master releases.rst
+    if [ -e poky.yaml ]; then
+        git checkout master sphinx-static/switchers.js.in
+        cp poky.yaml poky.yaml.in
+        git checkout master set_versions.py
+        case $branch in
+            yocto-*)
+                ./set_versions.py $(echo "$branch" | sed 's/yocto-//')
+                ;;
+            *)
+                ./set_versions.py
+                ;;
+        esac
+    fi
+
     make clean
     make publish
 
@@ -109,6 +124,7 @@ for branch in dunfell transition $(git branch --remote --contains "$first_sphinx
 
     cp -r ./_build/final/* $outputdir/$branch
     git reset --hard
+    git clean -f
 done
 
 # get current release (e.g. most recent tag), and add a 'current' link
@@ -116,9 +132,9 @@ tag=$(git tag --list 'yocto-*' | sort --version-sort | tail -1 | cut -c7-)
 echo Linking to $tag as current
 ln -s $tag $outputdir/current
 
-# Update switchers.js with the copy from master ypdocs
-cd $outputdir
-find . -name switchers.js -not -path ./_static/switchers.js -exec cp ./_static/switchers.js {} \;
+# Update bitbake switchers.js with the copy from master ypdocs
+cd $outputdir/bitbake
+find . -name switchers.js -exec cp $outputdir/current/_static/switchers.js {} \;
 
 cd $outputdir
 rsync -irlp --checksum --ignore-times --delete . docs@docs.yoctoproject.org:docs/

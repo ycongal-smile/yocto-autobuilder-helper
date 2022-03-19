@@ -23,26 +23,3 @@ index 0d61afc9d..01d5e00c1 100644
  bitbake_version = "1.46"
  
  # String used in sidebar
-diff --git a/documentation/poky.yaml b/documentation/poky.yaml
-index 8da5f5915..e37ea420a 100644
---- a/documentation/poky.yaml
-+++ b/documentation/poky.yaml
-@@ -1,11 +1,11 @@
--DISTRO : "3.1.13"
-+DISTRO : "3.1.14"
- DISTRO_NAME_NO_CAP : "dunfell"
- DISTRO_NAME : "Dunfell"
- DISTRO_NAME_NO_CAP_MINUS_ONE : "zeus"
--YOCTO_DOC_VERSION : "3.1.13"
-+YOCTO_DOC_VERSION : "3.1.14"
- YOCTO_DOC_VERSION_MINUS_ONE : "3.0.4"
--DISTRO_REL_TAG : "yocto-3.1.13"
--POKYVERSION : "23.0.13"
-+DISTRO_REL_TAG : "yocto-3.1.14"
-+POKYVERSION : "23.0.14"
- YOCTO_POKY : "poky-&DISTRO_NAME_NO_CAP;-&POKYVERSION;"
- YOCTO_DL_URL : "https://downloads.yoctoproject.org"
- YOCTO_AB_URL : "https://autobuilder.yoctoproject.org"
--- 
-2.35.1
-

@@ -29,20 +29,3 @@ index 5a2e25f7b..ab1b2b14c 100644
  
  # String used in sidebar
  version = 'Version: ' + current_version
-diff --git a/documentation/sphinx-static/switchers.js b/documentation/sphinx-static/switchers.js
-index 7a4edc9e7..96efab2e8 100644
---- a/documentation/sphinx-static/switchers.js
-+++ b/documentation/sphinx-static/switchers.js
-@@ -2,7 +2,8 @@
-   'use strict';
- 
-   var all_versions = {
--    'dev': 'dev (3.3)',
-+    'dev': 'dev (3.4)',
-+    '3.3': '3.3',
-     '3.2.3': '3.2.3',
-     '3.1.6': '3.1.6',
-     '3.0.4': '3.0.4',
--- 
-2.31.1
-
