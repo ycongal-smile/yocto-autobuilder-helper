@@ -1097,6 +1097,9 @@
         "buildperf-debian11" : {
             "TEMPLATE" : "buildperf"
         },
+         "buildperf-alma8" : {
+            "TEMPLATE" : "buildperf"
+        },
         "auh" : {
             "EXTRAPLAINCMDS" : [
                 "${SCRIPTSDIR}/setup-auh ${HELPERBUILDDIR}; ${SCRIPTSDIR}/run-auh ${HELPERBUILDDIR}"
