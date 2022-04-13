@@ -758,7 +758,7 @@
             "step1" : {
                 "SDKMACHINE" : "x86_64",
                 "shortname" : "x86_64 tools",
-                "BBTARGETS" : "buildtools-tarball buildtools-extended-tarball uninative-tarball",
+                "BBTARGETS" : "buildtools-tarball buildtools-docs-tarball buildtools-make-tarball buildtools-extended-tarball uninative-tarball",
                 "SANITYTARGETS" : "buildtools-tarball:do_testsdk buildtools-extended-tarball:do_testsdk"
             },
             "step2" : {
@@ -769,7 +769,7 @@
             "step3" : {
                 "SDKMACHINE" : "aarch64",
                 "shortname" : "aarch64 tools",
-                "BBTARGETS" : "buildtools-tarball buildtools-extended-tarball uninative-tarball"
+                "BBTARGETS" : "buildtools-tarball buildtools-docs-tarball buildtools-make-tarball buildtools-extended-tarball uninative-tarball"
             }
         },
         "build-appliance" : {
