@@ -8,6 +8,7 @@
 #                     Can be found here: https://autobuilder.yocto.io/pub/buildtools/
 #   - docbookarchive as the path to old (pre 3.1.5 and Sphinx migration) docs tarball
 #                     Can be found here: https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz
+#   - PUBLISH (0/1) for whether the files should be rsync'ed to docs.yoctoproject.org
 
 set -e
 set -u
@@ -20,6 +21,7 @@ bbdocs=$(realpath "$3/doc/")
 docs_buildtools=${docs_buildtools:-/srv/autobuilder/autobuilder.yocto.io/pub/buildtools/x86_64-buildtools-docs-nativesdk-standalone-3.2+snapshot-20201105.sh}
 outputdir=$builddir/output
 scriptdir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+PUBLISH=${PUBLISH:-1}
 
 
 cd $builddir
@@ -68,10 +70,12 @@ for branch in 1.46 $(git branch --remote --contains "$first_sphinx_commit" --for
     git reset --hard
 done
 
-# only sync bitbake folder for now. We need bitbake to be published first
-# since the bitbake intersphinx index will be downloaded to build yocto-docs
-cd $outputdir
-rsync -irlp --checksum --ignore-times --delete bitbake docs@docs.yoctoproject.org:docs/
+if [ "$PUBLISH" -ne 0 ]; then
+    # only sync bitbake folder for now. We need bitbake to be published first
+    # since the bitbake intersphinx index will be downloaded to build yocto-docs
+    cd $outputdir
+    rsync -irlp --checksum --ignore-times --delete bitbake docs@docs.yoctoproject.org:docs/
+fi
 
 cd $ypdocs
 
@@ -142,5 +146,7 @@ ln -s $tag $outputdir/current
 cd $outputdir/bitbake
 find . -name switchers.js -exec cp $outputdir/current/_static/switchers.js {} \;
 
-cd $outputdir
-rsync -irlp --checksum --ignore-times --delete . docs@docs.yoctoproject.org:docs/
+if [ "$PUBLISH" -ne 0 ]; then
+    cd $outputdir
+    rsync -irlp --checksum --ignore-times --delete . docs@docs.yoctoproject.org:docs/
+fi
