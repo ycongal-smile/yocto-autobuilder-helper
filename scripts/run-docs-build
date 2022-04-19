@@ -8,9 +8,9 @@ set -u
 set -o pipefail
 set -x
 
-builddir=$1
-ypdocs=$2/documentation/
-bbdocs=$3/doc/
+builddir=$(realpath "$1")
+ypdocs=$(realpath "$2/documentation/")
+bbdocs=$(realpath "$3/doc/")
 docs_buildtools=/srv/autobuilder/autobuilder.yocto.io/pub/buildtools/x86_64-buildtools-docs-nativesdk-standalone-3.2+snapshot-20201105.sh
 outputdir=$builddir/output
 scriptdir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
