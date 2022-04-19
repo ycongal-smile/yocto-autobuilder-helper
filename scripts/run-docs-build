@@ -142,6 +142,8 @@ for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --
         branch=""
         mkdir $outputdir/$latest_tag
         cp -r ./_build/final/* $outputdir/$latest_tag
+        echo Linking to $latest_tag as current
+        ln -s $latest_tag $outputdir/current
     elif [ "$branch" = "transition" ]; then
         branch=""
     else
@@ -152,11 +154,6 @@ for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --
     git reset --hard
     git clean -f
 done
-
-# get current release (e.g. most recent tag), and add a 'current' link
-tag=$(git tag --list 'yocto-*' | sort --version-sort | tail -1 | cut -c7-)
-echo Linking to $tag as current
-ln -s $tag $outputdir/current
 
 # Update bitbake switchers.js with the copy from master ypdocs
 cd $outputdir/bitbake
