@@ -102,11 +102,9 @@ for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --
         git am "${scriptdir}/docs-build-patches/${branch}/"000*
     fi
 
-    git checkout master releases.rst
+    git checkout master releases.rst sphinx-static/switchers.js.in set_versions.py
     if [ -e poky.yaml ]; then
-        git checkout master sphinx-static/switchers.js.in
         cp poky.yaml poky.yaml.in
-        git checkout master set_versions.py
         case $branch in
             yocto-*)
                 ./set_versions.py $(echo "$branch" | sed 's/yocto-//')
