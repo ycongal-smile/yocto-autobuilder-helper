@@ -2,6 +2,12 @@
 # Called with $1 as the build directory
 #             $2 as the path to yocto-docs
 #             $3 as the path to bitbake
+#
+# Environment variables:
+#   - docs_buildtools as the path to buildtools script for the docs.
+#                     Can be found here: https://autobuilder.yocto.io/pub/buildtools/
+#   - docbookarchive as the path to old (pre 3.1.5 and Sphinx migration) docs tarball
+#                     Can be found here: https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz
 
 set -e
 set -u
@@ -11,7 +17,7 @@ set -x
 builddir=$(realpath "$1")
 ypdocs=$(realpath "$2/documentation/")
 bbdocs=$(realpath "$3/doc/")
-docs_buildtools=/srv/autobuilder/autobuilder.yocto.io/pub/buildtools/x86_64-buildtools-docs-nativesdk-standalone-3.2+snapshot-20201105.sh
+docs_buildtools=${docs_buildtools:-/srv/autobuilder/autobuilder.yocto.io/pub/buildtools/x86_64-buildtools-docs-nativesdk-standalone-3.2+snapshot-20201105.sh}
 outputdir=$builddir/output
 scriptdir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 
@@ -23,7 +29,7 @@ $docs_buildtools -y -d $builddir/buildtools
 
 # Getting the old docbook built docs from an archive. Not rebuilding them.
 #wget https://downloads.yoctoproject.org/mirror/docbook-mirror/docbook-archives-20201105.tar.xz
-docbookarchive=/srv/autobuilder/autobuilder.yocto.io/pub/docbook-mirror/docbook-archives-20201105.tar.xz
+docbookarchive=${docbookarchive:-/srv/autobuilder/autobuilder.yocto.io/pub/docbook-mirror/docbook-archives-20201105.tar.xz}
 mkdir $outputdir
 cd $outputdir
 echo Extracing old content from archive
