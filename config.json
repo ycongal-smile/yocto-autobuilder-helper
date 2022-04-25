@@ -1097,12 +1097,6 @@
                 "cd scripts; ./setup.sh; ECLIPSE_HOME=`pwd`/eclipse/ ./build.sh oxygen-master master development"
             ]
         },
-        "buildperf-ubuntu1604" : {
-            "TEMPLATE" : "buildperf"
-        },
-        "buildperf-centos7" : {
-            "TEMPLATE" : "buildperf"
-        },
         "buildperf-debian11" : {
             "TEMPLATE" : "buildperf"
         },
