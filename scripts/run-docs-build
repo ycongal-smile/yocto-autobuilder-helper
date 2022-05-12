@@ -38,7 +38,7 @@ docbookarchive=${docbookarchive:-/srv/autobuilder/autobuilder.yocto.io/pub/docbo
 mkdir $outputdir
 cd $outputdir
 echo Extracing old content from archive
-tar -xJf $docbookarchive
+tar --exclude=eclipse -xJf $docbookarchive
 
 cd $bbdocs
 mkdir $outputdir/bitbake
