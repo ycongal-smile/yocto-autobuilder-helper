@@ -40,6 +40,8 @@ cd $outputdir
 echo Extracing old content from archive
 tar --exclude=eclipse -xJf $docbookarchive
 
+$scriptdir/docs_add_banner.py
+
 cd $bbdocs
 mkdir $outputdir/bitbake
 
