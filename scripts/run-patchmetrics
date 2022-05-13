@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PARENTDIR=$1
-TARGETDIR=$2
-RESULTSDIR=$3
+PARENTDIR=`realpath $1`
+TARGETDIR=`realpath $2`
+RESULTSDIR=`realpath $3`
 
 git clone ssh://git@push.yoctoproject.org/yocto-metrics $1/yocto-metrics
 $1/scripts/contrib/patchreview.py $2 -j $1/yocto-metrics/patch-status.json
