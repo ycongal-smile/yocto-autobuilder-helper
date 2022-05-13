@@ -1,0 +1,10 @@
+#!/bin/bash
+
+PARENTDIR=$1
+TARGETDIR=$2
+
+git clone ssh://git@push.yoctoproject.org/yocto-metrics $1/yocto-metrics
+$1/scripts/contrib/patchreview.py $2 -j $1/yocto-metrics/patch-status.json
+git -C $1/yocto-metrics commit -asm "Autobuilder adding new patch stats"
+git -C $1/yocto-metrics push
+

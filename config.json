@@ -919,6 +919,12 @@
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-virtualization --dependency ../meta-openembedded/meta-oe ../meta-openembedded/meta-networking ../meta-openembedded/meta-python ../meta-openembedded/meta-filesystems --no-auto-dependency"]
             }
         },
+        "metrics" : {
+            "NEEDREPOS" : ["poky"],
+            "step1" : {
+                "EXTRACMDS" : ["../../yocto-autobuilder-helper/scripts/run-patchmetrics ../ ../meta/"]
+            }
+        },
         "meta-mingw" : {
             "NEEDREPOS" : ["poky", "meta-mingw"],
             "MACHINE" : "qemux86",
