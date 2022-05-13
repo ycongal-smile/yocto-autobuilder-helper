@@ -322,6 +322,22 @@
             "MACHINE" : "qemuarm64",
             "TEMPLATE" : "ltp-qemu"
         },
+        "qemuriscv32" : {
+            "MACHINE" : "qemuriscv64",
+            "TEMPLATE" : "arch-qemu"
+        },
+        "qemuriscv64" : {
+            "MACHINE" : "qemuriscv64",
+            "TEMPLATE" : "arch-qemu"
+        },
+        "qemuriscv64-ptest" : {
+            "MACHINE" : "qemuriscv64",
+            "TEMPLATE" : "ptest-qemu"
+        },
+        "qemuppc64" : {
+            "MACHINE" : "qemuppc64",
+            "TEMPLATE" : "arch-qemu"
+        },
         "meta-arm" : {
             "NEEDREPOS" : ["poky", "meta-arm"],
             "ADDLAYER" : [
