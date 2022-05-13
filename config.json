@@ -922,7 +922,7 @@
         "metrics" : {
             "NEEDREPOS" : ["poky"],
             "step1" : {
-                "EXTRACMDS" : ["../../yocto-autobuilder-helper/scripts/run-patchmetrics ../ ../meta/"]
+                "EXTRACMDS" : ["../../yocto-autobuilder-helper/scripts/run-patchmetrics ../ ../meta/ ${HELPERRESULTSDIR}/../../patchmetrics"]
             }
         },
         "meta-mingw" : {
