@@ -2,7 +2,7 @@
 
 PARENTDIR=`realpath $1`
 TARGETDIR=`realpath $2`
-RESULTSDIR=`realpath $3`
+RESULTSDIR=`realpath -m $3`
 
 git clone ssh://git@push.yoctoproject.org/yocto-metrics $PARENTDIR/yocto-metrics
 $PARENTDIR/scripts/contrib/patchreview.py $TARGETDIR -j $PARENTDIR/yocto-metrics/patch-status.json
