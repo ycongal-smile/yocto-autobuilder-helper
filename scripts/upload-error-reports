@@ -1,5 +1,9 @@
 #!/bin/bash
-
+#
+# Copyright Linux Foundation, Richard Purdie
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
 BUILDDIR=$1
 ERRORLINK=$2
 #https://autobuilder.yocto.io/builders/nightly-arm/builds/804

@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
 # Run Auto Upgrade Helper in a directory set up by setup_auh.
 #
 # Called with $1 - the directory where the setup was created

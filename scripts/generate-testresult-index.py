@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #
-# Copyright (c) 2019, Linux Foundation
+# Copyright Linux Foundation, Richard Purdie
 #
 # SPDX-License-Identifier: GPL-2.0-only
 #

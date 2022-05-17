@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+#
+# Copyright Linux Foundation, Richard Purdie
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
+
 import subprocess
 import copy
 import os

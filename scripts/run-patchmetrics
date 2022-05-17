@@ -1,5 +1,7 @@
 #!/bin/bash
-
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
 PARENTDIR=`realpath $1`
 TARGETDIR=`realpath $2`
 RESULTSDIR=`realpath -m $3`

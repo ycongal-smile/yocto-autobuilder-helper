@@ -2,6 +2,10 @@
 #
 # Initialize Buildhistory for this branch
 #
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Copyright Linux Foundation, Richard Purdie
+#
 # Called with $1 - The buildhistory directory
 #             $2 - The remote repository url
 #             $3 - The remote branch name

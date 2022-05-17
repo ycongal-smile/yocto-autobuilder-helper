@@ -1,5 +1,7 @@
 #!/bin/sh
 #
+# SPDX-License-Identifier: GPL-2.0-only
+#
 # check if vnc server is running, and if not, cleanup and restart
 #
 grep ':170D' /proc/net/tcp > /dev/null

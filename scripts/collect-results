@@ -1,4 +1,10 @@
 #!/bin/bash
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Copyright Linux Foundation, Richard Purdie
+#
+
 WORKDIR=$1
 DEST=$2
 target=$3

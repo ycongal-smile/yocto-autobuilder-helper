@@ -1,15 +1,9 @@
 #!/usr/bin/python3
-'''
-Created on Feb 19, 2014
-
-__author__ = "Richard Purdie"
-__copyright__ = "Copyright 2014, 2018 Linux Foundation"
-__credits__ = ["Richard Purdie"]
-__license__ = "GPL"
-__version__ = "2.0"
-__maintainer__ = "Richard Purdie"
-__email__ = "richard.purdie@linuxfoundation.org"
-'''
+#
+# Copyright Linux Foundation, Richard Purdie
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
 
 import signal
 import os

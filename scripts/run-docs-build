@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# SPDX-License-Identifier: GPL-2.0-only
+#
 # Called with $1 as the build directory
 #             $2 as the path to yocto-docs
 #             $3 as the path to bitbake
