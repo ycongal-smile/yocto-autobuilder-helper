@@ -56,6 +56,6 @@ with tempfile.TemporaryDirectory(prefix="patchmetrics-") as tempdir:
 
         newdata.append(i)
 
-    with open(args.json + "1a", "w") as f:
+    with open(args.json, "w") as f:
         json.dump(newdata, f, sort_keys=True, indent="\t")
 
