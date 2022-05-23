@@ -22,6 +22,7 @@ if [ ! -d $RESULTSDIR ]; then
     mkdir $RESULTSDIR
 fi
 
+$OURDIR/patchmetrics-generate-chartdata --json $PARENTDIR/yocto-metrics/patch-status.json --outputdir $RESULTSDIR
 cp $PARENTDIR/yocto-metrics/patch-status.json $RESULTSDIR
 cp $PARENTDIR/yocto-metrics/patch-status/* $RESULTSDIR
 
