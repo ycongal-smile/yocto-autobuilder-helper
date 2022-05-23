@@ -28,13 +28,15 @@ cp $PARENTDIR/yocto-metrics/patch-status/* $RESULTSDIR
 #
 # CVE Checks
 #
-bitbake world --runall cve_check -R conf/distro/include/cve-extra-exclusions.inc
 mkdir -p $PARENTDIR/yocto-metrics/cve-check/
-cp tmp/log/cve/cve-summary.json $PARENTDIR/yocto-metrics/cve-check-$TIMESTAMP.json
-git -C $PARENTDIR/yocto-metrics add cve-check-$TIMESTAMP.json
-git -C $PARENTDIR/yocto-metrics commit -asm "Autobuilder adding new CVE data"
-git -C $PARENTDIR/yocto-metrics push
+for branch in master kirkstone dunfell; do
+    git -C $PARENTDIR reset origin/$branch --hard
+    bitbake world --runall cve_check -R conf/distro/include/cve-extra-exclusions.inc
+    cp tmp/log/cve/cve-summary.json $PARENTDIR/yocto-metrics/cve-check-$branch-$TIMESTAMP.json
+    git -C $PARENTDIR/yocto-metrics add cve-check-$branch-$TIMESTAMP.json
+    git -C $PARENTDIR/yocto-metrics commit -asm "Autobuilder adding new CVE data for branch $branch"
+    git -C $PARENTDIR/yocto-metrics push
 
-$OURDIR/cve-report.py tmp/log/cve/cve-summary.json > $RESULTSDIR/cve-status.txt
-
+    $OURDIR/cve-report.py tmp/log/cve/cve-summary.json > $RESULTSDIR/cve-status-$branch.txt
+done
 
