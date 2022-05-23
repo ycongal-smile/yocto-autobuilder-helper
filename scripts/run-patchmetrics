@@ -31,6 +31,12 @@ cp $PARENTDIR/yocto-metrics/patch-status/* $RESULTSDIR
 mkdir -p $PARENTDIR/yocto-metrics/cve-check/
 for branch in master kirkstone dunfell; do
     git -C $PARENTDIR reset origin/$branch --hard
+    rm conf/local.conf
+    rm conf/bblayers.conf
+    unset BB_ENV_PASSTHROUGH_ADDITIONS
+    unset BB_ENV_EXTRAWHITE
+    cd ..
+    . oe-init-build-env build
     bitbake world --runall cve_check -R conf/distro/include/cve-extra-exclusions.inc
     cp tmp/log/cve/cve-summary.json $PARENTDIR/yocto-metrics/cve-check-$branch-$TIMESTAMP.json
     git -C $PARENTDIR/yocto-metrics add cve-check-$branch-$TIMESTAMP.json
