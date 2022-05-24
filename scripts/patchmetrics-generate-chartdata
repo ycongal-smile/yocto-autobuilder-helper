@@ -41,6 +41,9 @@ for i in data:
         databydate[rounded] = i
 
 for i in databydate:
+    for todel in ['commit', 'commit_count']:
+        if todel in databydate[i]:
+            del databydate[i][todel]
     newdata.append(databydate[i])
 
 json.dump(newdata, open(args.outputdir + "/patch-status-byday.json", "w"), sort_keys=True, indent="\t")
