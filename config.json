@@ -928,7 +928,11 @@
         },
         "metrics" : {
             "NEEDREPOS" : ["poky"],
-            "extravars" : ["INHERIT += 'cve-check'"],
+            "extravars" : [
+                "INHERIT += 'cve-check'",
+                "CVE_CHECK_FORMAT_JSON = \"1\"",
+                "CVE_DB_UPDATE_INTERVAL = \"21600\""
+            ],
             "step1" : {
                 "EXTRACMDS" : ["../../yocto-autobuilder-helper/scripts/run-patchmetrics ../ ../meta/ ${HELPERRESULTSDIR}/../../patchmetrics ."]
             }
