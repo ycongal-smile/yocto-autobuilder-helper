@@ -29,7 +29,7 @@ cp $PARENTDIR/yocto-metrics/patch-status/* $RESULTSDIR
 #
 # CVE Checks
 #
-for branch in master kirkstone dunfell; do
+for branch in master kirkstone honister dunfell; do
     mkdir -p $PARENTDIR/yocto-metrics/cve-check/$branch/
     git -C $PARENTDIR reset origin/$branch --hard
     rm conf/local.conf
