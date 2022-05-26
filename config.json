@@ -684,9 +684,24 @@
             }
         },
         "poky-tiny" : {
-            "MACHINE" : "qemux86",
             "DISTRO" : "poky-tiny",
-            "BBTARGETS" : "core-image-minimal"
+            "BBTARGETS" : "core-image-minimal",
+            "step1" : {
+                "MACHINE" : "qemux86",
+                "shortname" : "qemux86 poky-tiny"
+            },
+            "step2" : {
+                "MACHINE" : "qemuarm",
+                "shortname" : "qemuarm poky-tiny"
+            },
+            "step3" : {
+                "MACHINE" : "qemux86-64",
+                "shortname" : "qemux86-64 poky-tiny"
+            },
+            "step4" : {
+                "MACHINE" : "qemuarm64",
+                "shortname" : "qemuarm64 poky-tiny"
+            }
         },
         "wic" : {
             "BUILDINFO" : true,
