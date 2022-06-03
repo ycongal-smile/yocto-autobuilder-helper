@@ -9,12 +9,7 @@
 #
 #
 
-
 import os
-
-
-
-
 
 html_content_dunfell = '''
 <div id="outdated-warning">This document is outdated, you should select the <a href="https://docs.yoctoproject.org/dunfell">latest release version</a> in this series.</div>
@@ -32,7 +27,7 @@ last_div = '''
 '''
 
 css_replacement_content = '''
- 
+
   font-family: Verdana, Sans, sans-serif;
 
   width: 100%;
@@ -41,7 +36,7 @@ css_replacement_content = '''
   color: #333;
   overflow-x: hidden;
   }
- 
+
 .body{
 margin:  0 auto;
 min-width: 640px;
@@ -49,9 +44,9 @@ padding: 0 5em 5em 5em;
 }
 #outdated-warning{
 text-align: center;
-background-color: rgb(255, 186, 186); 
-color: rgb(106, 14, 14); 
-padding: 0.5em 0; 
+background-color: rgb(255, 186, 186);
+color: rgb(106, 14, 14);
+padding: 0.5em 0;
 width: 100%;
 position: fixed;
 top: 0;
@@ -62,22 +57,25 @@ top: 0;
 
 def add_banner_old_docs(dir):
     for root, dirs, filenames in os.walk(dir):
-        
+
         if root.startswith('./3.1'):
             html_replacement = html_content_dunfell
         else:
             html_replacement = html_content
-            
+
         for filename in filenames:
+            fullfile = os.path.join(root, filename)
+            if os.path.islink(fullfile):
+                continue
             if filename.endswith('.html'):
-                with open(os.path.join(root, filename), 'r', encoding="ISO-8859-1") as f:
+                with open(fullfile, 'r', encoding="ISO-8859-1") as f:
                     current_content = f.read()
-                with open(os.path.join(root, filename), 'w', encoding="ISO-8859-1") as f:
-                    f.write(current_content.replace('<body>', '<body>' + html_replacement)).replace('</body>', last_div + '</body>'))
-            if filename.endswith('.css'):
-                with open(os.path.join(root, filename), 'r', encoding="ISO-8859-1") as f:
+                with open(fullfile, 'w', encoding="ISO-8859-1") as f:
+                    f.write(current_content.replace('<body>', '<body>' + html_replacement).replace('</body>', last_div + '</body>'))
+            elif filename.endswith('.css'):
+                with open(fullfile, 'r', encoding="ISO-8859-1") as f:
                     css_content = f.read()
-                with open(os.path.join(root, filename), 'w', encoding="ISO-8859-1") as f:
+                with open(fullfile, 'w', encoding="ISO-8859-1") as f:
                     f.write(css_content.replace(css_content[css_content.find('body {'):css_content.find('}'[0])], 'body {' + css_replacement_content ))
 
 add_banner_old_docs('.')
