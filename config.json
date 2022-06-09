@@ -233,6 +233,10 @@
             "step3" : {
                 "shortname" : "Python Linter Report",
                 "EXTRACMDS" : ["if [ `which oe-pylint` ]; then mkdir -p ${HELPERRESULTSDIR}/${HELPERTARGET}; oe-pylint > ${HELPERRESULTSDIR}/${HELPERTARGET}/pylint.log || true; fi"]
+            },
+            "step4" : {
+                "shortname" : "OEQA core tests",
+                "EXTRACMDS" : ["oe-test core"]
             }
         },
         "reproducible" : {
