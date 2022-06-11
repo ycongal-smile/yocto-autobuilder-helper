@@ -755,6 +755,7 @@
             }
         },
         "buildtools" : {
+            "BUILDINFO" : true,
             "MACHINE" : "qemux86-64",
             "extravars" : [
                 "PACKAGECONFIG:pn-nativesdk-python3:append = ' pgo'"
