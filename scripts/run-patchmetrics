@@ -42,6 +42,7 @@ for branch in master kirkstone dunfell; do
     bitbake world --runall cve_check -R conf/distro/include/cve-extra-exclusions.inc
     if [ -e tmp/log/cve/cve-summary.json ]; then
         git -C $PARENTDIR/yocto-metrics rm cve-check/$branch/*.json
+        mkdir -p $PARENTDIR/yocto-metrics/cve-check/$branch
         cp tmp/log/cve/cve-summary.json $PARENTDIR/yocto-metrics/cve-check/$branch/$TIMESTAMP.json
         git -C $PARENTDIR/yocto-metrics add cve-check/$branch/$TIMESTAMP.json
         git -C $PARENTDIR/yocto-metrics commit -asm "Autobuilder adding new CVE data for branch $branch"
@@ -50,6 +51,7 @@ for branch in master kirkstone dunfell; do
     fi
 done
 
+mkdir -p $PARENTDIR/yocto-metrics/cve-check/
 $OURDIR/cve-generate-chartdata --json $PARENTDIR/yocto-metrics/cve-count-byday.json --resultsdir $PARENTDIR/yocto-metrics/cve-check/
 git -C $PARENTDIR/yocto-metrics add cve-count-byday.json
 git -C $PARENTDIR/yocto-metrics commit -asm "Autobuilder updating CVE counts"
