@@ -61,7 +61,7 @@ for branch in 1.46 $(git branch --remote --contains "$first_sphinx_commit" --for
 
     echo Building bitbake $branch branch
     git checkout $branch
-    git checkout master releases.rst
+    git checkout origin/master releases.rst
     make clean
     make publish
 
@@ -122,7 +122,7 @@ for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --
         git am "${scriptdir}/docs-build-patches/${branch}/"000*
     fi
 
-    git checkout master releases.rst sphinx-static/switchers.js.in set_versions.py
+    git checkout origin/master releases.rst sphinx-static/switchers.js.in set_versions.py
     if [ -e poky.yaml ]; then
         cp poky.yaml poky.yaml.in
         case $branch in
