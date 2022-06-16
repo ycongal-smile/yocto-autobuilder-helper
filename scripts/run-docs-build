@@ -21,7 +21,7 @@ set -x
 builddir=$(realpath "$1")
 ypdocs=$(realpath "$2/documentation/")
 bbdocs=$(realpath "$3/doc/")
-docs_buildtools=${docs_buildtools:-/srv/autobuilder/autobuilder.yocto.io/pub/buildtools/x86_64-buildtools-docs-nativesdk-standalone-3.2+snapshot-20201105.sh}
+docs_buildtools=${docs_buildtools:-/srv/autobuilder/autobuilder.yocto.io/pub/non-release/20220616-20/buildtools/x86_64-buildtools-docs-nativesdk-standalone-4.1+snapshot-cf7d8894545b83f55420fa33f7848e1bfc6754ff.sh}
 outputdir=$builddir/output
 scriptdir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 PUBLISH=${PUBLISH:-1}
