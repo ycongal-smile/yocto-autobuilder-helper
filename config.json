@@ -1286,6 +1286,7 @@
         "centos8*"     : "${BUILDTOOLS_MAKE_URL}",
         "stream8*"     : "${BUILDTOOLS_MAKE_URL}",
         "opensuse153*" : "${BUILDTOOLS_MAKE_URL}",
+        "opensuse154*" : "${BUILDTOOLS_MAKE_URL}",
         "perf-alma8*"  : "${BUILDTOOLS_MAKE_URL}",
         "perf-centos7*" : "${BUILDTOOLS_URL}",
         "perf-ubuntu1604*" : "${BUILDTOOLS_URL}"
