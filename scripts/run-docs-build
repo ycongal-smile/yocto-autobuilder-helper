@@ -63,7 +63,7 @@ for branch in 1.46 $(git branch --remote --contains "$first_sphinx_commit" --for
     git checkout $branch
     git checkout origin/master releases.rst
     make clean
-    make publish
+    SPHINXOPTS="-j auto" make publish
 
     if [ "$branch" = "master-next" ]; then
         branch="next"
@@ -136,7 +136,7 @@ for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --
     fi
 
     make clean
-    make publish
+    SPHINXOPTS="-j auto" make publish
 
     # Strip yocto- from tag names
     branch=$(echo "$branch" | sed 's/yocto-//')
