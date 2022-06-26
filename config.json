@@ -211,7 +211,8 @@
                 "DL_DIR = '${BUILDPERF_STATEDIR}/downloads'",
                 "CONNECTIVITY_CHECK_URIS = ''",
                 "BB_HASHSERVE = 'auto'",
-                "BB_LOG_HOST_STAT_CMDS = ''"
+                "BB_LOG_HOST_STAT_CMDS = ''",
+                "BB_SERVER_TIMEOUT = '0'"
             ]
         },
         "selftest" : {
@@ -954,7 +955,8 @@
                 "BB_DISKMON_DIRS = ''",
                 "CVE_CHECK_FORMAT_JSON = '1'",
                 "CVE_CHECK_SHOW_WARNINGS = '0'",
-                "CVE_DB_UPDATE_INTERVAL = '21600'"
+                "CVE_DB_UPDATE_INTERVAL = '21600'",
+                "BB_SERVER_TIMEOUT = '0'"
             ],
             "step1" : {
                 "EXTRACMDS" : ["../../yocto-autobuilder-helper/scripts/run-patchmetrics ../ ../meta/ ${HELPERRESULTSDIR}/../../patchmetrics ."]
