@@ -258,7 +258,7 @@ def fetchgitrepo(clonedir, repo, params, stashdir, depth=None):
         flush()
         subprocess.check_call(["git", "fetch", "origin"] + fetchopt, cwd=sharedrepo)
         if not depth:
-            subprocess.check_call(["git", "fetch", "origin", "-t"], cwd=sharedrepo)
+            subprocess.check_call(["git", "fetch", "origin", "-t", "-f"], cwd=sharedrepo)
     else:
         print("Cloning from origin to %s..." % sharedrepo)
         flush()
