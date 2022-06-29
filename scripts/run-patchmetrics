@@ -58,3 +58,5 @@ git -C $PARENTDIR/yocto-metrics commit -asm "Autobuilder updating CVE counts"
 git -C $PARENTDIR/yocto-metrics push
 
 cp $PARENTDIR/yocto-metrics/cve-count-byday.json $RESULTSDIR
+cp $PARENTDIR/yocto-metrics/cve-count-byday-lastyear.json $RESULTSDIR
+
