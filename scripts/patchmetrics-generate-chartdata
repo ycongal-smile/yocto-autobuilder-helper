@@ -4,8 +4,7 @@ import sys
 import argparse
 import subprocess
 import tempfile
-from datetime import datetime, date
-from dateutil.relativedelta import relativedelta
+from datetime import datetime, date, timedelta
 
 args = argparse.ArgumentParser(description="Generate Patch Metric Chart data files")
 args.add_argument("-j", "--json", help="JSON data file to use")
@@ -31,7 +30,7 @@ json.dump(latest, open(args.outputdir + "/patch-status-pie.json", "w"), sort_key
 def round_to_day(val):
     return int((datetime.fromtimestamp(int(val)).date() - date(1970, 1, 1)).total_seconds())
 
-a_year_ago = (datetime.now() - relativedelta(years=1) - datetime(1970, 1, 1)).total_seconds()
+a_year_ago = (datetime.now() - timedelta(days=365) - datetime(1970, 1, 1)).total_seconds()
 
 newdata = []
 lastyeardata = []
