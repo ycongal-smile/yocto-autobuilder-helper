@@ -798,17 +798,6 @@
                 "BBTARGETS" : "build-appliance-image"
             }
         },
-        "non-gpl3" : {
-            "NEEDREPOS" : ["poky", "meta-gplv2"],
-            "MACHINE" : "qemux86",
-            "BBTARGETS" : "core-image-minimal core-image-full-cmdline",
-            "extravars" : [
-                "require conf/distro/include/disable-gplv3.inc"
-            ],
-            "EXTRACMDS" : [
-                "../../yocto-autobuilder-helper/scripts/check-gplv3"
-            ]
-        },
         "no-x11" : {
             "MACHINE" : "qemux86-64",
             "BBTARGETS" : "core-image-full-cmdline core-image-weston world",
