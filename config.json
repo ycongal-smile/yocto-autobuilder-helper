@@ -903,7 +903,7 @@
             "TEMPLATE" : "reproducible"
         },
         "check-layer" : {
-            "NEEDREPOS" : ["poky", "meta-gplv2", "meta-mingw"],
+            "NEEDREPOS" : ["poky", "meta-mingw"],
             "step1" : {
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-poky"]
             },
@@ -912,9 +912,6 @@
             },
             "step3" : {
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-mingw"]
-            },
-            "step4" : {
-                "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-gplv2"]
             }
         },
         "check-layer-nightly" : {
