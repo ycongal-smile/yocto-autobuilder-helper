@@ -881,6 +881,7 @@
             "TEMPLATE" : "selftest"
         },
         "oe-selftest-armhost" : {
+            "SDKMACHINE": "aarch64",
             "TEMPLATE" : "selftest"
         },
         "reproducible" : {
