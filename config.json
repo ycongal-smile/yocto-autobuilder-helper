@@ -1128,7 +1128,15 @@
                 "extravars" : [
                     "PACKAGECONFIG:append:x86-64:pn-mesa = ' gallium-llvm gallium r600'"
                 ]
-
+            },
+            "step8" : {
+                "shortname" : "preempt-rt",
+                "BBTARGETS" : "core-image-full-cmdline",
+                "SANITYTARGETS" : "core-image-full-cmdline:do_testimage",
+                "extravars" : [
+                    "PREFERRED_PROVIDER_virtual/kernel = 'linux-yocto-rt'",
+                    "TEST_SUITES:append = ' rt'"
+                ]
             }
         },
         "eclipse-plugin-neon" : {
