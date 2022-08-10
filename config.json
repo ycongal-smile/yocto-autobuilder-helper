@@ -53,7 +53,7 @@
             "BB_TASK_NICE_LEVEL:task-testimage = '0'",
             "BB_TASK_IONICE_LEVEL = '2.7'",
             "BB_TASK_IONICE_LEVEL:task-testimage = '2.1'",
-            "INHERIT += 'testimage'",
+            "IMAGE_CLASSES += 'testimage'",
             "TEST_QEMUBOOT_TIMEOUT = '1500'",
             "SANITY_TESTED_DISTROS = ''",
             "SDK_EXT_TYPE = 'minimal'",
