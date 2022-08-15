@@ -46,6 +46,8 @@
             "BB_GENERATE_MIRROR_TARBALLS = '1'",
             "BB_NUMBER_THREADS = '16'",
             "PARALLEL_MAKE = '-j 16 -l 52'",
+            "BB_PRESSURE_MAX_CPU = '10000'",
+            "BB_PRESSURE_MAX_IO = '10000'",
             "XZ_MEMLIMIT = '5%'",
             "XZ_THREADS = '8'",
             "ZSTD_THREADS = '8'",
