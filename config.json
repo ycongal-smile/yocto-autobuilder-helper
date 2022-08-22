@@ -966,6 +966,9 @@
         "meta-oe" : {
             "NEEDREPOS" : ["poky", "meta-openembedded"],
             "MACHINE" : "qemux86-64",
+            "extravars" : [
+                "INHERIT += 'rm_work'"
+            ],
             "step1" : {
                 "shortname" : "Test meta-oe YP Compatibility",
                 "EXTRACMDS" : ["yocto-check-layer-wrapper ../meta-openembedded"]
