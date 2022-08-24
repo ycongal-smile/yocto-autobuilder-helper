@@ -19,6 +19,8 @@ def main():
     subprocess.run(["mkdir", "-p", dest_bsdir])
 
     build_bsdir = os.path.join(builddir, "tmp/buildstats")
+    if not os.path.exists(build_bsdir):
+        sys.exit(0)
     hostname = socket.gethostname()
     os.chdir(build_bsdir)
     fail_path = os.path.join(dest, target, "intermittent_failure_host_data")
