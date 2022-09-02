@@ -34,6 +34,7 @@ for branch in master kirkstone dunfell; do
     git -C $PARENTDIR reset origin/$branch --hard
     rm conf/local.conf
     rm conf/bblayers.conf
+    rm -f conf/templateconf.cfg
     rm tmp/ -rf
     unset BB_ENV_PASSTHROUGH_ADDITIONS
     unset BB_ENV_EXTRAWHITE
