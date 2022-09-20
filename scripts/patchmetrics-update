@@ -14,6 +14,8 @@ args = args.parse_args()
 
 status_values = ["accepted", "pending", "inappropriate", "backport", "submitted", "denied", "inactive-upstream", "malformed-upstream-status", "malformed-sob"]
 
+print("Running patchmetrics-update")
+
 with tempfile.TemporaryDirectory(prefix="patchmetrics-") as tempdir:
     subprocess.check_call(["git", "clone", args.repo, tempdir])
     repo_revisions = subprocess.check_output(["git", "rev-list", "--since", "1274625106", "origin/master"], universal_newlines=True, cwd=tempdir).strip().split()
@@ -30,7 +32,7 @@ with tempfile.TemporaryDirectory(prefix="patchmetrics-") as tempdir:
 
     print("Need to scan revisions %s" % str(needed_revisions))
 
-    print("Needed %s revsisions (%s in data set)" % (len(needed_revisions), len(seen)))
+    print("Needed %s revisions (%s and %s in data sets)" % (len(needed_revisions), len(seen), len(repo_revisions)))
 
     for rev in needed_revisions:
         print("Processing %s" % rev)
@@ -58,4 +60,6 @@ with tempfile.TemporaryDirectory(prefix="patchmetrics-") as tempdir:
 
     with open(args.json, "w") as f:
         json.dump(newdata, f, sort_keys=True, indent="\t")
+
+print("Finished patchmetrics-update")
 
