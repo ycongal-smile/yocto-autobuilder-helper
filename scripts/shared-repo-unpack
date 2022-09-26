@@ -52,6 +52,9 @@ with open(args.repojson) as f:
 targetsubdir = args.abworkdir + "/repos"
 needrepos_baseddirs = [r.split('/')[0] for r in needrepos]
 for repo in sorted(repos.keys()):
+    # gplv2 is no longer built/tested in master
+    if repo == "meta-gplv2":
+        continue
     if repo not in needrepos_baseddirs:
         continue
     if args.cache_dir:

@@ -38,6 +38,9 @@ stashdir = utils.getconfig("REPO_STASH_DIR", ourconfig)
 
 with tempfile.TemporaryDirectory(prefix="shared-repo-temp-", dir="/home/pokybuild/tmp") as tempdir:
     for repo in sorted(repos.keys()):
+        # gplv2 is no longer built/tested in master
+        if repo == "meta-gplv2":
+            continue
         utils.printheader("Intially fetching repo %s" % repo)
         # shallow clones disabled as it doesn't work correctly with revision numbers in the result repo leading to release build failures.
         if True or args.publish_dir:
