@@ -61,6 +61,8 @@ for branch in 1.46 $(git branch --remote --contains "$first_sphinx_commit" --for
 
     echo Building bitbake $branch branch
     git checkout $branch
+    git reset --hard
+    git clean -ffdx
     git checkout origin/master releases.rst
     make clean
     SPHINXOPTS="-j auto" make publish
@@ -81,6 +83,7 @@ for branch in 1.46 $(git branch --remote --contains "$first_sphinx_commit" --for
 
     cp -r ./_build/final/* $outputdir/bitbake/$branch
     git reset --hard
+    git clean -ffdx
 done
 
 if [ "$PUBLISH" -ne 0 ]; then
@@ -101,7 +104,7 @@ git checkout origin/master set_versions.py
 #latest_tag=$(git tag --contains "$first_sphinx_commit" --contains "$first_dunfell_sphinx_commit" --sort="version:refname" 'yocto-*' | tail -1 | sed 's/yocto-//')
 latest_tag=$(./set_versions.py getlatest)
 git reset --hard
-git clean -f
+git clean -ffdx
 
 for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --format '%(refname:lstrip=3)') $(git tag --contains "$first_sphinx_commit" --contains "$first_dunfell_sphinx_commit" 'yocto-*') transition; do
     if [ "$branch" = "HEAD" ]; then
@@ -116,6 +119,8 @@ for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --
 
     echo Building $branch
     git checkout $branch
+    git reset --hard
+    git clean -ffdx
 
     if [ -e "${scriptdir}/docs-build-patches/${branch}/" ]; then
         echo Adding patch for $branch
@@ -161,7 +166,7 @@ for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --
 
     cp -r ./_build/final/* $outputdir/$branch
     git reset --hard
-    git clean -f
+    git clean -ffdx
 done
 
 # Update bitbake switchers.js with the copy from master ypdocs
