@@ -143,20 +143,20 @@ for branch in dunfell $(git branch --remote --contains "$first_sphinx_commit" --
 
     if [ "$branch" = "master-next" ]; then
         branch="next"
-	mkdir $outputdir/$branch
+	mkdir -p $outputdir/$branch
     elif [ "$branch" = "master" ]; then
         branch="dev"
-        mkdir $outputdir/$branch
+        mkdir -p $outputdir/$branch
     elif [ "$branch" = "$latest_tag" ]; then
         branch=""
-        mkdir $outputdir/$latest_tag
+        mkdir -p $outputdir/$latest_tag
         cp -r ./_build/final/* $outputdir/$latest_tag
         echo Linking to $latest_tag as current
         ln -s $latest_tag $outputdir/current
     elif [ "$branch" = "transition" ]; then
         branch=""
     else
-	mkdir $outputdir/$branch
+	mkdir -p $outputdir/$branch
     fi
 
     cp -r ./_build/final/* $outputdir/$branch
