@@ -873,6 +873,7 @@
             "TEMPLATE" : "selftest"
         },
         "oe-selftest-armhost" : {
+            "MACHINE": "qemuarm64",
             "SDKMACHINE": "aarch64",
             "TEMPLATE" : "selftest"
         },
