@@ -486,6 +486,14 @@
             "MACHINE" : "qemux86",
             "TEMPLATE" : "altcfg-qemu"
         },
+        "qemux86-ptest" : {
+            "MACHINE" : "qemux86",
+            "TEMPLATE" : "ptest-qemu"
+        },
+        "qemux86-ptest-fast" : {
+            "MACHINE" : "qemux86",
+            "TEMPLATE" : "ptest-qemu-fast"
+        },
         "genericx86" : {
             "MACHINE" : "genericx86",
             "TEMPLATE" : "arch-hw",

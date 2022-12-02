@@ -181,6 +181,11 @@ case "$target" in
         sha256sums $TMPDIR/deploy/images/qemux86
         cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemux86
         ;;
+    "qemux86-ptest")
+        mkdir -p $DEST/machines/qemu/qemux86
+        sha256sums $TMPDIR/deploy/images/qemux86
+        cp -R --no-dereference --preserve=links $TMPDIR/deploy/images/qemux86/*qemux86* $DEST/machines/qemu/qemux86
+        ;;
     "genericx86")
         mkdir -p $DEST/machines/genericx86
         sha256sums $TMPDIR/deploy/images/genericx86
