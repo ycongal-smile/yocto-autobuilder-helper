@@ -11,6 +11,7 @@
     "BUILDTOOLS_URL_TEMPLOCAL" : "/srv/autobuilder/autobuilder.yocto.io/pub/non-release/20210214-8/buildtools/x86_64-buildtools-extended-nativesdk-standalone-3.2+snapshot-7d38cc8e749aedb8435ee71847e04b353cca541d.sh",
     "BUILDTOOLS_URL_TEMPLOCAL2" : "https://downloads.yoctoproject.org/releases/yocto/milestones/yocto-3.1_M3/buildtools/x86_64-buildtools-extended-nativesdk-standalone-3.0+snapshot-20200315.sh",
     "BUILDTOOLS_URL" : "https://downloads.yoctoproject.org/releases/yocto/yocto-3.4/buildtools/x86_64-buildtools-extended-nativesdk-standalone-3.4.sh",
+    "BUILDTOOLS_ARM_URL" : "https://downloads.yoctoproject.org/releases/yocto/yocto-3.4/buildtools/aarch64-buildtools-extended-nativesdk-standalone-3.4.sh",
     "BUILDTOOLS_MAKE_URL" : "/srv/autobuilder/autobuilder.yocto.io/pub/non-release/20220413-28/buildtools/x86_64-buildtools-make-nativesdk-standalone-4.0.sh",
 
     "REPO_STASH_DIR" : "${BASE_HOMEDIR}/git/mirror",
@@ -1287,6 +1288,8 @@
         "debian9*" : "${BUILDTOOLS_URL}",
         "centos7*" : "${BUILDTOOLS_URL}",
         "ubuntu1604*" : "${BUILDTOOLS_URL}",
+        "ubuntu1804-ty-*" : "${BUILDTOOLS_URL}",
+        "ubuntu1804-arm-*" : "${BUILDTOOLS_ARM_URL}",
         "alma8*"       : "${BUILDTOOLS_MAKE_URL}",
         "centos8*"     : "${BUILDTOOLS_MAKE_URL}",
         "stream8*"     : "${BUILDTOOLS_MAKE_URL}",
@@ -1294,6 +1297,8 @@
         "opensuse154*" : "${BUILDTOOLS_MAKE_URL}",
         "perf-alma8*"  : "${BUILDTOOLS_MAKE_URL}",
         "perf-centos7*" : "${BUILDTOOLS_URL}",
-        "perf-ubuntu1604*" : "${BUILDTOOLS_URL}"
+        "perf-ubuntu1604*" : "${BUILDTOOLS_URL}",
+        "perf-ubuntu1804-ty-*" : "${BUILDTOOLS_URL}",
+        "perf-ubuntu1804-arm-*" : "${BUILDTOOLS_ARM_URL}"
     }
 }
