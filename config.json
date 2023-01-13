@@ -46,6 +46,7 @@
             "PREMIRRORS = ''",
             "BB_GENERATE_MIRROR_TARBALLS = '1'",
             "BB_NUMBER_THREADS = '16'",
+            "BB_NUMBER_PARSE_THREADS = '16'",
             "PARALLEL_MAKE = '-j 16 -l 52'",
             "BB_PRESSURE_MAX_CPU = '10000'",
             "BB_PRESSURE_MAX_IO = '10000'",
@@ -211,6 +212,7 @@
             ],
             "extravars" : [
                 "BB_NUMBER_THREADS = '24'",
+                "BB_NUMBER_PARSE_THREADS = '24'",
                 "PARALLEL_MAKE = '-j 24'",
                 "DL_DIR = '${BUILDPERF_STATEDIR}/downloads'",
                 "CONNECTIVITY_CHECK_URIS = ''",
