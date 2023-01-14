@@ -349,6 +349,7 @@ if jcfg:
     addentry("builddir-cleanup", "Cleaning up build directory", "finish")
 elif args.phase == "finish" and args.stepname == "builddir-cleanup":
     if args.builddir and os.path.exists(args.builddir):
+        bitbakecmd(args.builddir, "bitbake -m", report, 99, args.stepname)
         runcmd(["mv", args.builddir, args.builddir + "-renamed"])
 
 if args.json_outputfile:
