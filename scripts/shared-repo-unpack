@@ -61,7 +61,7 @@ for repo in sorted(repos.keys()):
         utils.printheader("Copying in repo %s" % repo)
         utils.mkdir(targetsubdir)
         if args.target in ["a-full", "a-quick"]:
-            # full/quick need all repo data due to send-qa-email
+            # full/quick need all repo data due to send_qa_email.py
             subprocess.check_call(["tar", "-I", "zstd", "-C", targetsubdir, "-xf", "%s.tar.zst" % args.cache_dir])
         else:
             subprocess.check_call(["tar", "-I", "zstd", "-C", targetsubdir, "-xf", "%s.tar.zst" % args.cache_dir, "./" + repo])
