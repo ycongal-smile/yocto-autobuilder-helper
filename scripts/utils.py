@@ -478,3 +478,50 @@ def setup_buildtools_tarball(ourconfig, workername, btdir, checkonly=False):
                     pass
             subprocess.check_call(["bash", btdlpath, "-d", btdir, "-y"])
         enable_buildtools_tarball(btdir)
+
+def get_string_from_version(version, milestone=None, rc=None):
+    """ Point releases finishing by 0 (e.g 4.0.0, 4.1.0) do no exists,
+    those are major releases
+    """
+    if len(version) == 3 and version[-1] == 0:
+        version = version[:-1]
+
+    result = ".".join(list(map(str, version)))
+    if milestone:
+        result += "_M" + str(milestone)
+    if rc:
+        result += ".rc" + str(rc)
+    return result
+
+def get_tag_from_version(version, milestone):
+    if not milestone:
+        return "yocto-" + get_string_from_version(version, milestone)
+    return get_string_from_version(version, milestone)
+
+
+def get_version_from_string(raw_version):
+    """ Get version as list of int from raw_version.
+
+    Raw version _can_ be prefixed by "yocto-",
+    Raw version _can_ be suffixed by "_MX"
+    Raw version _can_ be suffixed by ".rcY"
+    """
+    version = None
+    milestone = None
+    rc = None
+    if raw_version[:6] == "yocto-":
+        raw_version = raw_version[6:]
+    raw_version = raw_version.split(".")
+    if raw_version[-1][:2] == "rc":
+        rc = int(raw_version[-1][-1])
+        raw_version = raw_version[:-1]
+    if raw_version[-1][-3:-1] == "_M":
+        milestone = int(raw_version[-1][-1])
+        raw_version = raw_version[:-1] + [raw_version[-1][:-3]]
+    version = list(map(int, raw_version))
+    """ Point releases finishing by 0 (e.g 4.0.0, 4.1.0) do no exists,
+    those are major releases
+    """
+    if len(version) == 3 and version[-1] == 0:
+        version = version[:-1]
+    return version, milestone, rc

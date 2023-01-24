@@ -9,10 +9,78 @@ import json
 import os
 import sys
 import subprocess
-import errno
 import tempfile
+import re
 
 import utils
+
+def is_non_release_version(version):
+    p = re.compile('\d{8}-\d+')
+    return p.match(version) is not None
+
+def get_previous_tag(targetrepodir, version):
+    previousversion = None
+    previousmilestone = None
+    if version:
+        if is_non_release_version(version):
+            return subprocess.check_output(["git", "describe", "--abbrev=0"], cwd=targetrepodir).decode('utf-8').strip()
+        compareversion, comparemilestone, _ = utils.get_version_from_string(version)
+        compareversionminor = compareversion[-1]
+        # After ignoring rc part, if we get a minor to 0 on point release (e.g 4.0.0),
+        # reject last digit since such versions do not exist
+        if len(compareversion) == 3 and compareversionminor == 0:
+            compareversion = compareversion[:-1]
+
+        # Process milestone if not first in current release
+        if comparemilestone and comparemilestone > 1:
+            previousversion = compareversion
+            previousmilestone = comparemilestone-1
+        # Process first milestone or release if not first in major release
+        elif compareversionminor > 0:
+            previousversion = compareversion[:-1] + [compareversion[-1] - 1]
+        # Otherwise : format it as tag (which must exist) and search previous tag
+        else:
+            comparetagstring = utils.get_tag_from_version(compareversion, comparemilestone)
+            return subprocess.check_output(["git", "describe", "--abbrev=0", comparetagstring + "^"], cwd=targetrepodir).decode('utf-8').strip()
+
+        return utils.get_tag_from_version(previousversion, previousmilestone)
+
+    # All other cases : merely check against latest tag reachable
+    defaultbaseversion, _, _ = utils.get_version_from_string(subprocess.check_output(["git", "describe", "--abbrev=0"], cwd=targetrepodir).decode('utf-8').strip())
+    return utils.get_tag_from_version(defaultbaseversion, None)
+
+def get_sha1(targetrepodir, revision):
+    return subprocess.check_output(["git", "rev-list", "-n", "1", revision], cwd=targetrepodir).decode('utf-8').strip()
+
+def fetch_testresults(resultdir, revision):
+    rawtags = subprocess.check_output(["git", "ls-remote", "--refs", "--tags", "origin", f"*{revision}*"], cwd=resultdir).decode('utf-8').strip()
+    if not rawtags:
+        raise Exception(f"No reference found for commit {revision} in {resultdir}")
+    for ref in [rawtag.split()[1] for rawtag in rawtags.splitlines()]:
+        print(f"Fetching matching revisions: {ref}")
+        subprocess.check_call(["git", "fetch", "--depth", "1", "origin", f"{ref}:{ref}"], cwd=resultdir)
+
+
+def generate_regression_report(resulttool, targetrepodir, basebranch, resultdir, outputdir, yoctoversion):
+    baseversion = get_previous_tag(targetrepodir, yoctoversion)
+    baserevision = get_sha1(targetrepodir, baseversion)
+    comparerevision = get_sha1(targetrepodir, basebranch)
+    print(f"Compare version : {basebranch} ({comparerevision})")
+    print(f"Base tag : {baseversion} ({baserevision})")
+
+    try:
+        """
+        Results directory is likely a shallow clone :
+        we need to fetch results corresponding to base revision before
+        running resulttool
+        """
+        fetch_testresults(resultdir, baserevision)
+        regreport = subprocess.check_output([resulttool, "regression-git", "-B", basebranch, "--commit", baserevision, "--commit2", comparerevision, resultdir])
+        with open(outputdir + "/testresult-regressions-report.txt", "wb") as f:
+           f.write(regreport)
+    except subprocess.CalledProcessError as e:
+        error = str(e)
+        print(f"Error while generating report between {baserevision} and {comparerevision} : {error}")
 
 
 def send_qa_email():
@@ -57,16 +125,7 @@ def send_qa_email():
         branch = repos['poky']['branch']
         repo = repos['poky']['url']
 
-        extraopts = None
         basebranch, comparebranch = utils.getcomparisonbranch(ourconfig, repo, branch)
-        if basebranch:
-            extraopts = " --branch %s --commit %s" % (branch, revision)
-        if comparebranch:
-            extraopts = extraopts + " --branch2 %s" % (comparebranch)
-        elif basebranch:
-            print("No comparision branch found, comparing to %s" % basebranch)
-            extraopts = extraopts + " --branch2 %s" % basebranch
-
         report = subprocess.check_output([resulttool, "report", args.results_dir])
         with open(args.results_dir + "/testresult-report.txt", "wb") as f:
             f.write(report)
@@ -95,7 +154,6 @@ def send_qa_email():
                     subprocess.check_call(["git", "checkout", "master"], cwd=tempdir)
                     subprocess.check_call(["git", "branch", basebranch], cwd=tempdir)
                     subprocess.check_call(["git", "checkout", basebranch], cwd=tempdir)
-                    extraopts = None
 
             subprocess.check_call([resulttool, "store", args.results_dir, tempdir])
             if comparebranch:
@@ -105,10 +163,8 @@ def send_qa_email():
                 subprocess.check_call(["git", "push", "--all"], cwd=tempdir)
                 subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
 
-            if extraopts:
-                regreport = subprocess.check_output([resulttool, "regression-git", tempdir] + extraopts.split())
-                with open(args.results_dir + "/testresult-regressions-report.txt", "wb") as f:
-                    f.write(regreport)
+            if basebranch:
+                generate_regression_report(resulttool, targetrepodir, basebranch, tempdir, args.results_dir, args.release)
 
         finally:
             subprocess.check_call(["rm", "-rf",  tempdir])
