@@ -75,6 +75,7 @@ def generate_regression_report(resulttool, targetrepodir, basebranch, resultdir,
         running resulttool
         """
         fetch_testresults(resultdir, baserevision)
+        fetch_testresults(resultdir, comparerevision)
         regreport = subprocess.check_output([resulttool, "regression-git", "-B", basebranch, "--commit", baserevision, "--commit2", comparerevision, resultdir])
         with open(outputdir + "/testresult-regressions-report.txt", "wb") as f:
            f.write(regreport)
