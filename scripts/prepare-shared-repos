@@ -41,7 +41,7 @@ with tempfile.TemporaryDirectory(prefix="shared-repo-temp-", dir="/home/pokybuil
         # gplv2 is no longer built/tested in master
         if repo == "meta-gplv2":
             continue
-        utils.printheader("Intially fetching repo %s" % repo)
+        utils.printheader("Initially fetching repo %s" % repo)
         # shallow clones disabled as it doesn't work correctly with revision numbers in the result repo leading to release build failures.
         if True or args.publish_dir:
             utils.fetchgitrepo(tempdir, repo, repos[repo], stashdir)
