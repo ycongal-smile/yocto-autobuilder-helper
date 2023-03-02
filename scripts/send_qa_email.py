@@ -49,43 +49,17 @@ def get_previous_tag(targetrepodir, version):
     defaultbaseversion, _, _ = utils.get_version_from_string(subprocess.check_output(["git", "describe", "--abbrev=0"], cwd=targetrepodir).decode('utf-8').strip())
     return utils.get_tag_from_version(defaultbaseversion, None)
 
-def get_sha1(targetrepodir, revision):
-    return subprocess.check_output(["git", "rev-list", "-n", "1", revision], cwd=targetrepodir).decode('utf-8').strip()
-
-def fetch_testresults(resultdir, revision):
-    rawtags = subprocess.check_output(["git", "ls-remote", "--refs", "--tags", "origin", f"*{revision}*"], cwd=resultdir).decode('utf-8').strip()
-    if not rawtags:
-        raise Exception(f"No reference found for commit {revision} in {resultdir}")
-    for ref in [rawtag.split()[1] for rawtag in rawtags.splitlines()]:
-        print(f"Fetching matching revisions: {ref}")
-        subprocess.check_call(["git", "fetch", "--depth", "1", "origin", f"{ref}:{ref}"], cwd=resultdir)
-
-
-def generate_regression_report(resulttool, targetrepodir, basebranch, resultdir, outputdir, yoctoversion):
+def generate_regression_report(querytool, targetrepodir, basebranch, resultdir, outputdir, yoctoversion):
     baseversion = get_previous_tag(targetrepodir, yoctoversion)
-    baserevision = get_sha1(targetrepodir, baseversion)
-    comparerevision = get_sha1(targetrepodir, basebranch)
-    print(f"Compare version : {basebranch} ({comparerevision})")
-    print(f"Base tag : {baseversion} ({baserevision})")
+    print(f"Comparing {basebranch} to {baseversion}")
 
     try:
-        """
-        Results directory is likely a shallow clone :
-        we need to fetch results corresponding to base revision before
-        running resulttool
-        """
-        fetch_testresults(resultdir, baserevision)
-        fetch_testresults(resultdir, comparerevision)
-        regreport = subprocess.check_output([resulttool, "regression-git", "-B", basebranch, "--commit", baserevision, "--commit2", comparerevision, resultdir])
+        regreport = subprocess.check_output([querytool, "regression-report", baseversion, basebranch, '-t', resultdir])
         with open(outputdir + "/testresult-regressions-report.txt", "wb") as f:
-           f.write(str.encode("========================== Regression report ==============================\n"))
-           f.write(str.encode(f'{"=> Target:": <16}{basebranch: <16}({comparerevision})\n'))
-           f.write(str.encode(f'{"=> Base:": <16}{baseversion: <16}({baserevision})\n'))
-           f.write(str.encode("===========================================================================\n\n"))
            f.write(regreport)
     except subprocess.CalledProcessError as e:
         error = str(e)
-        print(f"Error while generating report between {baserevision} and {comparerevision} : {error}")
+        print(f"Error while generating report between {basebranch} and {baseversion} : {error}")
 
 
 def send_qa_email():
@@ -116,6 +90,7 @@ def send_qa_email():
         repos = json.load(f)
 
     resulttool = os.path.dirname(args.repojson) + "/build/scripts/resulttool"
+    querytool = os.path.dirname(args.repojson) + "/build/scripts/yocto_testresults_query.py"
 
     buildtoolsdir = os.path.dirname(args.repojson) + "/build/buildtools"
     if os.path.exists(buildtoolsdir):
@@ -123,7 +98,7 @@ def send_qa_email():
 
     repodir = os.path.dirname(args.repojson) + "/build/repos"
 
-    if 'poky' in repos and os.path.exists(resulttool) and args.results_dir:
+    if 'poky' in repos and os.path.exists(resulttool) and os.path.exists(querytool) and args.results_dir:
         # Need the finalised revisions (not 'HEAD')
         targetrepodir = "%s/poky" % (repodir)
         revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=targetrepodir).decode('utf-8').strip()
@@ -169,7 +144,7 @@ def send_qa_email():
                 subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
 
             if basebranch:
-                generate_regression_report(resulttool, targetrepodir, basebranch, tempdir, args.results_dir, args.release)
+                generate_regression_report(querytool, targetrepodir, basebranch, tempdir, args.results_dir, args.release)
 
         finally:
             subprocess.check_call(["rm", "-rf",  tempdir])

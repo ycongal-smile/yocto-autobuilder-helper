@@ -29,24 +29,12 @@ class TestVersion(unittest.TestCase):
         {"input": {"version": "4.1.rc4"}, "expected": "yocto-4.0"}
     ]
 
-    test_data_get_sha1 = [
-        {"input": "yocto-4.0", "expected": "00cfdde791a0176c134f31e5a09eff725e75b905"},
-        {"input": "4.1_M1", "expected": "95066dde6861ee08fdb505ab3e0422156cc24fae"},
-    ]
-
     def test_versions(self):
         for data in self.test_data_get_version:
             test_name = data["input"]["version"]
             with self.subTest(f"Test {test_name} previous tag"):
                 self.assertEqual(send_qa_email.get_previous_tag(os.environ.get(
                     "POKY_PATH"), data["input"]["version"]), data["expected"])
-
-    def test_get_sha1(self):
-        for data in self.test_data_get_sha1:
-            test_name = data["input"]
-            with self.subTest(f"Test SHA1 from {test_name}"):
-                self.assertEqual(send_qa_email.get_sha1(os.environ.get(
-                    "POKY_PATH"), data["input"]), data["expected"])
 
 
 if __name__ == '__main__':
