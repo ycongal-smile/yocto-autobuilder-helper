@@ -14,15 +14,15 @@ import re
 
 import utils
 
-def is_non_release_version(version):
+def is_release_version(version):
     p = re.compile('\d{8}-\d+')
-    return p.match(version) is not None
+    return p.match(version) is None
 
 def get_previous_tag(targetrepodir, version):
     previousversion = None
     previousmilestone = None
     if version:
-        if is_non_release_version(version):
+        if not is_release_version(version):
             return subprocess.check_output(["git", "describe", "--abbrev=0"], cwd=targetrepodir).decode('utf-8').strip()
         compareversion, comparemilestone, _ = utils.get_version_from_string(version)
         compareversionminor = compareversion[-1]
