@@ -49,18 +49,28 @@ def get_previous_tag(targetrepodir, version):
     defaultbaseversion, _, _ = utils.get_version_from_string(subprocess.check_output(["git", "describe", "--abbrev=0"], cwd=targetrepodir).decode('utf-8').strip())
     return utils.get_tag_from_version(defaultbaseversion, None)
 
-def generate_regression_report(querytool, targetrepodir, basebranch, resultdir, outputdir, yoctoversion):
-    baseversion = get_previous_tag(targetrepodir, yoctoversion)
-    print(f"Comparing {basebranch} to {baseversion}")
+def get_regression_base_and_target(basebranch, comparebranch, release, targetrepodir):
+    if not basebranch:
+        # Basebranch/comparebranch is an arbitrary configuration (not defined in config.json): do not run regression reporting
+        return None, None
+
+    if is_release_version(release):
+        # We are on a release: ignore comparebranch (which is very likely None), regression reporting must be done against previous tag
+        return get_previous_tag(targetrepodir, release), basebranch
+    elif comparebranch:
+        # Basebranch/comparebranch is defined in config.json: regression reporting must be done against branches as defined in config.json
+        return comparebranch, basebranch
+
+def generate_regression_report(querytool, targetrepodir, base, target, resultdir, outputdir):
+    print(f"Comparing {target} to {base}")
 
     try:
-        regreport = subprocess.check_output([querytool, "regression-report", baseversion, basebranch, '-t', resultdir])
+        regreport = subprocess.check_output([querytool, "regression-report", base, target, '-t', resultdir])
         with open(outputdir + "/testresult-regressions-report.txt", "wb") as f:
            f.write(regreport)
     except subprocess.CalledProcessError as e:
         error = str(e)
-        print(f"Error while generating report between {basebranch} and {baseversion} : {error}")
-
+        print(f"Error while generating report between {target} and {base} : {error}")
 
 def send_qa_email():
     parser = utils.ArgParser(description='Process test results and optionally send an email about the build to prompt QA to begin testing.')
@@ -142,8 +152,9 @@ def send_qa_email():
                 subprocess.check_call(["git", "push", "--all"], cwd=tempdir)
                 subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
 
-            if basebranch:
-                generate_regression_report(querytool, targetrepodir, basebranch, tempdir, args.results_dir, args.release)
+            regression_base, regression_target = get_regression_base_and_target(basebranch, comparebranch, args.release, targetrepodir)
+            if regression_base and regression_target:
+                generate_regression_report(querytool, targetrepodir, regression_base, regression_target, tempdir, args.results_dir)
 
         finally:
             subprocess.check_call(["rm", "-rf",  tempdir])
