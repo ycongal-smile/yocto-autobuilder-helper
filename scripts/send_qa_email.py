@@ -83,7 +83,6 @@ def send_qa_email():
 
     args = parser.parse_args()
 
-    scriptsdir = os.path.dirname(os.path.realpath(__file__))
     ourconfig = utils.loadconfig()
 
     with open(args.repojson) as f:
