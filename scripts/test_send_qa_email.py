@@ -29,6 +29,12 @@ class TestVersion(unittest.TestCase):
         {"input": {"version": "4.1.rc4"}, "expected": "yocto-4.0"}
     ]
 
+    test_data_is_release_version = [
+        {"input": "yocto-4.2", "expected":True},
+        {"input": "20230313-15", "expected":False},
+        {"input": None, "expected":False}
+    ]
+
     def test_versions(self):
         for data in self.test_data_get_version:
             test_name = data["input"]["version"]
@@ -36,6 +42,10 @@ class TestVersion(unittest.TestCase):
                 self.assertEqual(send_qa_email.get_previous_tag(os.environ.get(
                     "POKY_PATH"), data["input"]["version"]), data["expected"])
 
+    def test_is_release_version(self):
+        for data in self.test_data_is_release_version:
+            with self.subTest(f"{data['input']}"):
+                self.assertEqual(send_qa_email.is_release_version(data['input']), data['expected'])
 
 if __name__ == '__main__':
     if os.environ.get("POKY_PATH") is None:
