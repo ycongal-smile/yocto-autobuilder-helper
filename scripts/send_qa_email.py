@@ -16,7 +16,7 @@ import utils
 
 def is_release_version(version):
     p = re.compile('\d{8}-\d+')
-    return p.match(version) is None
+    return version is not None and p.match(version) is None
 
 def get_previous_tag(targetrepodir, version):
     previousversion = None
