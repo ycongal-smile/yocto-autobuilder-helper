@@ -65,8 +65,17 @@ class TestVersion(unittest.TestCase):
     def test_get_regression_base_and_target(self):
         for data in self.regression_inputs:
             with self.subTest(data['name']):
-                self.assertEqual(send_qa_email.get_regression_base_and_target(
-                    data['input']['basebranch'], data['input']['comparebranch'], data['input']['release'], os.environ.get("POKY_PATH")), data['expected'])
+                base, target = send_qa_email.get_regression_base_and_target(
+                    data['input']['basebranch'], data['input']['comparebranch'], data['input']['release'], os.environ.get("POKY_PATH"))
+                expected_base, expected_target = data["expected"]
+                # The comparison base can not be set statically in tests when it is supposed to be the previous tag,
+                # since the result will depend on current tags
+                if expected_base == "LAST_TAG":
+                    self.assertIsNotNone(base)
+                else:
+                    self.assertEqual(base, expected_base)
+                self.assertEqual(target, expected_target)
+
 
 if __name__ == '__main__':
     if os.environ.get("POKY_PATH") is None:
