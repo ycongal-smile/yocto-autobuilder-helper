@@ -99,6 +99,16 @@ class TestGetComparisonBranch(unittest.TestCase):
         self.assertEqual(
             comparebranch, None,  msg="Arbitrary repo/branch should not return any specific comparebranch")
 
+    def test_master_nightly(self):
+        repo = "ssh://git@push.yoctoproject.org/poky"
+        branch = "master"
+        basebranch, comparebranch = utils.getcomparisonbranch(
+            self.TEST_CONFIG, repo, branch)
+        self.assertEqual(
+            basebranch, "master", msg="Master branch should be returned")
+        self.assertEqual(
+            comparebranch, None,  msg="No specific comparebranch should be returned")
+
 
 if __name__ == '__main__':
     unittest.main()
