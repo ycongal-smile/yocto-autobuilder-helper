@@ -48,6 +48,8 @@ class TestVersion(unittest.TestCase):
                                           "comparebranch": "master", "release": None}, "expected": ("master", "master-next")},
         {"name": "Fork Master Next", "input": {"basebranch": "ross/mut",
                                                "comparebranch": "master", "release": None}, "expected": ("master", "ross/mut")},
+        {"name": "Nightly a-quick", "input": {"basebranch": "master",
+                                               "comparebranch": None, "release": "20230322-2"}, "expected": ("LAST_TAG", "master")},
     ]
 
     def test_versions(self):

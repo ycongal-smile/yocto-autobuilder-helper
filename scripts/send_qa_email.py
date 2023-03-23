@@ -61,6 +61,9 @@ def get_regression_base_and_target(basebranch, comparebranch, release, targetrep
         # Basebranch/comparebranch is defined in config.json: regression reporting must be done against branches as defined in config.json
         return comparebranch, basebranch
 
+    #Default case: return previous tag as base
+    return get_previous_tag(targetrepodir, release), basebranch
+
 def generate_regression_report(querytool, targetrepodir, base, target, resultdir, outputdir):
     print(f"Comparing {target} to {base}")
 
