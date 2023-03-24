@@ -42,7 +42,10 @@ index_template = """
    <td><a href="{{entry[1]}}">{{entry[0]}}</a></td>
    <td>{% if entry[2] %} {{entry[2]}}{% endif %}</td>
    <td>{% if entry[4] %} {{entry[4]}}{% endif %}</td>
-   <td> {% if entry[3] %}<a href="{{entry[3]}}">Report</a>{% endif %} </td>
+   <td>
+     {% if entry[3] %}<a href="{{entry[3]}}">Report</a>{% endif -%}
+     {% if entry[9] %}<br><a href="{{entry[9]}}">Regressions</a>{% endif %}
+   </td>
    <td>
    {% for perfrep in entry[6] %}
      <a href="{{perfrep[0]}}">{{perfrep[1]}}</a>
@@ -129,6 +132,10 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
     if os.path.exists(buildpath + "/testresult-report.txt"):
         testreport = reldir + "testresults/testresult-report.txt"
 
+    regressionreport = ""
+    if os.path.exists(buildpath + "/testresult-regressions-report.txt"):
+        regressionreport = reldir + "testresults/testresult-regressions-report.txt"
+
     ptestlogs = []
     ptestseen = []
     for p in glob.glob(buildpath + "/*-ptest/*.log"):
@@ -165,7 +172,7 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
 
     branch = get_build_branch(buildpath)
 
-    entries.append((build, reldir, btype, testreport, branch, buildhistory, perfreports, ptestlogs, hd))
+    entries.append((build, reldir, btype, testreport, branch, buildhistory, perfreports, ptestlogs, hd, regressionreport))
 
     # Also ensure we have saved out log data for ptest runs to aid debugging
     if "ptest" in btype or btype in ["full", "quick"]:
