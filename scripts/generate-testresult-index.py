@@ -12,7 +12,7 @@ import json
 import subprocess
 from jinja2 import Template
 
-index_templpate = """
+index_template = """
 <!DOCTYPE html>
 <html>
 <head>
@@ -181,6 +181,6 @@ for build in sorted(os.listdir(path), key=keygen, reverse=True):
                     with open(f + "/resulttool-done.log", "a+") as tf:
                         tf.write("\n")
 
-t = Template(index_templpate)
+t = Template(index_template)
 with open(os.path.join(path, "index.html"), 'w') as f:
     f.write(t.render(entries = entries))
