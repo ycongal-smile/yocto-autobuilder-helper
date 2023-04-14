@@ -432,6 +432,7 @@
                 "${BUILDDIR}/../meta-openembedded/meta-oe",
                 "${BUILDDIR}/../meta-openembedded/meta-python",
                 "${BUILDDIR}/../meta-openembedded/meta-networking",
+                "${BUILDDIR}/../meta-openembedded/meta-multimedia",
                 "${BUILDDIR}/../meta-aws"
             ],
             "step1" : {
