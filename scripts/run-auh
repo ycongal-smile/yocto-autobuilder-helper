@@ -7,7 +7,7 @@
 # Called with $1 - the directory where the setup was created
 
 if [ -z $1 ]; then
-  echo "Use: $0 auh_setup_dir"
+  echo "Use: $0 auh_setup_dir [publish_dir]"
   exit 1
 fi
 
@@ -26,5 +26,9 @@ git checkout -B tmp-auh-upgrades origin/master
 
 source $poky_dir/oe-init-build-env $build_dir
 $auh_dir/upgrade-helper.py -e all
+
+if [ -n $2 ]; then
+  cp -rf $build_dir/upgrade-helper/* $2
+fi
 
 popd
