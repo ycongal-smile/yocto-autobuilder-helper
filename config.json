@@ -459,14 +459,6 @@
             "MACHINE" : "qemumips",
             "TEMPLATE" : "altcfg-qemu"
         },
-        "edgerouter" : {
-            "MACHINE" : "edgerouter",
-            "TEMPLATE" : "arch-hw"
-        },
-        "edgerouter-alt" : {
-            "MACHINE" : "edgerouter",
-            "TEMPLATE" : "altcfg-hw"
-        },
         "qemumips64" : {
             "MACHINE" : "qemumips64",
             "TEMPLATE" : "arch-qemu"
