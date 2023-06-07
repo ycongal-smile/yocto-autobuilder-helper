@@ -923,10 +923,6 @@
         "oe-selftest-centos" : {
             "TEMPLATE" : "selftest"
         },
-        "oe-selftest-arm" : {
-            "MACHINE": "qemuarm64",
-            "TEMPLATE" : "selftest"
-        },
         "oe-selftest-armhost" : {
             "MACHINE": "qemuarm64",
             "SDKMACHINE": "aarch64",
