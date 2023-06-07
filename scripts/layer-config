@@ -7,11 +7,9 @@
 # Move the repositories into the correct layout and generate bblayers.conf
 #
 
-import json
 import os
 import sys
 import subprocess
-import errno
 
 import utils
 
