@@ -93,10 +93,15 @@
                 "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
-            },
-            "step3" : {
+            }
+        },
+        "toolchain-qemu" : {
+            "BUILDINFO" : true,
+            "extravars" : [
+                "IMAGE_INSTALL:append = ' ssh-pregen-hostkeys'"
+            ],
+            "step1" : {
                 "shortname" : "Machine oe-selftest",
-                "BUILDHISTORY" : false,
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest ${HELPERSTMACHTARGS} -j 15"],
                 "ADDLAYER" : ["${BUILDDIR}/../meta-selftest"]
             }
@@ -311,6 +316,10 @@
             "MACHINE" : "qemuarm",
             "TEMPLATE" : "arch-qemu"
         },
+        "qemuarm-tc" : {
+            "MACHINE" : "qemuarm",
+            "TEMPLATE" : "toolchain-qemu"
+        },
         "qemuarm-armhost" : {
             "MACHINE" : "qemuarm",
             "BUILDINFO" : true,
@@ -339,6 +348,10 @@
         "qemuarm64" : {
             "MACHINE" : "qemuarm64",
             "TEMPLATE" : "arch-qemu"
+        },
+        "qemuarm64-tc" : {
+            "MACHINE" : "qemuarm64",
+            "TEMPLATE" : "toolchain-qemu"
         },
         "qemuarm64-alt" : {
             "MACHINE" : "qemuarm64",
@@ -381,6 +394,15 @@
             "MACHINE" : "qemuriscv64",
             "TEMPLATE" : "arch-qemu"
         },
+        "qemuriscv32-tc" : {
+            "MACHINE" : "qemuriscv64",
+            "TEMPLATE" : "toolchain-qemu"
+        },
+        "qemuriscv64-tc" : {
+            "MACHINE" : "qemuriscv64",
+            "TEMPLATE" : "toolchain-qemu"
+        },
+
         "qemuriscv64-ptest" : {
             "MACHINE" : "qemuriscv64",
             "TEMPLATE" : "ptest-qemu"
@@ -389,6 +411,11 @@
             "MACHINE" : "qemuppc64",
             "TEMPLATE" : "arch-qemu"
         },
+        "qemuppc64-tc" : {
+            "MACHINE" : "qemuppc64",
+            "TEMPLATE" : "toolchain-qemu"
+        },
+
         "meta-arm" : {
             "NEEDREPOS" : ["poky", "meta-arm"],
             "ADDLAYER" : [
@@ -455,6 +482,11 @@
             "MACHINE" : "qemumips",
             "TEMPLATE" : "arch-qemu"
         },
+        "qemumips-tc" : {
+            "MACHINE" : "qemumips",
+            "TEMPLATE" : "toolchain-qemu"
+        },
+
         "qemumips-alt" : {
             "MACHINE" : "qemumips",
             "TEMPLATE" : "altcfg-qemu"
@@ -466,6 +498,14 @@
         "qemuppc" : {
             "MACHINE" : "qemuppc",
             "TEMPLATE" : "arch-qemu"
+        },
+        "qemumips64-tc" : {
+            "MACHINE" : "qemumips64",
+            "TEMPLATE" : "toolchain-qemu"
+        },
+        "qemuppc-tc" : {
+            "MACHINE" : "qemuppc",
+            "TEMPLATE" : "toolchain-qemu"
         },
         "qemuppc-alt" : {
             "MACHINE" : "qemuppc",
@@ -479,6 +519,10 @@
                      "IMAGE_FSTYPES:append = ' wic wic.bmap'"
                 ]
             }
+        },
+        "qemux86-tc" : {
+            "MACHINE" : "qemux86",
+            "TEMPLATE" : "toolchain-qemu"
         },
         "qemux86-alt" : {
             "MACHINE" : "qemux86",
@@ -514,6 +558,11 @@
                 ]
             }
         },
+        "qemux86-64-tc" : {
+            "MACHINE" : "qemux86-64",
+            "TEMPLATE" : "toolchain-qemu"
+        },
+
         "qemux86-64-alt" : {
             "MACHINE" : "qemux86-64",
             "TEMPLATE" : "altcfg-qemu"
