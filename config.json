@@ -262,7 +262,7 @@
         },
         "trigger-build" : {
             "SDKMACHINE" : "x86_64",
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "step1" : {
                 "shortname" : "Sources pre-fetching",
                 "BBTARGETS" : "universe -c fetch -k",
@@ -274,7 +274,7 @@
         },
         "trigger-build-posttrigger" : {
             "SDKMACHINE" : "x86_64",
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "step1" : {
                 "shortname" : "Source Mirror Selftest",
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest -r buildoptions.SourceMirroring.test_yocto_source_mirror"],
@@ -675,19 +675,19 @@
             }
         },
         "pkgman-rpm-non-rpm" : {
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "PACKAGE_CLASSES" : "package_rpm",
             "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
         },
         "pkgman-deb-non-deb" : {
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "PACKAGE_CLASSES" : "package_deb",
             "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato:do_populate_sdk",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-sato:do_testsdk"
         },
         "pkgman-non-rpm" : {
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "step1" : {
                 "PACKAGE_CLASSES" : "package_ipk",
                 "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev",
@@ -848,7 +848,7 @@
             ]
         },
         "checkuri" : {
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "universe:do_checkuri",
             "extravars" : [
@@ -962,7 +962,7 @@
         },
         "meta-mingw" : {
             "NEEDREPOS" : ["poky", "meta-mingw"],
-            "MACHINE" : "qemux86",
+            "MACHINE" : "qemux86-64",
             "BBTARGETS" : "core-image-mingw-sdktest:do_populate_sdk",
             "ADDLAYER" : ["${BUILDDIR}/../meta-mingw"],
             "step1" : {
