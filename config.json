@@ -674,29 +674,28 @@
                 ]
             }
         },
-        "pkgman-rpm-non-rpm" : {
-            "MACHINE" : "qemux86-64",
-            "PACKAGE_CLASSES" : "package_rpm",
-            "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev",
-            "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
-        },
-        "pkgman-deb-non-deb" : {
-            "MACHINE" : "qemux86-64",
-            "PACKAGE_CLASSES" : "package_deb",
-            "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-sato:do_populate_sdk",
-            "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-sato:do_testsdk"
-        },
         "pkgman-non-rpm" : {
-            "MACHINE" : "qemux86-64",
+            "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-minimal:do_populate_sdk",
+            "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-minimal:do_testsdk",
             "step1" : {
-                "PACKAGE_CLASSES" : "package_ipk",
-                "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev",
-                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+                "shortname" : "x86 ipk",
+                "MACHINE" : "qemux86-64",
+                "PACKAGE_CLASSES" : "package_ipk"
             },
             "step2" : {
-                "PACKAGE_CLASSES" : "package_deb",
-                "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev",
-                "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage"
+                "shortname" : "x86 deb",
+                "MACHINE" : "qemux86-64",
+                "PACKAGE_CLASSES" : "package_deb"
+            },
+            "step3" : {
+                "shortname" : "arm ipk",
+                "MACHINE" : "qemuarm64",
+                "PACKAGE_CLASSES" : "package_ipk"
+            },
+            "step4" : {
+                "shortname" : "arm deb",
+                "MACHINE" : "qemuarm64",
+                "PACKAGE_CLASSES" : "package_deb"
             }
         },
         "poky-tiny" : {
