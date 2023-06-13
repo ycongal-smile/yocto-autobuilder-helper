@@ -43,7 +43,13 @@ def trash_processor(trashdir):
         try:
             files = os.listdir(trashdir)
             if files:
-                os.system("nice -n 10 ionice -c 3 rm %s/* -rf" % trashdir)
+                for file in files:
+                    file_path = trashdir + "/" + file
+                    file_age = time.time() - os.path.getmtime(file_path)
+                    if file_age >= 60:
+                        os.system("nice -n 10 ionice -c 3 rm %s -rf" % file_path)
+                    else:
+                        print("Not removing '%s' - age is only %s seconds. There may be another process using it" % (file_path, str(int(file_age))))
             else:
                 time.sleep(120*60) # 30 minutes
         except Exception as e:
