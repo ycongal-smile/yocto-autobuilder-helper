@@ -159,6 +159,8 @@ def send_qa_email():
             elif basebranch:
                 subprocess.check_call(["git", "push", "--all"], cwd=tempdir)
                 subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
+            elif is_release_version(args.release) and not comparebranch and not basebranch:
+                log.warning("Test results not published on release version. Faulty AB configuration ?")
 
             regression_base, regression_target = get_regression_base_and_target(basebranch, comparebranch, args.release, targetrepodir)
             if regression_base and regression_target:
