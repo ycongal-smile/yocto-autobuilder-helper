@@ -11,6 +11,7 @@ import sys
 import subprocess
 import tempfile
 import re
+import logging
 
 import utils
 
@@ -64,8 +65,8 @@ def get_regression_base_and_target(basebranch, comparebranch, release, targetrep
     #Default case: return previous tag as base
     return get_previous_tag(targetrepodir, release), basebranch
 
-def generate_regression_report(querytool, targetrepodir, base, target, resultdir, outputdir):
-    print(f"Comparing {target} to {base}")
+def generate_regression_report(querytool, targetrepodir, base, target, resultdir, outputdir, log):
+    log.info(f"Comparing {target} to {base}")
 
     try:
         regreport = subprocess.check_output([querytool, "regression-report", base, target, '-t', resultdir])
@@ -73,9 +74,13 @@ def generate_regression_report(querytool, targetrepodir, base, target, resultdir
            f.write(regreport)
     except subprocess.CalledProcessError as e:
         error = str(e)
-        print(f"Error while generating report between {target} and {base} : {error}")
+        log.error(f"Error while generating report between {target} and {base} : {error}")
 
 def send_qa_email():
+    # Setup logging
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+    log = logging.getLogger('send-qa-email')
+
     parser = utils.ArgParser(description='Process test results and optionally send an email about the build to prompt QA to begin testing.')
 
     parser.add_argument('send',
@@ -132,7 +137,7 @@ def send_qa_email():
             try:
                 subprocess.check_call(["git", "clone", "git@push.yoctoproject.org:yocto-testresults", tempdir, "--depth", "1"] + cloneopts)
             except subprocess.CalledProcessError:
-                print("No comparision branch found, falling back to master")
+                log.info("No comparision branch found, falling back to master")
                 subprocess.check_call(["git", "clone", "git@push.yoctoproject.org:yocto-testresults", tempdir, "--depth", "1"])
 
             # If the base comparision branch isn't present regression comparision won't work
@@ -157,7 +162,7 @@ def send_qa_email():
 
             regression_base, regression_target = get_regression_base_and_target(basebranch, comparebranch, args.release, targetrepodir)
             if regression_base and regression_target:
-                generate_regression_report(querytool, targetrepodir, regression_base, regression_target, tempdir, args.results_dir)
+                generate_regression_report(querytool, targetrepodir, regression_base, regression_target, tempdir, args.results_dir, log)
 
         finally:
             subprocess.check_call(["rm", "-rf",  tempdir])
