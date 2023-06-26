@@ -19,6 +19,15 @@ import fnmatch
 import glob
 import fcntl
 
+
+def is_a_main_branch(reponame, branchname):
+    """
+    Checks if target repo/branch combo represent a main branch. This
+    includes master and release branches in poky, while excluding "next"
+    branches
+    """
+    return reponame == "poky" and not branchname.endswith("-next")
+
 #
 # Check if config contains all the listed params
 #
@@ -212,7 +221,7 @@ def getbuildhistoryconfig(ourconfig, builddir, target, reponame, branchname, ste
                 reponame = reponame.rsplit("/", 1)[1]
             if reponame.endswith(".git"):
                 reponame = reponame[:-4]
-            if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_DIRECTPUSH", ourconfig):
+            if is_a_main_branch(reponame, branchname):
                 base = reponame + ":" + branchname
             if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
                 base = getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
@@ -392,7 +401,7 @@ def getcomparisonbranch(ourconfig, reponame, branchname):
             comparerepo, comparebranch = base.split(":")
             print("Comparing to %s\n" % (comparebranch))
             return branchname, comparebranch
-    if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_DIRECTPUSH", ourconfig):
+    if is_a_main_branch(reponame, branchname):
         return branchname, None
     return None, None
 
