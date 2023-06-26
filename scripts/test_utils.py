@@ -7,22 +7,7 @@ import utils
 
 class TestGetComparisonBranch(unittest.TestCase):
     TEST_CONFIG = {
-        "BUILD_HISTORY_DIRECTPUSH": [
-            "poky:morty",
-            "poky:pyro",
-            "poky:rocko",
-            "poky:sumo",
-            "poky:thud",
-            "poky:warrior",
-            "poky:zeus",
-            "poky:dunfell",
-            "poky:gatesgarth",
-            "poky:hardknott",
-            "poky:honister",
-            "poky:kirkstone",
-            "poky:langdale",
-            "poky:master"
-        ], "BUILD_HISTORY_FORKPUSH": {
+       "BUILD_HISTORY_FORKPUSH": {
             "poky-contrib:ross/mut": "poky:master",
             "poky:master-next": "poky:master",
             "poky-contrib:abelloni/master-next": "poky:master"
@@ -35,9 +20,9 @@ class TestGetComparisonBranch(unittest.TestCase):
         basebranch, comparebranch = utils.getcomparisonbranch(
             self.TEST_CONFIG, repo, branch)
         self.assertEqual(
-            basebranch, "master", msg="Repo/branch pair present in BUILD_HISTORY_DIRECTPUSH must return corresponding base branch")
+            basebranch, "master", msg="Release branch in poky must return corresponding base branch")
         self.assertEqual(
-            comparebranch, None, msg="Repo/branch pair present in BUILD_HISTORY_DIRECTPUSH must return corresponding compare branch")
+            comparebranch, None, msg="Release branch in poky must return corresponding compare branch")
 
     def test_release_kirkstone(self):
         repo = "ssh://git@push.yoctoproject.org/poky"
@@ -45,9 +30,9 @@ class TestGetComparisonBranch(unittest.TestCase):
         basebranch, comparebranch = utils.getcomparisonbranch(
             self.TEST_CONFIG, repo, branch)
         self.assertEqual(basebranch, "kirkstone",
-                         msg="Repo/branch pair present in BUILD_HISTORY_DIRECTPUSH must return corresponding base branch")
+                         msg="Release branch in poky must return corresponding base branch")
         self.assertEqual(
-            comparebranch, None, msg="Repo/branch pair present in BUILD_HISTORY_DIRECTPUSH must return corresponding compare branch")
+            comparebranch, None, msg="Release branch in poky must return corresponding compare branch")
 
     def test_release_langdale(self):
         repo = "ssh://git@push.yoctoproject.org/poky"
@@ -55,9 +40,9 @@ class TestGetComparisonBranch(unittest.TestCase):
         basebranch, comparebranch = utils.getcomparisonbranch(
             self.TEST_CONFIG, repo, branch)
         self.assertEqual(basebranch, "langdale",
-                         msg="Repo/branch pair present in BUILD_HISTORY_DIRECTPUSH must return corresponding base branch")
+                         msg="Release branch in poky must return corresponding base branch")
         self.assertEqual(
-            comparebranch, None, msg="Repo/branch pair present in BUILD_HISTORY_DIRECTPUSH must return corresponding compare branch")
+            comparebranch, None, msg="Release branch in poky must return corresponding compare branch")
 
     def test_master_next(self):
         repo = "ssh://git@push.yoctoproject.org/poky"
