@@ -102,7 +102,6 @@
                 "IMAGE_INSTALL:append = ' ssh-pregen-hostkeys'"
             ],
             "step1" : {
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato core-image-minimal core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk_ext",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato:do_testsdk core-image-minimal:do_testsdkext core-image-sato:do_testsdkext"
             }
@@ -173,7 +172,6 @@
         "arch-hw" : {
             "BUILDINFO" : true,
             "step1" : {
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-ptest-all core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             }
@@ -181,7 +179,6 @@
         "arch-hw-qemu" : {
             "BUILDINFO" : true,
             "step1" : {
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal core-image-sato core-image-sato-sdk core-image-sato:do_populate_sdk core-image-sato:do_populate_sdk_ext",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-sato:do_testsdk core-image-sato:do_testsdkext"
             },
@@ -239,7 +236,6 @@
         },
         "buildperf" : {
             "MACHINE" : "qemux86",
-            "SDKMACHINE" : "x86_64",
             "SSTATEDIR" : ["SSTATE_DIR ?= '${HELPERBUILDDIR}/sstate'"],
             "SSTATEDIR_RELEASE" : ["SSTATE_DIR ?= '${HELPERBUILDDIR}/sstate'"],
             "PACKAGE_CLASSES" : "package_rpm",
@@ -259,7 +255,6 @@
         },
         "selftest" : {
             "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
             "PACKAGE_CLASSES" : "package_rpm",
             "extravars" : [
                 "RPM_GPG_SIGN_CHUNK = '1'",
@@ -285,7 +280,6 @@
         },
         "reproducible" : {
             "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
             "step1" : {
                 "shortname" : "Reproducible Selftest",
                 "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; OEQA_DEBUGGING_SAVED_OUTPUT=${BASE_SHAREDDIR}/pub/repro-fail/ DISPLAY=:1 oe-selftest -r reproducible"],
@@ -294,7 +288,6 @@
             }
         },
         "trigger-build" : {
-            "SDKMACHINE" : "x86_64",
             "MACHINE" : "qemux86-64",
             "step1" : {
                 "shortname" : "Sources pre-fetching",
@@ -306,7 +299,6 @@
             }
         },
         "trigger-build-posttrigger" : {
-            "SDKMACHINE" : "x86_64",
             "MACHINE" : "qemux86-64",
             "step1" : {
                 "shortname" : "Source Mirror Selftest",
@@ -336,7 +328,6 @@
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             },
             "step3" : {
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato:do_populate_sdk core-image-minimal:do_populate_sdk_ext",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             }
@@ -366,7 +357,6 @@
             "MACHINE" : "beaglebone-yocto",
             "TEMPLATE" : "arch-hw",
             "step2" : {
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext core-image-sato:do_populate_sdk"
             }
         },
@@ -455,14 +445,12 @@
             "step1": {
                 "shortname": "Build for fvp-base",
                 "MACHINE": "fvp-base",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS": "core-image-minimal core-image-sato core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
                 },
             "step2": {
                 "shortname": "Build for generic-arm64 (poky)",
                 "MACHINE": "generic-arm64",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS": "core-image-minimal core-image-sato core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             },
@@ -470,7 +458,6 @@
                 "shortname": "Build for generic-arm64 (poky-altcfg)",
                 "DISTRO": "poky-altcfg",
                 "MACHINE": "generic-arm64",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS": "core-image-minimal core-image-sato core-image-sato:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-sato:do_testsdk"
             }
@@ -644,7 +631,6 @@
         },
         "qemux86-world" : {
             "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "world",
             "extravars" : [
                 "require conf/multilib.conf",
@@ -654,7 +640,6 @@
         },
         "qemux86-world-alt" : {
             "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
             "DISTRO" : "poky-altcfg",
             "BBTARGETS" : "world",
             "extravars" : [
@@ -666,7 +651,6 @@
         },
         "qemux86-64-x32" : {
             "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
             "BUILDINFO" : true,
             "extravars" : [
                 "DEFAULTTUNE = 'x86-64-x32'",
@@ -697,7 +681,6 @@
         },
         "multilib" : {
             "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
             "step1" : {
                 "shortname" : "x86-64 lib32-img rpm",
                 "description" : "qemux86-64 32bit multilib image with rpm",
@@ -756,7 +739,6 @@
                 "shortname" : "x86-64 lib64-img",
                 "description" : "x86 building 64bit multilib image",
                 "MACHINE" : "qemux86",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "lib64-core-image-sato lib64-core-image-sato-sdk",
                 "extravars" : [
                     "require conf/multilib.conf",
@@ -768,7 +750,6 @@
                 "shortname" : "mip64 n32",
                 "description" : "qemumips64 image using n32 as default",
                 "MACHINE" : "qemumips64",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal core-image-minimal:do_populate_sdk",
                 "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-minimal:do_testsdk",
                 "extravars" : [
@@ -783,7 +764,6 @@
         "pkgman-non-rpm" : {
             "BBTARGETS" : "core-image-sato core-image-sato-sdk core-image-minimal core-image-minimal-dev core-image-minimal:do_populate_sdk",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-sato:do_testimage core-image-sato-sdk:do_testimage core-image-minimal:do_testsdk",
-            "SDKMACHINE" : "x86_64",
             "step1" : {
                 "shortname" : "x86 ipk",
                 "MACHINE" : "qemux86-64",
@@ -936,7 +916,6 @@
         },
         "musl-qemux86" : {
             "MACHINE" : "qemux86",
-            "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline core-image-sato-sdk world",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-full-cmdline:do_testimage core-image-sato-sdk:do_testimage",
             "extravars" : [
@@ -945,7 +924,6 @@
         },
         "musl-qemux86-64" : {
             "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
             "BUILDINFO" : true,
             "BBTARGETS" : "core-image-minimal core-image-full-cmdline core-image-sato-sdk world",
             "SANITYTARGETS" : "core-image-minimal:do_testimage core-image-full-cmdline:do_testimage core-image-sato-sdk:do_testimage",
@@ -955,7 +933,6 @@
         },
         "checkuri" : {
             "MACHINE" : "qemux86-64",
-            "SDKMACHINE" : "x86_64",
             "BBTARGETS" : "universe:do_checkuri",
             "extravars" : [
                 "SOURCE_MIRROR_FETCH = '1'",
@@ -1147,7 +1124,6 @@
             },
             "step3" : {
                 "shortname" : "Full eSDK type",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-minimal:do_populate_sdk_ext",
                 "extravars" : [
                     "SDK_EXT_TYPE = 'full'"
@@ -1155,18 +1131,15 @@
             },
             "step4" : {
                 "shortname" : "Prep locked-sigs test",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato core-image-sato:do_populate_sdk_ext"
             },
             "step5" : {
                 "shortname" : "Prep #2 locked-sigs test",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato -S none",
                 "EXTRACMDS" : ["${SCRIPTSDIR}/../janitor/clobberdir ${BUILDDIR}/../build/tmp"]
             },
             "step6" : {
                 "shortname" : "Test locked-sigs image",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato",
                 "extravars" : [
                     "TMPDIR = '${TOPDIR}/newtmp'",
@@ -1175,7 +1148,6 @@
             },
             "step7" : {
                 "shortname" : "Test locked-sigs eSDK",
-                "SDKMACHINE" : "x86_64",
                 "BBTARGETS" : "core-image-sato:do_populate_sdk_ext",
                 "extravars" : [
                     "TMPDIR = '${TOPDIR}/sdktmp'"
