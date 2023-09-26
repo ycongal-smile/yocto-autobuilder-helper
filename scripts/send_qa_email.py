@@ -101,6 +101,9 @@ def send_qa_email():
     parser.add_argument('-r', '--release',
                         action='store',
                         help="The build/release 'name' for release purposes (optional)")
+    parser.add_argument('--url',
+                        action='store',
+                        help="The url for the build")
 
     args = parser.parse_args()
 
@@ -212,12 +215,13 @@ def send_qa_email():
     email += '''\n
     A build flagged for QA (%s) was completed on the autobuilder and is available at:\n\n
         %s\n\n
+    Build URL: %s\n
     Build hash information: \n
     %s
 
     \nThis is an automated message from the Yocto Project Autobuilder\nGit: git://git.yoctoproject.org/yocto-autobuilder2\nEmail: richard.purdie@linuxfoundation.org\n
 
-    ''' % (args.release, args.publish_dir.replace(web_root, web_url), buildhashes)
+    ''' % (args.release, args.publish_dir.replace(web_root, web_url), args.url, buildhashes)
 
     # Store a copy of the email in case it doesn't reach the lists
     with open(os.path.join(args.publish_dir, "qa-email"), "wb") as qa_email:
