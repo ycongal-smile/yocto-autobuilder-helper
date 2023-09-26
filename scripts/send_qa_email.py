@@ -15,6 +15,8 @@ import logging
 
 import utils
 
+exitcode = 0
+
 def is_release_version(version):
     p = re.compile('\d{8}-\d+')
     return version is not None and p.match(version) is None
@@ -74,6 +76,7 @@ def generate_regression_report(querytool, targetrepodir, base, target, resultdir
            f.write(regreport)
     except subprocess.CalledProcessError as e:
         error = str(e)
+        exitcode = 1
         log.error(f"Error while generating report between {target} and {base} : {error}")
 
 def send_qa_email():
@@ -177,7 +180,7 @@ def send_qa_email():
 
     if args.send.lower() != 'true' or not args.publish_dir or not args.release:
         utils.printheader("Not sending QA email")
-        sys.exit(0)
+        sys.exit(exitcode)
 
     utils.printheader("Generating QA email")
 
@@ -225,6 +228,7 @@ def send_qa_email():
     # Many distros have sendmail in */sbin
     env["PATH"] = env["PATH"] + ":/usr/sbin:/sbin"
     subprocess.check_call('echo "' + email +' " | sendmail -t', shell=True, env=env)
+    sys.exit(exitcode)
 
 if __name__ == "__main__":
     send_qa_email()
