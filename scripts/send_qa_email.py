@@ -116,6 +116,7 @@ def send_qa_email():
     repodir = os.path.dirname(args.repojson) + "/build/repos"
 
     if 'poky' in repos and os.path.exists(resulttool) and os.path.exists(querytool) and args.results_dir:
+        utils.printheader("Processing test report")
         # Need the finalised revisions (not 'HEAD')
         targetrepodir = "%s/poky" % (repodir)
         revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=targetrepodir).decode('utf-8').strip()
@@ -129,6 +130,7 @@ def send_qa_email():
 
         tempdir = tempfile.mkdtemp(prefix='sendqaemail.')
         try:
+            utils.printheader("Importing test results repo data")
             cloneopts = []
             if comparebranch:
                 cloneopts = ["--branch", comparebranch]
@@ -152,6 +154,8 @@ def send_qa_email():
                     subprocess.check_call(["git", "branch", basebranch], cwd=tempdir)
                     subprocess.check_call(["git", "checkout", basebranch], cwd=tempdir)
 
+            utils.printheader("Storing results")
+
             subprocess.check_call([resulttool, "store", args.results_dir, tempdir])
             if comparebranch:
                 subprocess.check_call(["git", "push", "--all", "--force"], cwd=tempdir)
@@ -162,6 +166,7 @@ def send_qa_email():
             elif is_release_version(args.release) and not comparebranch and not basebranch:
                 log.warning("Test results not published on release version. Faulty AB configuration ?")
 
+            utils.printheader("Processing regression report")
             regression_base, regression_target = get_regression_base_and_target(basebranch, comparebranch, args.release, targetrepodir)
             if regression_base and regression_target:
                 generate_regression_report(querytool, targetrepodir, regression_base, regression_target, tempdir, args.results_dir, log)
@@ -173,6 +178,8 @@ def send_qa_email():
     if args.send.lower() != 'true' or not args.publish_dir or not args.release:
         utils.printheader("Not sending QA email")
         sys.exit(0)
+
+    utils.printheader("Generating QA email")
 
     buildhashes = ""
     for repo in sorted(repos.keys()):
