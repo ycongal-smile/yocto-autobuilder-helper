@@ -69,6 +69,7 @@ def get_regression_base_and_target(basebranch, comparebranch, release, targetrep
 
 def generate_regression_report(querytool, targetrepodir, base, target, resultdir, outputdir, log):
     log.info(f"Comparing {target} to {base}")
+    global exitcode
 
     try:
         regreport = subprocess.check_output([querytool, "regression-report", base, target, '-t', resultdir])
