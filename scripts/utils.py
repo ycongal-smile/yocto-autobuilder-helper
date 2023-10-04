@@ -398,9 +398,9 @@ def getcomparisonbranch(ourconfig, reponame, branchname):
     if (reponame + ":" + branchname) in getconfig("BUILD_HISTORY_FORKPUSH", ourconfig):
         base = getconfig("BUILD_HISTORY_FORKPUSH", ourconfig)[reponame + ":" + branchname]
         if base:
-            comparerepo, comparebranch = base.split(":")
-            print("Comparing to %s\n" % (comparebranch))
-            return branchname, comparebranch
+            baserepo, basebranch = base.split(":")
+            print("Comparing to %s\n" % (basebranch))
+            return branchname, basebranch
     if is_a_main_branch(reponame, branchname):
         return branchname, None
     return None, None

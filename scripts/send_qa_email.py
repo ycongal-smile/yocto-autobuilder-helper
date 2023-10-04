@@ -52,20 +52,22 @@ def get_previous_tag(targetrepodir, version):
     defaultbaseversion, _, _ = utils.get_version_from_string(subprocess.check_output(["git", "describe", "--abbrev=0"], cwd=targetrepodir).decode('utf-8').strip())
     return utils.get_tag_from_version(defaultbaseversion, None)
 
-def get_regression_base_and_target(basebranch, comparebranch, release, targetrepodir):
-    if not basebranch:
-        # Basebranch/comparebranch is an arbitrary configuration (not defined in config.json): do not run regression reporting
+def get_regression_base_and_target(targetbranch, basebranch, release, targetrepodir):
+    if not targetbranch:
+        # Targetbranch/basebranch is an arbitrary configuration (not defined in config.json): do not run regression reporting
         return None, None
 
     if is_release_version(release):
-        # We are on a release: ignore comparebranch (which is very likely None), regression reporting must be done against previous tag
-        return get_previous_tag(targetrepodir, release), basebranch
-    elif comparebranch:
-        # Basebranch/comparebranch is defined in config.json: regression reporting must be done against branches as defined in config.json
-        return comparebranch, basebranch
+        # We are on a release: ignore basebranch (which is very likely None),
+        # regression reporting must be done against previous tag
+        return get_previous_tag(targetrepodir, release), targetbranch
+    elif basebranch:
+        # Targetbranch/basebranch is defined in config.json: regression
+        # reporting must be done against branches as defined in config.json
+        return basebranch, targetbranch
 
     #Default case: return previous tag as base
-    return get_previous_tag(targetrepodir, release), basebranch
+    return get_previous_tag(targetrepodir, release), targetbranch
 
 def generate_regression_report(querytool, targetrepodir, base, target, resultdir, outputdir, log):
     log.info(f"Comparing {target} to {base}")
@@ -130,7 +132,7 @@ def send_qa_email():
         branch = repos['poky']['branch']
         repo = repos['poky']['url']
 
-        basebranch, comparebranch = utils.getcomparisonbranch(ourconfig, repo, branch)
+        targetbranch, basebranch = utils.getcomparisonbranch(ourconfig, repo, branch)
         report = subprocess.check_output([resulttool, "report", args.results_dir])
         with open(args.results_dir + "/testresult-report.txt", "wb") as f:
             f.write(report)
@@ -139,10 +141,10 @@ def send_qa_email():
         try:
             utils.printheader("Importing test results repo data")
             cloneopts = []
-            if comparebranch:
-                cloneopts = ["--branch", comparebranch]
-            elif basebranch:
+            if basebranch:
                 cloneopts = ["--branch", basebranch]
+            elif targetbranch:
+                cloneopts = ["--branch", targetbranch]
             try:
                 subprocess.check_call(["git", "clone", "git@push.yoctoproject.org:yocto-testresults", tempdir, "--depth", "1"] + cloneopts)
             except subprocess.CalledProcessError:
@@ -151,30 +153,30 @@ def send_qa_email():
 
             # If the base comparision branch isn't present regression comparision won't work
             # at least until we can tell the tool to ignore internal branch information
-            if basebranch:
+            if targetbranch:
                 try:
-                    subprocess.check_call(["git", "rev-parse", "--verify", basebranch], cwd=tempdir)
+                    subprocess.check_call(["git", "rev-parse", "--verify", targetbranch], cwd=tempdir)
                 except subprocess.CalledProcessError:
                     # Doesn't exist so base it off master
                     # some older hosts don't have git branch old new
                     subprocess.check_call(["git", "checkout", "master"], cwd=tempdir)
-                    subprocess.check_call(["git", "branch", basebranch], cwd=tempdir)
-                    subprocess.check_call(["git", "checkout", basebranch], cwd=tempdir)
+                    subprocess.check_call(["git", "branch", targetbranch], cwd=tempdir)
+                    subprocess.check_call(["git", "checkout", targetbranch], cwd=tempdir)
 
             utils.printheader("Storing results")
 
             subprocess.check_call([resulttool, "store", args.results_dir, tempdir])
-            if comparebranch:
+            if basebranch:
                 subprocess.check_call(["git", "push", "--all", "--force"], cwd=tempdir)
                 subprocess.check_call(["git", "push", "--tags", "--force"], cwd=tempdir)
-            elif basebranch:
+            elif targetbranch:
                 subprocess.check_call(["git", "push", "--all"], cwd=tempdir)
                 subprocess.check_call(["git", "push", "--tags"], cwd=tempdir)
-            elif is_release_version(args.release) and not comparebranch and not basebranch:
+            elif is_release_version(args.release) and not basebranch and not targetbranch:
                 log.warning("Test results not published on release version. Faulty AB configuration ?")
 
             utils.printheader("Processing regression report")
-            regression_base, regression_target = get_regression_base_and_target(basebranch, comparebranch, args.release, targetrepodir)
+            regression_base, regression_target = get_regression_base_and_target(targetbranch, basebranch, args.release, targetrepodir)
             if regression_base and regression_target:
                 generate_regression_report(querytool, targetrepodir, regression_base, regression_target, tempdir, args.results_dir, log)
 

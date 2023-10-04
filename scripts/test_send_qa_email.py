@@ -38,18 +38,18 @@ class TestVersion(unittest.TestCase):
     # This data represent real data returned by utils.getcomparisonbranch
     # and the release argument passed to send-qa-email script
     regression_inputs = [
-        {"name": "Arbitrary branch", "input": {"basebranch": None,
-                                               "comparebranch": None, "release": None}, "expected": (None, None)},
-        {"name": "Master release", "input": {"basebranch": "master",
-                                             "comparebranch": None, "release": "yocto-4.2_M3.rc1"}, "expected": ("4.2_M2", "master")},
-        {"name": "Older release", "input": {"basebranch": "kirkstone",
-                                            "comparebranch": None, "release": "yocto-4.0.8.rc2"}, "expected": ("yocto-4.0.7", "kirkstone")},
-        {"name": "Master Next", "input": {"basebranch": "master-next",
-                                          "comparebranch": "master", "release": None}, "expected": ("master", "master-next")},
-        {"name": "Fork Master Next", "input": {"basebranch": "ross/mut",
-                                               "comparebranch": "master", "release": None}, "expected": ("master", "ross/mut")},
-        {"name": "Nightly a-quick", "input": {"basebranch": "master",
-                                               "comparebranch": None, "release": "20230322-2"}, "expected": ("LAST_TAG", "master")},
+        {"name": "Arbitrary branch", "input": {"targetbranch": None,
+                                               "basebranch": None, "release": None}, "expected": (None, None)},
+        {"name": "Master release", "input": {"targetbranch": "master",
+                                             "basebranch": None, "release": "yocto-4.2_M3.rc1"}, "expected": ("4.2_M2", "master")},
+        {"name": "Older release", "input": {"targetbranch": "kirkstone",
+                                            "basebranch": None, "release": "yocto-4.0.8.rc2"}, "expected": ("yocto-4.0.7", "kirkstone")},
+        {"name": "Master Next", "input": {"targetbranch": "master-next",
+                                          "basebranch": "master", "release": None}, "expected": ("master", "master-next")},
+        {"name": "Fork Master Next", "input": {"targetbranch": "ross/mut",
+                                               "basebranch": "master", "release": None}, "expected": ("master", "ross/mut")},
+        {"name": "Nightly a-quick", "input": {"targetbranch": "master",
+                                               "basebranch": None, "release": "20230322-2"}, "expected": ("LAST_TAG", "master")},
     ]
 
     def test_versions(self):
@@ -68,7 +68,7 @@ class TestVersion(unittest.TestCase):
         for data in self.regression_inputs:
             with self.subTest(data['name']):
                 base, target = send_qa_email.get_regression_base_and_target(
-                    data['input']['basebranch'], data['input']['comparebranch'], data['input']['release'], os.environ.get("POKY_PATH"))
+                    data['input']['targetbranch'], data['input']['basebranch'], data['input']['release'], os.environ.get("POKY_PATH"))
                 expected_base, expected_target = data["expected"]
                 # The comparison base can not be set statically in tests when it is supposed to be the previous tag,
                 # since the result will depend on current tags
