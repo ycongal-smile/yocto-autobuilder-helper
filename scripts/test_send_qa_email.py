@@ -11,7 +11,10 @@ import os
 import sys
 import unittest
 import send_qa_email
+import logging
 
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+log = logging.getLogger('send-qa-email')
 
 class TestVersion(unittest.TestCase):
     test_data_get_version = [
@@ -45,9 +48,9 @@ class TestVersion(unittest.TestCase):
         {"name": "Older release", "input": {"targetbranch": "kirkstone",
                                             "basebranch": None, "release": "yocto-4.0.8.rc2"}, "expected": ("yocto-4.0.7", "kirkstone")},
         {"name": "Master Next", "input": {"targetbranch": "master-next",
-                                          "basebranch": "master", "release": None}, "expected": ("master", "master-next")},
+                                          "basebranch": "master", "release": None}, "expected": ("LAST_TESTED_REV", "master-next")},
         {"name": "Fork Master Next", "input": {"targetbranch": "ross/mut",
-                                               "basebranch": "master", "release": None}, "expected": ("master", "ross/mut")},
+                                               "basebranch": "master", "release": None}, "expected": ("LAST_TESTED_REV", "ross/mut")},
         {"name": "Nightly a-quick", "input": {"targetbranch": "master",
                                                "basebranch": None, "release": "20230322-2"}, "expected": ("LAST_TAG", "master")},
     ]
@@ -68,11 +71,11 @@ class TestVersion(unittest.TestCase):
         for data in self.regression_inputs:
             with self.subTest(data['name']):
                 base, target = send_qa_email.get_regression_base_and_target(
-                    data['input']['targetbranch'], data['input']['basebranch'], data['input']['release'], os.environ.get("POKY_PATH"))
+                    data['input']['targetbranch'], data['input']['basebranch'], data['input']['release'], os.environ.get("POKY_PATH"), log)
                 expected_base, expected_target = data["expected"]
                 # The comparison base can not be set statically in tests when it is supposed to be the previous tag,
                 # since the result will depend on current tags
-                if expected_base == "LAST_TAG":
+                if expected_base == "LAST_TAG" or expected_base == "LAST_TESTED_REV":
                     self.assertIsNotNone(base)
                 else:
                     self.assertEqual(base, expected_base)

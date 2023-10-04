@@ -53,7 +53,17 @@ def get_previous_tag(targetrepodir, version):
     defaultbaseversion, _, _ = utils.get_version_from_string(subprocess.check_output(["git", "describe", "--abbrev=0"], cwd=targetrepodir).decode('utf-8').strip())
     return utils.get_tag_from_version(defaultbaseversion, None)
 
-def get_regression_base_and_target(targetbranch, basebranch, release, targetrepodir):
+def get_last_tested_rev_on_branch(branch, log):
+    # Fetch latest test results revision on corresponding branch in test
+    # results repository
+    tags_list = subprocess.check_output(["git", "ls-remote", "--refs", "-t", TEST_RESULTS_REPOSITORY_URL, "refs/tags/" + branch + "/*"]).decode('utf-8').strip()
+    latest_test_tag=tags_list.splitlines()[-1].split()[1]
+    # From test results tag, extract Poky revision
+    tested_revision = re.match('refs\/tags\/.*\/\d+-g([a-f0-9]+)\/\d', latest_test_tag).group(1)
+    log.info(f"Last tested revision on branch {branch} is {tested_revision}")
+    return tested_revision
+
+def get_regression_base_and_target(targetbranch, basebranch, release, targetrepodir, log):
     if not targetbranch:
         # Targetbranch/basebranch is an arbitrary configuration (not defined in config.json): do not run regression reporting
         return None, None
@@ -63,9 +73,11 @@ def get_regression_base_and_target(targetbranch, basebranch, release, targetrepo
         # regression reporting must be done against previous tag
         return get_previous_tag(targetrepodir, release), targetbranch
     elif basebranch:
-        # Targetbranch/basebranch is defined in config.json: regression
-        # reporting must be done against branches as defined in config.json
-        return basebranch, targetbranch
+        # Basebranch/targetbranch are defined in config.json: regression
+        # reporting must be done between latest test result available on base branch
+        # and latest result on targetbranch
+        latest_tested_rev_on_basebranch = get_last_tested_rev_on_branch(basebranch, log)
+        return latest_tested_rev_on_basebranch, targetbranch
 
     #Default case: return previous tag as base
     return get_previous_tag(targetrepodir, release), targetbranch
@@ -177,7 +189,7 @@ def send_qa_email():
                 log.warning("Test results not published on release version. Faulty AB configuration ?")
 
             utils.printheader("Processing regression report")
-            regression_base, regression_target = get_regression_base_and_target(targetbranch, basebranch, args.release, targetrepodir)
+            regression_base, regression_target = get_regression_base_and_target(targetbranch, basebranch, args.release, targetrepodir, log)
             if regression_base and regression_target:
                 generate_regression_report(querytool, targetrepodir, regression_base, regression_target, tempdir, args.results_dir, log)
 
