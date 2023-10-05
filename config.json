@@ -290,8 +290,7 @@
         "reproducible-meta-oe" : {
             "MACHINE" : "qemux86-64",
             "SDKMACHINE" : "x86_64",
-            "DISTRO" : "None",
-            "NEEDREPOS" : ["oecore", "bitbake", "meta-openembedded"],
+            "NEEDREPOS" : ["poky", "meta-openembedded"],
             "ADDLAYER" : [
                 "${BUILDDIR}/../meta-selftest"
             ],
