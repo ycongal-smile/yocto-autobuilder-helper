@@ -1422,6 +1422,36 @@
                 "${SCRIPTSDIR}/setup-auh ${HELPERBUILDDIR}; ${SCRIPTSDIR}/run-auh ${HELPERBUILDDIR} ${WEBPUBLISH_DIR}/pub/auh/"
             ]
         },
+        "meta-oe-mirror" : {
+            "SDKMACHINE" : "x86_64",
+            "MACHINE" : "qemux86-64",
+            "NEEDREPOS" : ["poky", "meta-openembedded"],
+            "ADDLAYER" : [
+                "${BUILDDIR}/../meta-selftest",
+
+                "${BUILDDIR}/../meta-openembedded/meta-oe",
+                "${BUILDDIR}/../meta-openembedded/meta-python",
+                "${BUILDDIR}/../meta-openembedded/meta-perl",
+                "${BUILDDIR}/../meta-openembedded/meta-networking",
+                "${BUILDDIR}/../meta-openembedded/meta-multimedia",
+                "${BUILDDIR}/../meta-openembedded/meta-gnome",
+                "${BUILDDIR}/../meta-openembedded/meta-xfce",
+                "${BUILDDIR}/../meta-openembedded/meta-filesystems",
+                "${BUILDDIR}/../meta-openembedded/meta-initramfs",
+                "${BUILDDIR}/../meta-openembedded/meta-webserver"
+            ],
+            "step1" : {
+                "shortname" : "Sources pre-fetching",
+                "BBTARGETS" : "universe -c fetch -k",
+                "extravars" : [
+                    "SOURCE_MIRROR_FETCH = '1'"
+                ]
+            },
+            "step2" : {
+                    "shortname" : "Source Mirror Selftest",
+                    "EXTRACMDS" : ["${SCRIPTSDIR}/checkvnc; DISPLAY=:1 oe-selftest -r buildoptions.SourceMirroring.test_yocto_source_mirror"]
+            }
+        },
         "a-quick" : {
             "TEMPLATE" : "trigger-build"
         },
