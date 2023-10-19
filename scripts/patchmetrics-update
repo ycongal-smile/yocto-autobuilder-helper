@@ -4,24 +4,27 @@ import sys
 import argparse
 import subprocess
 import tempfile
+import shlex
 
 args = argparse.ArgumentParser(description="Update Patch Metrics")
 args.add_argument("-j", "--json", help="update JSON")
-args.add_argument("-m", "--metadata", help="metadata directry to scan")
 args.add_argument("-s", "--patchscript", help="review script to use")
-args.add_argument("-r", "--repo", help="repository to use")
+args.add_argument("-r", "--repo", help="target repository to scan")
+args.add_argument("-d", "--dir", help="directory in the repository to scan", default=".")
+args.add_argument("-e", "--extraargs", help="extra arguments to give to the review script")
 args = args.parse_args()
-
-status_values = ["accepted", "pending", "inappropriate", "backport", "submitted", "denied", "inactive-upstream", "malformed-upstream-status", "malformed-sob"]
 
 print("Running patchmetrics-update")
 
 with tempfile.TemporaryDirectory(prefix="patchmetrics-") as tempdir:
     subprocess.check_call(["git", "clone", args.repo, tempdir])
     repo_revisions = subprocess.check_output(["git", "rev-list", "--since", "1274625106", "origin/master"], universal_newlines=True, cwd=tempdir).strip().split()
+    try:
+        with open(args.json) as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = []
 
-    with open(args.json) as f:
-        data = json.load(f)
 
     seen = set()
     for i in data:
@@ -37,7 +40,13 @@ with tempfile.TemporaryDirectory(prefix="patchmetrics-") as tempdir:
     for rev in needed_revisions:
         print("Processing %s" % rev)
         subprocess.check_output(["git", "reset", "--hard", rev], universal_newlines=True, cwd=tempdir).strip()
-        subprocess.check_call([args.patchscript, os.path.join(tempdir, os.path.relpath(args.metadata, args.repo)), "-j", args.json])
+
+        command = [args.patchscript, "-j", args.json]
+        target_dir = os.path.join(tempdir, args.dir)
+        command.append(target_dir)
+        if args.extraargs:
+            command.extend(shlex.split(args.extraargs))
+        subprocess.check_call(command)
 
     newdata = []
     with open(args.json) as f:
@@ -52,7 +61,8 @@ with tempfile.TemporaryDirectory(prefix="patchmetrics-") as tempdir:
             i['commit_count'] = subprocess.check_output(["git", "rev-list", "--count", i['commit']], universal_newlines=True, cwd=tempdir).strip()
         if "recipe_count" not in i:
             subprocess.check_output(["git", "reset", "--hard", i['commit']], universal_newlines=True, cwd=tempdir).strip()
-            i['recipe_count'] = subprocess.check_output(["find meta -type f -name *.bb  | wc -l"], shell=True, universal_newlines=True, cwd=tempdir).strip()
+            find_dir = os.path.join(tempdir,args.dir)
+            i['recipe_count'] = subprocess.check_output([f"find {find_dir} -type f -name *.bb  | wc -l"], shell=True, universal_newlines=True, cwd=tempdir).strip()
 
         #print(i['commit_count'] + " " + i['recipe_count'])
 

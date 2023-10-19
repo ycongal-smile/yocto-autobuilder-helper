@@ -3,25 +3,45 @@
 # SPDX-License-Identifier: GPL-2.0-only
 #
 PARENTDIR=`realpath $1`
-TARGETDIR=`realpath $2`
-RESULTSDIR=`realpath -m $3`
-BUILDDIR=`realpath $4`
+TARGETREPO=`realpath $2`
+TARGETDIR=$3
+RESULTSDIR=`realpath -m $4`
+RESULTTAG=$5 # Tag to use in RESULTSDIR paths and commits
+EXTRAARGS=$6
+
 OURDIR=`dirname $0`
 
 TIMESTAMP=`date +"%s"`
 
+if [ -n "$RESULTTAG" ]; then
+	RESULTTAG_COMMIT="$RESULTTAG: "
+	RESULTTAG_PATH="$RESULTTAG"
+else
+	RESULTTAG_COMMIT=""
+	RESULTTAG_PATH="."
+fi
+
 #
 # Patch Metrics
 #
-git clone ssh://git@push.yoctoproject.org/yocto-metrics $PARENTDIR/yocto-metrics
-$OURDIR/patchmetrics-update --repo $PARENTDIR --patchscript $PARENTDIR/scripts/contrib/patchreview.py --metadata $TARGETDIR --json $PARENTDIR/yocto-metrics/patch-status.json
-git -C $PARENTDIR/yocto-metrics commit -asm "Autobuilder adding new patch stats"
-git -C $PARENTDIR/yocto-metrics push
-
-if [ ! -d $RESULTSDIR ]; then
-    mkdir $RESULTSDIR
+if [ ! -d $PARENTDIR/yocto-metrics ]; then
+	git clone ssh://git@push.yoctoproject.org/yocto-metrics $PARENTDIR/yocto-metrics
+else
+	git -C $PARENTDIR/yocto-metrics fetch origin
 fi
 
-$OURDIR/patchmetrics-generate-chartdata --json $PARENTDIR/yocto-metrics/patch-status.json --outputdir $RESULTSDIR
-cp $PARENTDIR/yocto-metrics/patch-status.json $RESULTSDIR
-cp $PARENTDIR/yocto-metrics/patch-status/* $RESULTSDIR
+mkdir -p $PARENTDIR/yocto-metrics/$RESULTTAG_PATH/
+$OURDIR/patchmetrics-update --repo $TARGETREPO --dir $TARGETDIR --patchscript $PARENTDIR/scripts/contrib/patchreview.py --json $PARENTDIR/yocto-metrics/$RESULTTAG_PATH/patch-status.json --extraargs "$EXTRAARGS"
+git -C $PARENTDIR/yocto-metrics add $RESULTTAG_PATH/patch-status.json
+git -C $PARENTDIR/yocto-metrics commit -asm "${RESULTTAG_COMMIT}Autobuilder adding new patch stats"
+git -C $PARENTDIR/yocto-metrics push
+
+if [ ! -d $RESULTSDIR/$RESULTTAG_PATH/ ]; then
+    mkdir -p $RESULTSDIR/$RESULTTAG_PATH/
+fi
+
+$OURDIR/patchmetrics-generate-chartdata --json $PARENTDIR/yocto-metrics/$RESULTTAG_PATH/patch-status.json --outputdir $RESULTSDIR/$RESULTTAG_PATH/
+cp $PARENTDIR/yocto-metrics/$RESULTTAG_PATH/patch-status.json $RESULTSDIR/$RESULTTAG_PATH/
+cp $PARENTDIR/yocto-metrics/$RESULTTAG_PATH/patch-status/* $RESULTSDIR/$RESULTTAG_PATH/
+
+exit 0
