@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/bash -x
+#XXX shebang
 #
 # SPDX-License-Identifier: GPL-2.0-only
 #
@@ -25,7 +26,7 @@ fi
 # Patch Metrics
 #
 if [ ! -d $PARENTDIR/yocto-metrics ]; then
-	git clone ssh://git@push.yoctoproject.org/yocto-metrics $PARENTDIR/yocto-metrics
+	git clone https://git.yoctoproject.org/yocto-metrics $PARENTDIR/yocto-metrics
 else
 	git -C $PARENTDIR/yocto-metrics fetch origin
 fi
@@ -34,7 +35,7 @@ mkdir -p $PARENTDIR/yocto-metrics/$RESULTTAG_PATH/
 $OURDIR/patchmetrics-update --repo $TARGETREPO --dir $TARGETDIR --patchscript $PARENTDIR/scripts/contrib/patchreview.py --json $PARENTDIR/yocto-metrics/$RESULTTAG_PATH/patch-status.json --extraargs "$EXTRAARGS"
 git -C $PARENTDIR/yocto-metrics add $RESULTTAG_PATH/patch-status.json
 git -C $PARENTDIR/yocto-metrics commit -asm "${RESULTTAG_COMMIT}Autobuilder adding new patch stats"
-git -C $PARENTDIR/yocto-metrics push
+#git -C $PARENTDIR/yocto-metrics push
 
 if [ ! -d $RESULTSDIR/$RESULTTAG_PATH/ ]; then
     mkdir -p $RESULTSDIR/$RESULTTAG_PATH/

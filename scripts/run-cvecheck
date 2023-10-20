@@ -29,7 +29,7 @@ unset BB_ENV_EXTRAWHITE
 bitbake world --runall cve_check -R conf/distro/include/cve-extra-exclusions.inc
 
 if [ ! -d $PARENTDIR/yocto-metrics ]; then
-	git clone ssh://git@push.yoctoproject.org/yocto-metrics $PARENTDIR/yocto-metrics
+	git clone https://git.yoctoproject.org/yocto-metrics $PARENTDIR/yocto-metrics
 else
 	git -C $PARENTDIR/yocto-metrics fetch origin
 fi
@@ -39,7 +39,7 @@ if [ -e tmp/log/cve/cve-summary.json ]; then
 	cp tmp/log/cve/cve-summary.json $PARENTDIR/yocto-metrics/cve-check/$RESULTTAG_PATH/$BRANCH/$TIMESTAMP.json
 	git -C $PARENTDIR/yocto-metrics add cve-check/$RESULTTAG_PATH/$BRANCH/$TIMESTAMP.json
 	git -C $PARENTDIR/yocto-metrics commit -asm "${RESULTTAG_COMMIT}Autobuilder adding new CVE data for branch $BRANCH"
-	git -C $PARENTDIR/yocto-metrics push
+	#git -C $PARENTDIR/yocto-metrics push
 	$OURDIR/cve-report.py tmp/log/cve/cve-summary.json > $RESULTSDIR/$RESULTTAG_PATH/cve-status-$BRANCH.txt
 fi
 
@@ -47,7 +47,7 @@ mkdir -p $PARENTDIR/yocto-metrics/cve-check/$RESULTTAG_PATH/
 $OURDIR/cve-generate-chartdata --json $PARENTDIR/yocto-metrics/cve-check/$RESULTTAG_PATH/cve-count-byday.json --resultsdir $PARENTDIR/yocto-metrics/cve-check/$RESULTTAG_PATH/
 git -C $PARENTDIR/yocto-metrics add cve-check/$RESULTTAG_PATH/cve-count-byday.json
 git -C $PARENTDIR/yocto-metrics commit -asm "${RESULTTAG_COMMIT}Autobuilder updating CVE counts"
-git -C $PARENTDIR/yocto-metrics push
+#git -C $PARENTDIR/yocto-metrics push
 
 cp $PARENTDIR/yocto-metrics/cve-check/$RESULTTAG_PATH/cve-count-byday.json $RESULTSDIR/$RESULTTAG_PATH/
 cp $PARENTDIR/yocto-metrics/cve-check/$RESULTTAG_PATH/cve-count-byday-lastyear.json $RESULTSDIR/$RESULTTAG_PATH/

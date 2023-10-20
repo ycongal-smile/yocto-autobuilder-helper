@@ -50,8 +50,6 @@
             "BB_NUMBER_THREADS = '16'",
             "BB_NUMBER_PARSE_THREADS = '16'",
             "PARALLEL_MAKE = '-j 16 -l 52'",
-            "BB_PRESSURE_MAX_CPU = '10000'",
-            "BB_PRESSURE_MAX_IO = '10000'",
             "XZ_MEMLIMIT = '5%'",
             "XZ_THREADS = '8'",
             "ZSTD_THREADS = '8'",
@@ -66,7 +64,6 @@
             "SDK_INCLUDE_TOOLCHAIN = '1'",
             "ESDK_LOCAL_CONF_REMOVE:append = 'BB_HASHSERVE'",
             "BB_DISKMON_DIRS = 'STOPTASKS,${TMPDIR},1G,100K STOPTASKS,${DL_DIR},1G STOPTASKS,${SSTATE_DIR},1G STOPTASKS,/tmp,100M,30K HALT,${TMPDIR},100M,1K HALT,${DL_DIR},100M HALT,${SSTATE_DIR},100M HALT,/tmp,10M,1K'",
-            "BB_HASHSERVE = 'hashserv.yocto.io:8686'",
             "RUNQEMU_TMPFS_DIR = '/home/pokybuild/tmp'",
             "BB_HEARTBEAT_EVENT = '60'",
             "BB_LOG_HOST_STAT_ON_INTERVAL = '1'",
@@ -1208,6 +1205,8 @@
         "metrics-cve" : {
             "NEEDREPOS" : ["poky", "meta-openembedded"],
             "extravars" : [
+				"DL_DIR = '/home/yocon/yocto/downloads'",
+				"SSTATE_DIR = '/home/yocon/yocto/sstate-cache'",
                 "INHERIT += 'cve-check'",
                 "BB_DISKMON_DIRS = ''",
                 "CVE_CHECK_FORMAT_JSON = '1'",

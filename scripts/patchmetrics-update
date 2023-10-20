@@ -31,6 +31,7 @@ with tempfile.TemporaryDirectory(prefix="patchmetrics-") as tempdir:
         if "commit" in i:
             seen.add(i["commit"])
 
+    repo_revisions = repo_revisions[:10] # XXX
     needed_revisions = set(repo_revisions) - seen
 
     print("Need to scan revisions %s" % str(needed_revisions))
