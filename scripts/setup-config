@@ -95,6 +95,7 @@ if utils.getconfigvar("BUILDINFO", ourconfig, args.target, stepnum):
 extravars = utils.getconfiglistfilter("extravars", ourconfig, args.target, stepnum)
 if extravars:
     variables.extend(extravars)
+print(f"{variables=}")
 
 bh_path, remoterepo, remotebranch, baseremotebranch = utils.getbuildhistoryconfig(ourconfig, args.builddir, args.target, args.reponame, args.branchname, stepnum)
 if bh_path:
